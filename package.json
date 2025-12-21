@@ -1,0 +1,26 @@
+{
+  "name": "compass",
+  "version": "1.0.0",
+  "description": "MCP server for Axis Next.js browser automation API",
+  "type": "module",
+  "bin": {
+    "compass": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build"
+  },
+  "keywords": ["mcp", "axis", "browser-automation"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "dotenv": "^16.4.7",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
