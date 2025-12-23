@@ -5,7 +5,6 @@ import {
     createSessionSchema,
     deleteSessionSchema,
     performActionSchema,
-    captureScreenshotSchema,
 } from "./schemas.js";
 
 config();
@@ -30,6 +29,27 @@ async function apiRequest(endpoint: string, options: RequestInit = {}) {
     return data;
 }
 
+async function captureScreenshot(sessionId: string) {
+    try {
+        const result = await apiRequest(`/api/sessions/${sessionId}/screenshots`, {
+            method: "POST",
+        });
+
+        const screenshotUrl = result.payload.url;
+        const imageResponse = await fetch(screenshotUrl);
+
+        if (imageResponse.ok) {
+            const arrayBuffer = await imageResponse.arrayBuffer();
+            return Buffer.from(arrayBuffer).toString('base64');
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Failed to capture screenshot:', error);
+        return null;
+    }
+}
+
 const server = new McpServer({
     name: "compass",
     version: "1.0.0",
@@ -46,14 +66,24 @@ server.registerTool(
             method: "POST",
             body: JSON.stringify({ url }),
         });
-        return {
-            content: [
-                {
-                    type: "text",
-                    text: `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
-                },
-            ],
-        };
+
+        const content: any[] = [
+            {
+                type: "text",
+                text: `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
+            },
+        ];
+
+        const screenshot = await captureScreenshot(result.payload.id);
+        if (screenshot) {
+            content.push({
+                type: "image",
+                data: screenshot,
+                mimeType: "image/png",
+            });
+        }
+
+        return { content };
     }
 );
 
@@ -89,35 +119,24 @@ server.registerTool(
             method: "POST",
             body: JSON.stringify(action),
         });
-        return {
-            content: [
-                {
-                    type: "text",
-                    text: `${result.message}\nAction: ${JSON.stringify(result.payload, null, 2)}`,
-                },
-            ],
-        };
-    }
-);
 
-server.registerTool(
-    "capture_screenshot",
-    {
-        description: "Capture a screenshot of the current browser session state",
-        inputSchema: captureScreenshotSchema,
-    },
-    async ({ sessionId }) => {
-        const result = await apiRequest(`/api/sessions/${sessionId}/screenshots`, {
-            method: "POST",
-        });
-        return {
-            content: [
-                {
-                    type: "text",
-                    text: `Screenshot captured successfully!\nScreenshot ID: ${result.payload.id}\nPath: ${result.payload.path}`,
-                },
-            ],
-        };
+        const content: any[] = [
+            {
+                type: "text",
+                text: `${result.message}\nAction: ${JSON.stringify(result.payload, null, 2)}`,
+            },
+        ];
+
+        const screenshot = await captureScreenshot(sessionId);
+        if (screenshot) {
+            content.push({
+                type: "image",
+                data: screenshot,
+                mimeType: "image/png",
+            });
+        }
+
+        return { content };
     }
 );
 

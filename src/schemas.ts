@@ -25,6 +25,3 @@ export const performActionSchema = {
         .describe("The action to perform"),
 };
 
-export const captureScreenshotSchema = {
-    sessionId: zod.string().describe("The ID of the session"),
-};
