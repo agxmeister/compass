@@ -20,30 +20,37 @@ async function apiRequest(endpoint: string, options: RequestInit = {}) {
         },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-        throw new Error(data.error || `API request failed: ${response.statusText}`);
+        const contentType = response.headers.get("Content-Type") || "";
+
+        switch (true) {
+            case contentType.includes("application/json"):
+                const errorData = await response.json();
+                throw new Error(errorData.error || `API request failed: ${response.statusText}`);
+            default:
+                throw new Error(`API request failed: ${response.statusText}`);
+        }
     }
 
-    return data;
+    const contentType = response.headers.get("Content-Type") || "";
+
+    switch (true) {
+        case contentType.startsWith("image/"):
+            return await response.arrayBuffer();
+        case contentType.includes("application/json"):
+            return await response.json();
+        default:
+            throw new Error(`Unsupported content type: ${contentType}`);
+    }
 }
 
 async function captureScreenshot(sessionId: string) {
     try {
-        const result = await apiRequest(`/api/sessions/${sessionId}/screenshots`, {
+        const arrayBuffer = await apiRequest(`/api/sessions/${sessionId}/screenshots`, {
             method: "POST",
         });
 
-        const screenshotUrl = result.payload.url;
-        const imageResponse = await fetch(screenshotUrl);
-
-        if (imageResponse.ok) {
-            const arrayBuffer = await imageResponse.arrayBuffer();
-            return Buffer.from(arrayBuffer).toString('base64');
-        }
-
-        return null;
+        return Buffer.from(arrayBuffer).toString('base64');
     } catch (error) {
         console.error('Failed to capture screenshot:', error);
         return null;
