@@ -6,56 +6,11 @@ import {
     deleteSessionSchema,
     performActionSchema,
 } from "./schemas.js";
+import { AxisService } from "./modules/axis/index.js";
 
 config();
 
-const AXIS_API_URL = process.env.AXIS_API_URL!;
-
-async function apiRequest(endpoint: string, options: RequestInit = {}) {
-    const response = await fetch(`${AXIS_API_URL}${endpoint}`, {
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...options.headers,
-        },
-    });
-
-    if (!response.ok) {
-        const contentType = response.headers.get("Content-Type") || "";
-
-        switch (true) {
-            case contentType.includes("application/json"):
-                const errorData = await response.json();
-                throw new Error(errorData.error || `API request failed: ${response.statusText}`);
-            default:
-                throw new Error(`API request failed: ${response.statusText}`);
-        }
-    }
-
-    const contentType = response.headers.get("Content-Type") || "";
-
-    switch (true) {
-        case contentType.startsWith("image/"):
-            return await response.arrayBuffer();
-        case contentType.includes("application/json"):
-            return await response.json();
-        default:
-            throw new Error(`Unsupported content type: ${contentType}`);
-    }
-}
-
-async function captureScreenshot(sessionId: string) {
-    try {
-        const arrayBuffer = await apiRequest(`/api/sessions/${sessionId}/screenshots`, {
-            method: "POST",
-        });
-
-        return Buffer.from(arrayBuffer).toString('base64');
-    } catch (error) {
-        console.error('Failed to capture screenshot:', error);
-        return null;
-    }
-}
+const axisService = new AxisService(process.env.AXIS_API_URL!);
 
 const server = new McpServer({
     name: "compass",
@@ -69,10 +24,7 @@ server.registerTool(
         inputSchema: createSessionSchema,
     },
     async ({ url }) => {
-        const result = await apiRequest("/api/sessions", {
-            method: "POST",
-            body: JSON.stringify({ url }),
-        });
+        const result = await axisService.createSession(url);
 
         const content: any[] = [
             {
@@ -81,7 +33,7 @@ server.registerTool(
             },
         ];
 
-        const screenshot = await captureScreenshot(result.payload.id);
+        const screenshot = await axisService.captureScreenshot(result.payload.id);
         if (screenshot) {
             content.push({
                 type: "image",
@@ -101,9 +53,7 @@ server.registerTool(
         inputSchema: deleteSessionSchema,
     },
     async ({ sessionId }) => {
-        const result = await apiRequest(`/api/sessions/${sessionId}`, {
-            method: "DELETE",
-        });
+        const result = await axisService.deleteSession(sessionId);
         return {
             content: [
                 {
@@ -122,10 +72,7 @@ server.registerTool(
         inputSchema: performActionSchema,
     },
     async ({ sessionId, action }) => {
-        const result = await apiRequest(`/api/sessions/${sessionId}/actions`, {
-            method: "POST",
-            body: JSON.stringify(action),
-        });
+        const result = await axisService.performAction(sessionId, action);
 
         const content: any[] = [
             {
@@ -134,7 +81,7 @@ server.registerTool(
             },
         ];
 
-        const screenshot = await captureScreenshot(sessionId);
+        const screenshot = await axisService.captureScreenshot(sessionId);
         if (screenshot) {
             content.push({
                 type: "image",
