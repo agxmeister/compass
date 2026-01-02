@@ -1,3 +1,18 @@
+import {
+    createSessionInputSchema,
+    deleteSessionInputSchema,
+    performActionInputSchema,
+    createSessionResponseSchema,
+    deleteSessionResponseSchema,
+    performActionResponseSchema,
+} from "./schemas.js";
+import type {
+    CreateSessionResponse,
+    DeleteSessionResponse,
+    PerformActionResponse,
+    Action,
+} from "./types.js";
+
 export class AxisService {
     constructor(private readonly baseApiUrl: string) {}
 
@@ -18,35 +33,46 @@ export class AxisService {
         return response;
     }
 
-    async createSession(url: string) {
+    async createSession(url: string): Promise<CreateSessionResponse> {
+        const validatedInput = createSessionInputSchema.parse({ url });
+
         const response = await this.apiRequest("/api/sessions", {
             method: "POST",
-            body: JSON.stringify({ url }),
+            body: JSON.stringify(validatedInput),
         });
 
-        return await response.json();
+        const data = await response.json();
+        return createSessionResponseSchema.parse(data);
     }
 
-    async deleteSession(sessionId: string) {
-        const response = await this.apiRequest(`/api/sessions/${sessionId}`, {
+    async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
+        const validatedInput = deleteSessionInputSchema.parse({ sessionId });
+
+        const response = await this.apiRequest(`/api/sessions/${validatedInput.sessionId}`, {
             method: "DELETE",
         });
 
-        return await response.json();
+        const data = await response.json();
+        return deleteSessionResponseSchema.parse(data);
     }
 
-    async performAction(sessionId: string, action: any) {
-        const response = await this.apiRequest(`/api/sessions/${sessionId}/actions`, {
+    async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
+        const validatedInput = performActionInputSchema.parse({ sessionId, action });
+
+        const response = await this.apiRequest(`/api/sessions/${validatedInput.sessionId}/actions`, {
             method: "POST",
-            body: JSON.stringify(action),
+            body: JSON.stringify(validatedInput.action),
         });
 
-        return await response.json();
+        const data = await response.json();
+        return performActionResponseSchema.parse(data);
     }
 
     async captureScreenshot(sessionId: string): Promise<string | null> {
         try {
-            const response = await this.apiRequest(`/api/sessions/${sessionId}/screenshots`, {
+            const validatedInput = deleteSessionInputSchema.parse({ sessionId });
+
+            const response = await this.apiRequest(`/api/sessions/${validatedInput.sessionId}/screenshots`, {
                 method: "POST",
             });
 
