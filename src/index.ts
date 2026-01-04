@@ -1,12 +1,13 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { config } from "dotenv";
-import { AxisService } from "./modules/axis/index.js";
-import { McpService } from "./modules/mcp/index.js";
+import 'reflect-metadata';
+import { container } from "./container.js";
+import { dependencies } from "./dependencies.js";
+import type { McpService } from "./modules/mcp/index.js";
 
 config();
 
-const axisService = new AxisService(process.env.AXIS_API_URL!);
-const mcpService = new McpService(axisService);
+const mcpService = container.get<McpService>(dependencies.McpService);
 const server = mcpService.createServer();
 
 async function main() {

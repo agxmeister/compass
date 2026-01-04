@@ -1,13 +1,16 @@
+import { injectable, inject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { dependencies } from '@/dependencies.js';
 import {
     createSessionSchema,
     deleteSessionSchema,
     performActionSchema,
-} from "../../schemas.js";
+} from "@/schemas.js";
 import type { AxisService } from "../axis/index.js";
 
+@injectable()
 export class McpService {
-    constructor(private readonly axisService: AxisService) {}
+    constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
 
     createServer(): McpServer {
         const server = new McpServer({

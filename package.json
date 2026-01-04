@@ -7,7 +7,7 @@
     "compass": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "watch": "tsc --watch",
     "prepare": "npm run build"
   },
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.7.2"
   }
 }

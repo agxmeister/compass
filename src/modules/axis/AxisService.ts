@@ -1,3 +1,5 @@
+import { injectable, inject } from 'inversify';
+import { dependencies } from '@/dependencies.js';
 import {
     createSessionInputSchema,
     deleteSessionInputSchema,
@@ -13,8 +15,9 @@ import type {
     Action,
 } from "./types.js";
 
+@injectable()
 export class AxisService {
-    constructor(private readonly baseApiUrl: string) {}
+    constructor(@inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string) {}
 
     private async apiRequest(endpoint: string, options: RequestInit = {}): Promise<Response> {
         const response = await fetch(`${this.baseApiUrl}${endpoint}`, {
