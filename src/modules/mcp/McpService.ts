@@ -1,16 +1,11 @@
-import { injectable, inject } from 'inversify';
+import { injectable, multiInject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { dependencies } from '@/dependencies.js';
-import {
-    createSessionSchema,
-    deleteSessionSchema,
-    performActionSchema,
-} from "@/schemas.js";
-import type { AxisService } from "../axis/index.js";
+import type { Tool } from './types.js';
 
 @injectable()
 export class McpService {
-    constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
+    constructor(@multiInject(dependencies.Tools) private readonly tools: Tool[]) {}
 
     createServer(): McpServer {
         const server = new McpServer({
@@ -24,81 +19,33 @@ export class McpService {
     }
 
     private registerTools(server: McpServer): void {
-        server.registerTool(
-            "create_session",
-            {
-                description: "Create a new browser session and navigate to a URL",
-                inputSchema: createSessionSchema,
-            },
-            async ({ url }) => {
-                const result = await this.axisService.createSession(url);
+        console.log(`[McpService] Registering ${this.tools.length} tool(s) with MCP server`);
 
-                const content: any[] = [
-                    {
-                        type: "text",
-                        text: `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
-                    },
-                ];
-
-                const screenshot = await this.axisService.captureScreenshot(result.payload.id);
-                if (screenshot) {
-                    content.push({
-                        type: "image",
-                        data: screenshot,
-                        mimeType: "image/png",
-                    });
+        for (const tool of this.tools) {
+            server.registerTool(
+                tool.name,
+                {
+                    description: tool.description,
+                    inputSchema: tool.inputSchema,
+                },
+                async (args) => {
+                    try {
+                        return await tool.execute(args);
+                    } catch (error) {
+                        console.error(`[McpService] Error executing tool ${tool.name}:`, error);
+                        return {
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Error: ${error instanceof Error ? error.message : String(error)}`,
+                                },
+                            ],
+                        };
+                    }
                 }
+            );
 
-                return { content };
-            }
-        );
-
-        server.registerTool(
-            "delete_session",
-            {
-                description: "Delete an existing browser session",
-                inputSchema: deleteSessionSchema,
-            },
-            async ({ sessionId }) => {
-                const result = await this.axisService.deleteSession(sessionId);
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Session ${result.payload.id} deleted successfully`,
-                        },
-                    ],
-                };
-            }
-        );
-
-        server.registerTool(
-            "perform_action",
-            {
-                description: "Perform an action in a browser session (click or open-page)",
-                inputSchema: performActionSchema,
-            },
-            async ({ sessionId, action }) => {
-                const result = await this.axisService.performAction(sessionId, action);
-
-                const content: any[] = [
-                    {
-                        type: "text",
-                        text: `${result.message}\nAction: ${JSON.stringify(result.payload, null, 2)}`,
-                    },
-                ];
-
-                const screenshot = await this.axisService.captureScreenshot(sessionId);
-                if (screenshot) {
-                    content.push({
-                        type: "image",
-                        data: screenshot,
-                        mimeType: "image/png",
-                    });
-                }
-
-                return { content };
-            }
-        );
+            console.log(`[McpService] Registered tool: ${tool.name}`);
+        }
     }
 }
