@@ -6,16 +6,14 @@ import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { RegisterTool } from '../decorators.js';
 
-const deleteSessionSchema = {
-    sessionId: zod.string().describe("The ID of the session to delete"),
-};
-
 @RegisterTool()
 @injectable()
 export default class DeleteSessionTool implements Tool {
     readonly name = "delete_session";
     readonly description = "Delete an existing browser session";
-    readonly inputSchema = deleteSessionSchema;
+    readonly inputSchema = {
+        sessionId: zod.string().describe("The ID of the session to delete"),
+    };
 
     constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
 

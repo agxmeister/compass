@@ -6,29 +6,27 @@ import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { RegisterTool } from '../decorators.js';
 
-const performActionSchema = {
-    sessionId: zod.string().describe("The ID of the session"),
-    action: zod
-        .discriminatedUnion("type", [
-            zod.object({
-                type: zod.literal("click"),
-                x: zod.number().describe("X coordinate"),
-                y: zod.number().describe("Y coordinate"),
-            }),
-            zod.object({
-                type: zod.literal("open-page"),
-                url: zod.string().describe("URL to navigate to"),
-            }),
-        ])
-        .describe("The action to perform"),
-};
-
 @RegisterTool()
 @injectable()
 export default class PerformActionTool implements Tool {
     readonly name = "perform_action";
     readonly description = "Perform an action in a browser session (click or open-page)";
-    readonly inputSchema = performActionSchema;
+    readonly inputSchema = {
+        sessionId: zod.string().describe("The ID of the session"),
+        action: zod
+            .discriminatedUnion("type", [
+                zod.object({
+                    type: zod.literal("click"),
+                    x: zod.number().describe("X coordinate"),
+                    y: zod.number().describe("Y coordinate"),
+                }),
+                zod.object({
+                    type: zod.literal("open-page"),
+                    url: zod.string().describe("URL to navigate to"),
+                }),
+            ])
+            .describe("The action to perform"),
+    };
 
     constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
 

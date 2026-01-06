@@ -6,16 +6,14 @@ import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { RegisterTool } from '../decorators.js';
 
-const createSessionSchema = {
-    url: zod.string().describe("The URL to navigate to"),
-};
-
 @RegisterTool()
 @injectable()
 export default class CreateSessionTool implements Tool {
     readonly name = "create_session";
     readonly description = "Create a new browser session and navigate to a URL";
-    readonly inputSchema = createSessionSchema;
+    readonly inputSchema = {
+        url: zod.string().describe("The URL to navigate to"),
+    };
 
     constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
 
