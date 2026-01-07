@@ -3,8 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
 import { AxisService } from './modules/axis/index.js';
-import { McpService } from './modules/mcp/index.js';
-import { ToolDiscoveryService } from '@/modules/mcp/index.js';
+import { McpService, ToolDiscoveryService, CallToolResultBuilder } from './modules/mcp/index.js';
 
 export const container = new Container();
 
@@ -16,3 +15,4 @@ container.bind<string>(dependencies.ToolsDirectory).toConstantValue(toolsDirecto
 container.bind<AxisService>(dependencies.AxisService).to(AxisService);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
+container.bind<CallToolResultBuilder>(dependencies.CallToolResultBuilder).to(CallToolResultBuilder);

@@ -1,6 +1,5 @@
 import { z as zod } from "zod";
 
-// Input validation schemas
 export const createSessionInputSchema = zod.object({
     url: zod.string(),
 });
@@ -26,7 +25,6 @@ export const performActionInputSchema = zod.object({
     action: actionSchema,
 });
 
-// Response validation schemas
 export const sessionPayloadSchema = zod.object({
     id: zod.string(),
     createDate: zod.string(),

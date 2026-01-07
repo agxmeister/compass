@@ -4,6 +4,7 @@ import { dependencies } from '@/dependencies.js';
 import type { AxisService } from '@/modules/axis/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -15,27 +16,17 @@ export default class CreateSessionTool implements Tool {
         url: zod.string().describe("The URL to navigate to"),
     };
 
-    constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
+    constructor(
+        @inject(dependencies.AxisService) private readonly axisService: AxisService,
+        @inject(dependencies.CallToolResultBuilder) private readonly resultBuilder: CallToolResultBuilder
+    ) {}
 
     async execute(args: { url: string }): Promise<CallToolResult> {
         const result = await this.axisService.createSession(args.url);
 
-        const content: any[] = [
-            {
-                type: "text",
-                text: `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
-            },
-        ];
-
-        const screenshot = await this.axisService.captureScreenshot(result.payload.id);
-        if (screenshot) {
-            content.push({
-                type: "image",
-                data: screenshot,
-                mimeType: "image/png",
-            });
-        }
-
-        return { content };
+        return this.resultBuilder.build(
+            `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
+            { sessionId: result.payload.id, includeScreenshot: true }
+        );
     }
 }

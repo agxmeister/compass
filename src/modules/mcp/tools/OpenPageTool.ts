@@ -4,6 +4,7 @@ import { dependencies } from '@/dependencies.js';
 import type { AxisService } from '@/modules/axis/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -16,7 +17,10 @@ export default class OpenPageTool implements Tool {
         url: zod.string().describe("URL to navigate to"),
     };
 
-    constructor(@inject(dependencies.AxisService) private readonly axisService: AxisService) {}
+    constructor(
+        @inject(dependencies.AxisService) private readonly axisService: AxisService,
+        @inject(dependencies.CallToolResultBuilder) private readonly resultBuilder: CallToolResultBuilder
+    ) {}
 
     async execute(args: { sessionId: string; url: string }): Promise<CallToolResult> {
         const result = await this.axisService.performAction(args.sessionId, {
@@ -24,22 +28,9 @@ export default class OpenPageTool implements Tool {
             url: args.url,
         });
 
-        const content: any[] = [
-            {
-                type: "text",
-                text: `${result.message}\nAction: ${JSON.stringify(result.payload, null, 2)}`,
-            },
-        ];
-
-        const screenshot = await this.axisService.captureScreenshot(args.sessionId);
-        if (screenshot) {
-            content.push({
-                type: "image",
-                data: screenshot,
-                mimeType: "image/png",
-            });
-        }
-
-        return { content };
+        return this.resultBuilder.build(
+            `${result.message}\nAction: ${JSON.stringify(result.payload, null, 2)}`,
+            { sessionId: args.sessionId, includeScreenshot: true }
+        );
     }
 }
