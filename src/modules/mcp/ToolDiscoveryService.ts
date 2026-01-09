@@ -2,10 +2,18 @@ import { injectable, inject } from 'inversify';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { dependencies } from '@/dependencies.js';
+import { Logger as LoggerInterface, LoggerFactory } from '@/modules/logging/index.js';
 
 @injectable()
 export class ToolDiscoveryService {
-    constructor(@inject(dependencies.ToolsDirectory) private readonly toolsDirectory: string) {}
+    private readonly logger: LoggerInterface;
+
+    constructor(
+        @inject(dependencies.ToolsDirectory) private readonly toolsDirectory: string,
+        @inject(dependencies.LoggerFactory) loggerFactory: LoggerFactory,
+    ) {
+        this.logger = loggerFactory.createLogger();
+    }
 
     async discoverTools(): Promise<void> {
         try {
@@ -19,9 +27,15 @@ export class ToolDiscoveryService {
             }
 
             for (const toolFile of toolFiles) {
-                await import(join(this.toolsDirectory, toolFile));
+                try {
+                    await import(join(this.toolsDirectory, toolFile));
+                    this.logger.info('Tool imported', { file: toolFile });
+                } catch (error) {
+                    this.logger.error('Failed to import tool', { file: toolFile, error });
+                }
             }
-        } catch {
+        } catch (error) {
+            this.logger.error('Tool discovery failed', { error });
         }
     }
 }

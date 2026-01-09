@@ -19,8 +19,6 @@ export class McpService {
     }
 
     private registerTools(server: McpServer): void {
-        console.log(`[McpService] Registering ${this.tools.length} tool(s) with MCP server`);
-
         for (const tool of this.tools) {
             server.registerTool(
                 tool.name,
@@ -32,7 +30,6 @@ export class McpService {
                     try {
                         return await tool.execute(args);
                     } catch (error) {
-                        console.error(`[McpService] Error executing tool ${tool.name}:`, error);
                         return {
                             content: [
                                 {
@@ -44,8 +41,6 @@ export class McpService {
                     }
                 }
             );
-
-            console.log(`[McpService] Registered tool: ${tool.name}`);
         }
     }
 }
