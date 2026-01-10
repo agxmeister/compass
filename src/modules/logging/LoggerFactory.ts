@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 import pino from 'pino';
-import { dependencies } from '../../dependencies.js';
+import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface } from './types.js';
 
 @injectable()
 export class LoggerFactory {
-    private pinoInstance;
+    private readonly pinoInstance;
 
     constructor(
         @inject(dependencies.LoggingLevel) level: string,
