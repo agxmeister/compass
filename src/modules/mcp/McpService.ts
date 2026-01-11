@@ -39,15 +39,17 @@ export class McpService {
 
                     try {
                         const result = await tool.execute(args);
-                        const logResult = {
-                            ...result,
-                            content: result.content.map(item =>
-                                item.type === 'image'
-                                    ? { type: 'image', mimeType: item.mimeType }
-                                    : item
-                            ),
-                        };
-                        this.logger.info('Tool execution completed', { tool: tool.name, result: logResult });
+                        this.logger.info('Tool execution completed', {
+                            tool: tool.name,
+                            result: {
+                                ...result,
+                                content: result.content.map(item =>
+                                    item.type === 'image'
+                                        ? { type: 'image', mimeType: item.mimeType }
+                                        : item
+                                ),
+                            }}
+                        );
                         return result;
                     } catch (error) {
                         this.logger.error('Tool execution failed', { tool: tool.name, error });
@@ -58,6 +60,7 @@ export class McpService {
                                     text: `Error: ${error instanceof Error ? error.message : String(error)}`,
                                 },
                             ],
+                            isError: true,
                         };
                     }
                 }
