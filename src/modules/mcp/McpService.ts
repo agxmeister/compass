@@ -1,11 +1,19 @@
-import { injectable, multiInject } from 'inversify';
+import { injectable, inject, multiInject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { dependencies } from '@/dependencies.js';
+import { Logger as LoggerInterface, LoggerFactory } from '@/modules/logging/index.js';
 import type { Tool } from './types.js';
 
 @injectable()
 export class McpService {
-    constructor(@multiInject(dependencies.Tools) private readonly tools: Tool[]) {}
+    private readonly logger: LoggerInterface;
+
+    constructor(
+        @multiInject(dependencies.Tools) private readonly tools: Tool[],
+        @inject(dependencies.LoggerFactory) loggerFactory: LoggerFactory,
+    ) {
+        this.logger = loggerFactory.createLogger();
+    }
 
     createServer(): McpServer {
         const server = new McpServer({
@@ -41,6 +49,8 @@ export class McpService {
                     }
                 }
             );
+
+            this.logger.info('Tool registered', { tool: tool.name });
         }
     }
 }

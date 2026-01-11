@@ -29,7 +29,7 @@ export class ToolDiscoveryService {
             for (const toolFile of toolFiles) {
                 try {
                     await import(join(this.toolsDirectory, toolFile));
-                    this.logger.info('Tool imported', { file: toolFile });
+                    this.logger.info('Tool discovered', { file: toolFile });
                 } catch (error) {
                     this.logger.error('Failed to import tool', { file: toolFile, error });
                 }
