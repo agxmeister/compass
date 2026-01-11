@@ -35,9 +35,22 @@ export class McpService {
                     inputSchema: tool.inputSchema,
                 },
                 async (args) => {
+                    this.logger.info('Tool execution requested', { tool: tool.name, args });
+
                     try {
-                        return await tool.execute(args);
+                        const result = await tool.execute(args);
+                        const logResult = {
+                            ...result,
+                            content: result.content.map(item =>
+                                item.type === 'image'
+                                    ? { type: 'image', mimeType: item.mimeType }
+                                    : item
+                            ),
+                        };
+                        this.logger.info('Tool execution completed', { tool: tool.name, result: logResult });
+                        return result;
                     } catch (error) {
+                        this.logger.error('Tool execution failed', { tool: tool.name, error });
                         return {
                             content: [
                                 {
