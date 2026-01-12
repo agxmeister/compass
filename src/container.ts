@@ -5,6 +5,7 @@ import { dependencies } from './dependencies.js';
 import { AxisService } from './modules/axis/index.js';
 import { McpService, ToolDiscoveryService, CallToolResultBuilder } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
+import { ProtocolService, ProtocolRepository } from './modules/protocol/index.js';
 
 export const container = new Container();
 
@@ -16,8 +17,12 @@ container.bind<string>(dependencies.ToolsDirectory).toConstantValue(toolsDirecto
 container.bind<string>(dependencies.LoggingLevel).toConstantValue(process.env.LOG_LEVEL || 'info');
 container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(process.env.LOG_ENVIRONMENT || 'development');
 container.bind<string>(dependencies.LoggingFilePath).toConstantValue(process.env.LOG_FILE_PATH || 'compass.log');
+container.bind<string>(dependencies.ProtocolId).toConstantValue(process.env.PROTOCOL_ID || 'default');
+container.bind<string>(dependencies.ProtocolDir).toConstantValue(process.env.PROTOCOL_DIR || 'data/protocols');
 container.bind<AxisService>(dependencies.AxisService).to(AxisService);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
 container.bind<CallToolResultBuilder>(dependencies.CallToolResultBuilder).to(CallToolResultBuilder);
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
+container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository);
+container.bind<ProtocolService>(dependencies.ProtocolService).to(ProtocolService);

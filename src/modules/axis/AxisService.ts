@@ -13,14 +13,26 @@ import type {
     DeleteSessionResponse,
     PerformActionResponse,
     Action,
+    Endpoint,
 } from "./types.js";
+import { ProtocolService } from '../protocol/index.js';
+import type { ProtocolRecord } from '../protocol/index.js';
 
 @injectable()
 export class AxisService {
-    constructor(@inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string) {}
+    constructor(
+        @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
+        @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolService,
+    ) {}
 
-    private async apiRequest(endpoint: string, options: RequestInit = {}): Promise<Response> {
-        const response = await fetch(`${this.baseApiUrl}${endpoint}`, {
+    private replacePlaceholders(path: string, parameters: Record<string, any>): string {
+        return path.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+            return parameters[key] ?? `{{${key}}}`;
+        });
+    }
+
+    private async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
+        const response = await fetch(`${this.baseApiUrl}${url}`, {
             ...options,
             headers: {
                 "Content-Type": "application/json",
@@ -36,38 +48,74 @@ export class AxisService {
         return response;
     }
 
+    private async apiRequestJson(endpoint: Endpoint, options: RequestInit = {}): Promise<any> {
+        const parameters = endpoint.parameters ?? {};
+        const url = this.replacePlaceholders(endpoint.path, parameters);
+
+        const response = await this.apiRequest(url, options);
+        const result = await response.json();
+
+        const record: ProtocolRecord = {
+            timestamp: new Date().toISOString(),
+            type: "axis-api-call",
+            payload: {
+                endpoint: {
+                    path: endpoint.path,
+                    parameters,
+                },
+                data: options.body ? JSON.parse(options.body as string) : undefined,
+            },
+            result: result,
+        };
+        await this.protocolService.addRecord(record);
+
+        return result;
+    }
+
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
 
-        const response = await this.apiRequest("/api/sessions", {
-            method: "POST",
-            body: JSON.stringify(validatedInput),
-        });
+        const data = await this.apiRequestJson(
+            { path: "/api/sessions" },
+            {
+                method: "POST",
+                body: JSON.stringify(validatedInput),
+            }
+        );
 
-        const data = await response.json();
         return createSessionResponseSchema.parse(data);
     }
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
-        const response = await this.apiRequest(`/api/sessions/${validatedInput.sessionId}`, {
-            method: "DELETE",
-        });
+        const data = await this.apiRequestJson(
+            {
+                path: "/api/sessions/{{sessionId}}",
+                parameters: { sessionId: validatedInput.sessionId },
+            },
+            {
+                method: "DELETE",
+            }
+        );
 
-        const data = await response.json();
         return deleteSessionResponseSchema.parse(data);
     }
 
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
 
-        const response = await this.apiRequest(`/api/sessions/${validatedInput.sessionId}/actions`, {
-            method: "POST",
-            body: JSON.stringify(validatedInput.action),
-        });
+        const data = await this.apiRequestJson(
+            {
+                path: "/api/sessions/{{sessionId}}/actions",
+                parameters: { sessionId: validatedInput.sessionId },
+            },
+            {
+                method: "POST",
+                body: JSON.stringify(validatedInput.action),
+            }
+        );
 
-        const data = await response.json();
         return performActionResponseSchema.parse(data);
     }
 
@@ -75,9 +123,12 @@ export class AxisService {
         try {
             const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
-            const response = await this.apiRequest(`/api/sessions/${validatedInput.sessionId}/screenshots`, {
-                method: "POST",
-            });
+            const response = await this.apiRequest(
+                `/api/sessions/${validatedInput.sessionId}/screenshots`,
+                {
+                    method: "POST",
+                }
+            );
 
             const arrayBuffer = await response.arrayBuffer();
             return Buffer.from(arrayBuffer).toString('base64');

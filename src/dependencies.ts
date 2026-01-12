@@ -10,4 +10,8 @@ export const dependencies = {
     LoggingLevel: Symbol.for('LoggingLevel'),
     LoggingEnvironment: Symbol.for('LoggingEnvironment'),
     LoggingFilePath: Symbol.for('LoggingFilePath'),
+    ProtocolService: Symbol.for('ProtocolService'),
+    ProtocolRepository: Symbol.for('ProtocolRepository'),
+    ProtocolId: Symbol.for('ProtocolId'),
+    ProtocolDir: Symbol.for('ProtocolDir'),
 };
