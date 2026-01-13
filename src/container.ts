@@ -16,8 +16,9 @@ container.bind<string>(dependencies.AxisApiUrl).toConstantValue(process.env.AXIS
 container.bind<string>(dependencies.ToolsDirectory).toConstantValue(toolsDirectory);
 container.bind<string>(dependencies.LoggingLevel).toConstantValue(process.env.LOG_LEVEL || 'info');
 container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(process.env.LOG_ENVIRONMENT || 'development');
-container.bind<string>(dependencies.LoggingFilePath).toConstantValue(process.env.LOG_FILE_PATH || 'compass.log');
-container.bind<string>(dependencies.ProtocolId).toConstantValue(process.env.PROTOCOL_ID || 'default');
+container.bind<string>(dependencies.LoggingDir).toConstantValue(process.env.LOG_DIR || 'data/logs');
+container.bind<string>(dependencies.LoggingName).toConstantValue(process.env.LOG_NAME || 'compass.log');
+container.bind<string>(dependencies.ProtocolName).toConstantValue(process.env.PROTOCOL_NAME || 'default');
 container.bind<string>(dependencies.ProtocolDir).toConstantValue(process.env.PROTOCOL_DIR || 'data/protocols');
 container.bind<AxisService>(dependencies.AxisService).to(AxisService);
 container.bind<McpService>(dependencies.McpService).to(McpService);

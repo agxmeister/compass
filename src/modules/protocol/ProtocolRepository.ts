@@ -39,7 +39,7 @@ export class ProtocolRepository {
     async save(protocol: Protocol): Promise<void> {
         await fs.mkdir(this.dataDir, { recursive: true });
         const filePath = this.getFilePath(protocol.protocolId);
-        const content = JSON.stringify(protocol, null, 2);
+        const content = JSON.stringify(protocol, null, 4);
         await fs.writeFile(filePath, content, "utf-8");
     }
 

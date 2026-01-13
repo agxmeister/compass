@@ -29,7 +29,7 @@ export default class OpenPageTool implements Tool {
         });
 
         return this.resultBuilder.build(
-            `${result.message}\nAction: ${JSON.stringify(result.payload, null, 2)}`,
+            `${result.message}\nAction: ${JSON.stringify(result.payload, null, 4)}`,
             { sessionId: args.sessionId, includeScreenshot: true }
         );
     }

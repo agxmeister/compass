@@ -7,7 +7,7 @@ import { dependencies } from "../../dependencies.js";
 export class ProtocolService {
     constructor(
         @inject(dependencies.ProtocolRepository) private readonly repository: ProtocolRepository,
-        @inject(dependencies.ProtocolId) private readonly protocolId: string,
+        @inject(dependencies.ProtocolName) private readonly protocolId: string,
     ) {}
 
     async addRecord(record: ProtocolRecord): Promise<void> {

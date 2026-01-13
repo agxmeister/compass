@@ -1,5 +1,7 @@
 import { inject, injectable } from 'inversify';
 import pino from 'pino';
+import { join } from 'path';
+import { mkdirSync } from 'fs';
 import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface } from './types.js';
 
@@ -10,10 +12,16 @@ export class LoggerFactory {
     constructor(
         @inject(dependencies.LoggingLevel) level: string,
         @inject(dependencies.LoggingEnvironment) environment: string,
-        @inject(dependencies.LoggingFilePath) filePath: string,
+        @inject(dependencies.LoggingDir) logsDir: string,
+        @inject(dependencies.LoggingName) fileName: string,
     ) {
+        // Ensure the log directory exists
+        mkdirSync(logsDir, { recursive: true });
+
+        const fullPath = join(logsDir, fileName);
+
         const destination = pino.destination({
-            dest: filePath,
+            dest: fullPath,
             sync: false,
         });
 
@@ -25,7 +33,7 @@ export class LoggerFactory {
                     colorize: false,
                     translateTime: 'HH:MM:ss Z',
                     ignore: 'pid,hostname',
-                    destination: filePath,
+                    destination: fullPath,
                 },
             } : undefined,
         }, destination);
