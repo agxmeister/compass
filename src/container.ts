@@ -5,7 +5,7 @@ import { dependencies } from './dependencies.js';
 import { AxisService } from './modules/axis/index.js';
 import { McpService, ToolDiscoveryService, CallToolResultBuilder } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
-import { ProtocolService, ProtocolRepository } from './modules/protocol/index.js';
+import { ProtocolService, ProtocolRepository, ScreenshotService } from './modules/protocol/index.js';
 
 export const container = new Container();
 
@@ -27,3 +27,4 @@ container.bind<CallToolResultBuilder>(dependencies.CallToolResultBuilder).to(Cal
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
 container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository);
 container.bind<ProtocolService>(dependencies.ProtocolService).to(ProtocolService);
+container.bind<ScreenshotService>(dependencies.ScreenshotService).to(ScreenshotService);

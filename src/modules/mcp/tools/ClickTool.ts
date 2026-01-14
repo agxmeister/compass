@@ -6,6 +6,7 @@ import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
 import { RegisterTool } from '../decorators.js';
+import { ProtocolRecordBuilder } from '@/modules/protocol/index.js';
 
 @RegisterTool()
 @injectable()
@@ -24,15 +25,21 @@ export default class ClickTool implements Tool {
     ) {}
 
     async execute(args: { sessionId: string; x: number; y: number }): Promise<CallToolResult> {
-        const result = await this.axisService.performAction(args.sessionId, {
-            type: "click",
-            x: args.x,
-            y: args.y,
-        });
+        const recordBuilder = new ProtocolRecordBuilder();
+
+        const result = await this.axisService.performAction(
+            args.sessionId,
+            {
+                type: "click",
+                x: args.x,
+                y: args.y,
+            },
+            recordBuilder,
+        );
 
         return this.resultBuilder.build(
             `${result.message}\nAction: ${JSON.stringify(result.payload, null, 4)}`,
-            { sessionId: args.sessionId, includeScreenshot: true }
+            { sessionId: args.sessionId, includeScreenshot: true, recordBuilder }
         );
     }
 }

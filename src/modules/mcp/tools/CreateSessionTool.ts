@@ -6,6 +6,7 @@ import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
 import { RegisterTool } from '../decorators.js';
+import { ProtocolRecordBuilder } from '@/modules/protocol/index.js';
 
 @RegisterTool()
 @injectable()
@@ -22,11 +23,13 @@ export default class CreateSessionTool implements Tool {
     ) {}
 
     async execute(args: { url: string }): Promise<CallToolResult> {
-        const result = await this.axisService.createSession(args.url);
+        const recordBuilder = new ProtocolRecordBuilder();
+
+        const result = await this.axisService.createSession(args.url, recordBuilder);
 
         return this.resultBuilder.build(
             `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
-            { sessionId: result.payload.id, includeScreenshot: true }
+            { sessionId: result.payload.id, includeScreenshot: true, recordBuilder }
         );
     }
 }

@@ -24,7 +24,6 @@ export class ProtocolRepository {
             return protocolSchema.parse(data);
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-                // File doesn't exist, create a new protocol
                 const newProtocol: Protocol = {
                     protocolId,
                     records: [],

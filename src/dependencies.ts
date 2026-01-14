@@ -15,4 +15,5 @@ export const dependencies = {
     ProtocolRepository: Symbol.for('ProtocolRepository'),
     ProtocolName: Symbol.for('ProtocolName'),
     ProtocolDir: Symbol.for('ProtocolDir'),
+    ScreenshotService: Symbol.for('ScreenshotService'),
 };

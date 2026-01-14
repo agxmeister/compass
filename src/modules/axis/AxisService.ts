@@ -15,14 +15,12 @@ import type {
     Action,
     Endpoint,
 } from "./types.js";
-import { ProtocolService } from '../protocol/index.js';
-import type { ProtocolRecord } from '../protocol/index.js';
+import type { ProtocolRecordBuilder } from '../protocol/index.js';
 
 @injectable()
 export class AxisService {
     constructor(
         @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
-        @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolService,
     ) {}
 
     private replacePlaceholders(path: string, parameters: Record<string, any>): string {
@@ -48,31 +46,30 @@ export class AxisService {
         return response;
     }
 
-    private async apiRequestJson(endpoint: Endpoint, options: RequestInit = {}): Promise<any> {
+    private async apiRequestJson(
+        endpoint: Endpoint,
+        options: RequestInit = {},
+        recordBuilder?: ProtocolRecordBuilder,
+    ): Promise<any> {
         const parameters = endpoint.parameters ?? {};
         const url = this.replacePlaceholders(endpoint.path, parameters);
 
         const response = await this.apiRequest(url, options);
         const result = await response.json();
 
-        const record: ProtocolRecord = {
-            timestamp: new Date().toISOString(),
-            type: "axis-api-call",
-            payload: {
-                endpoint: {
-                    path: endpoint.path,
-                    parameters,
-                },
-                data: options.body ? JSON.parse(options.body as string) : undefined,
-            },
-            result: result,
-        };
-        await this.protocolService.addRecord(record);
+        if (recordBuilder) {
+            recordBuilder
+                .addRequest(
+                    { path: endpoint.path, parameters },
+                    options.body ? JSON.parse(options.body as string) : undefined,
+                )
+                .addResponse(result);
+        }
 
         return result;
     }
 
-    async createSession(url: string): Promise<CreateSessionResponse> {
+    async createSession(url: string, recordBuilder?: ProtocolRecordBuilder): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
 
         const data = await this.apiRequestJson(
@@ -80,13 +77,14 @@ export class AxisService {
             {
                 method: "POST",
                 body: JSON.stringify(validatedInput),
-            }
+            },
+            recordBuilder,
         );
 
         return createSessionResponseSchema.parse(data);
     }
 
-    async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
+    async deleteSession(sessionId: string, recordBuilder?: ProtocolRecordBuilder): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
         const data = await this.apiRequestJson(
@@ -96,13 +94,14 @@ export class AxisService {
             },
             {
                 method: "DELETE",
-            }
+            },
+            recordBuilder,
         );
 
         return deleteSessionResponseSchema.parse(data);
     }
 
-    async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
+    async performAction(sessionId: string, action: Action, recordBuilder?: ProtocolRecordBuilder): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
 
         const data = await this.apiRequestJson(
@@ -113,7 +112,8 @@ export class AxisService {
             {
                 method: "POST",
                 body: JSON.stringify(validatedInput.action),
-            }
+            },
+            recordBuilder,
         );
 
         return performActionResponseSchema.parse(data);
