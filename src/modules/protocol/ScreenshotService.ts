@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import { promises as fs } from "fs";
 import path from "path";
-import { dependencies } from "../../dependencies.js";
+import { dependencies } from "@/dependencies.js";
 
 @injectable()
 export class ScreenshotService {

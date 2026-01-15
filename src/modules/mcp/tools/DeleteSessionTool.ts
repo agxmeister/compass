@@ -4,9 +4,7 @@ import { dependencies } from '@/dependencies.js';
 import type { AxisService } from '@/modules/axis/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
 import { RegisterTool } from '../decorators.js';
-import { ProtocolRecordBuilder } from '@/modules/protocol/index.js';
 
 @RegisterTool()
 @injectable()
@@ -19,17 +17,12 @@ export default class DeleteSessionTool implements Tool {
 
     constructor(
         @inject(dependencies.AxisService) private readonly axisService: AxisService,
-        @inject(dependencies.CallToolResultBuilder) private readonly resultBuilder: CallToolResultBuilder
     ) {}
 
     async execute(args: { sessionId: string }): Promise<CallToolResult> {
-        const recordBuilder = new ProtocolRecordBuilder();
-
-        const result = await this.axisService.deleteSession(args.sessionId, recordBuilder);
-
-        return this.resultBuilder.build(
-            `Session ${result.payload.id} deleted successfully`,
-            { recordBuilder }
+        return this.axisService.deleteSession(
+            args.sessionId,
+            (result) => `Session ${result.payload.id} deleted successfully`,
         );
     }
 }

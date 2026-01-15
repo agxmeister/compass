@@ -13,6 +13,7 @@ export const dependencies = {
     LoggingName: Symbol.for('LoggingName'),
     ProtocolService: Symbol.for('ProtocolService'),
     ProtocolRepository: Symbol.for('ProtocolRepository'),
+    ProtocolRecordBuilder: Symbol.for('ProtocolRecordBuilder'),
     ProtocolName: Symbol.for('ProtocolName'),
     ProtocolDir: Symbol.for('ProtocolDir'),
     ScreenshotService: Symbol.for('ScreenshotService'),

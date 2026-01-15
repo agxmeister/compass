@@ -1,3 +1,4 @@
+import { injectable } from 'inversify';
 import type { ProtocolRecord } from "./types.js";
 
 type Endpoint = {
@@ -5,11 +6,20 @@ type Endpoint = {
     parameters?: Record<string, any>;
 };
 
+@injectable()
 export class ProtocolRecordBuilder {
     private endpoint?: Endpoint;
     private data?: any;
     private result?: any;
     private screenshotPath?: string;
+
+    reset(): this {
+        this.endpoint = undefined;
+        this.data = undefined;
+        this.result = undefined;
+        this.screenshotPath = undefined;
+        return this;
+    }
 
     addRequest(endpoint: Endpoint, data?: any): this {
         this.endpoint = endpoint;

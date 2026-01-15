@@ -4,9 +4,7 @@ import { dependencies } from '@/dependencies.js';
 import type { AxisService } from '@/modules/axis/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
 import { RegisterTool } from '../decorators.js';
-import { ProtocolRecordBuilder } from '@/modules/protocol/index.js';
 
 @RegisterTool()
 @injectable()
@@ -20,24 +18,17 @@ export default class OpenPageTool implements Tool {
 
     constructor(
         @inject(dependencies.AxisService) private readonly axisService: AxisService,
-        @inject(dependencies.CallToolResultBuilder) private readonly resultBuilder: CallToolResultBuilder
     ) {}
 
     async execute(args: { sessionId: string; url: string }): Promise<CallToolResult> {
-        const recordBuilder = new ProtocolRecordBuilder();
-
-        const result = await this.axisService.performAction(
+        return this.axisService.performAction(
             args.sessionId,
             {
                 type: "open-page",
                 url: args.url,
             },
-            recordBuilder,
-        );
-
-        return this.resultBuilder.build(
-            `${result.message}\nAction: ${JSON.stringify(result.payload, null, 4)}`,
-            { sessionId: args.sessionId, includeScreenshot: true, recordBuilder }
+            (result) => `${result.message}\nAction: ${JSON.stringify(result.payload, null, 4)}`,
+            { includeScreenshot: true },
         );
     }
 }

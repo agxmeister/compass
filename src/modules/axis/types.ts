@@ -22,3 +22,8 @@ export type Endpoint = {
     path: string;
     parameters?: Record<string, any>;
 };
+
+export type ResultOptions = {
+    sessionId?: string;
+    includeScreenshot?: boolean;
+};
