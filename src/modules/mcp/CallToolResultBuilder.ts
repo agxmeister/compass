@@ -1,16 +1,8 @@
-import { injectable } from 'inversify';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
-@injectable()
 export class CallToolResultBuilder {
     private text?: string;
     private screenshot?: string;
-
-    reset(): this {
-        this.text = undefined;
-        this.screenshot = undefined;
-        return this;
-    }
 
     addText(text: string): this {
         this.text = text;

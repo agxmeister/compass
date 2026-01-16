@@ -3,9 +3,9 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
 import { AxisService } from './modules/axis/index.js';
-import { McpService, ToolDiscoveryService, CallToolResultBuilder } from './modules/mcp/index.js';
+import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
-import { ProtocolService, ProtocolRepository, ScreenshotService, ProtocolRecordBuilder } from './modules/protocol/index.js';
+import { ProtocolService, ProtocolRepository, ScreenshotService, ProtocolRecordBuilderFactory } from './modules/protocol/index.js';
 
 export const container = new Container();
 
@@ -23,9 +23,9 @@ container.bind<string>(dependencies.ProtocolDir).toConstantValue(process.env.PRO
 container.bind<AxisService>(dependencies.AxisService).to(AxisService);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
-container.bind<CallToolResultBuilder>(dependencies.CallToolResultBuilder).to(CallToolResultBuilder);
+container.bind<CallToolResultBuilderFactory>(dependencies.CallToolResultBuilderFactory).to(CallToolResultBuilderFactory);
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
 container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository);
 container.bind<ProtocolService>(dependencies.ProtocolService).to(ProtocolService);
-container.bind<ProtocolRecordBuilder>(dependencies.ProtocolRecordBuilder).to(ProtocolRecordBuilder);
+container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
 container.bind<ScreenshotService>(dependencies.ScreenshotService).to(ScreenshotService);

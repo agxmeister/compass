@@ -17,15 +17,20 @@ import type {
     ResultOptions,
 } from "./types.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { CallToolResultBuilder } from '@/modules/mcp/index.js';
-import { ProtocolRecordBuilder, ScreenshotService, ProtocolService } from '../protocol/index.js';
+import type { CallToolResultBuilderFactory } from '@/modules/mcp/index.js';
+import {
+    ProtocolRecordBuilder,
+    ProtocolRecordBuilderFactory,
+    ScreenshotService,
+    ProtocolService,
+} from '../protocol/index.js';
 
 @injectable()
 export class AxisService {
     constructor(
         @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
-        @inject(dependencies.ProtocolRecordBuilder) private readonly recordBuilder: ProtocolRecordBuilder,
-        @inject(dependencies.CallToolResultBuilder) private readonly resultBuilder: CallToolResultBuilder,
+        @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,
+        @inject(dependencies.CallToolResultBuilderFactory) private readonly resultBuilderFactory: CallToolResultBuilderFactory,
         @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotService,
         @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolService,
     ) {}
@@ -56,6 +61,7 @@ export class AxisService {
     private async apiRequestJson(
         endpoint: Endpoint,
         options: RequestInit = {},
+        recordBuilder: ProtocolRecordBuilder,
     ): Promise<any> {
         const parameters = endpoint.parameters ?? {};
         const url = this.replacePlaceholders(endpoint.path, parameters);
@@ -63,7 +69,7 @@ export class AxisService {
         const response = await this.apiRequest(url, options);
         const result = await response.json();
 
-        this.recordBuilder
+        recordBuilder
             .addRequest(
                 { path: endpoint.path, parameters },
                 options.body ? JSON.parse(options.body as string) : undefined,
@@ -94,24 +100,26 @@ export class AxisService {
 
     private async buildResult(
         text: string,
+        recordBuilder: ProtocolRecordBuilder,
         options?: ResultOptions,
     ): Promise<CallToolResult> {
-        this.resultBuilder.reset().addText(text);
+        const resultBuilder = this.resultBuilderFactory.create();
+        resultBuilder.addText(text);
 
         if (options?.sessionId && options?.includeScreenshot) {
             const screenshot = await this.captureScreenshot(options.sessionId);
             if (screenshot) {
-                this.resultBuilder.addScreenshot(screenshot);
+                resultBuilder.addScreenshot(screenshot);
 
                 const screenshotPath = await this.screenshotService.saveScreenshot(screenshot);
-                this.recordBuilder.addScreenshot(screenshotPath);
+                recordBuilder.addScreenshot(screenshotPath);
             }
         }
 
-        const record = this.recordBuilder.build();
+        const record = recordBuilder.build();
         await this.protocolService.addRecord(record);
 
-        return this.resultBuilder.build();
+        return resultBuilder.build();
     }
 
     async createSession(
@@ -119,7 +127,7 @@ export class AxisService {
         formatResult: (result: CreateSessionResponse) => string,
         options?: ResultOptions,
     ): Promise<CallToolResult> {
-        this.recordBuilder.reset();
+        const recordBuilder = this.recordBuilderFactory.create();
 
         const validatedInput = createSessionInputSchema.parse({ url });
 
@@ -129,12 +137,13 @@ export class AxisService {
                 method: "POST",
                 body: JSON.stringify(validatedInput),
             },
+            recordBuilder,
         );
 
         const result = createSessionResponseSchema.parse(data);
         const text = formatResult(result);
 
-        return this.buildResult(text, {
+        return this.buildResult(text, recordBuilder, {
             sessionId: result.payload.id,
             includeScreenshot: options?.includeScreenshot,
         });
@@ -144,7 +153,7 @@ export class AxisService {
         sessionId: string,
         formatResult: (result: DeleteSessionResponse) => string,
     ): Promise<CallToolResult> {
-        this.recordBuilder.reset();
+        const recordBuilder = this.recordBuilderFactory.create();
 
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
@@ -156,12 +165,13 @@ export class AxisService {
             {
                 method: "DELETE",
             },
+            recordBuilder,
         );
 
         const result = deleteSessionResponseSchema.parse(data);
         const text = formatResult(result);
 
-        return this.buildResult(text);
+        return this.buildResult(text, recordBuilder);
     }
 
     async performAction(
@@ -170,7 +180,7 @@ export class AxisService {
         formatResult: (result: PerformActionResponse) => string,
         options?: ResultOptions,
     ): Promise<CallToolResult> {
-        this.recordBuilder.reset();
+        const recordBuilder = this.recordBuilderFactory.create();
 
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
 
@@ -183,12 +193,13 @@ export class AxisService {
                 method: "POST",
                 body: JSON.stringify(validatedInput.action),
             },
+            recordBuilder,
         );
 
         const result = performActionResponseSchema.parse(data);
         const text = formatResult(result);
 
-        return this.buildResult(text, {
+        return this.buildResult(text, recordBuilder, {
             sessionId,
             includeScreenshot: options?.includeScreenshot,
         });
