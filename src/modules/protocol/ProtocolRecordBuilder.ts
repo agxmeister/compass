@@ -1,9 +1,5 @@
+import type { Endpoint } from "@/modules/axis/index.js";
 import type { ProtocolRecord } from "./types.js";
-
-type Endpoint = {
-    path: string;
-    parameters?: Record<string, any>;
-};
 
 export class ProtocolRecordBuilder {
     private endpoint?: Endpoint;

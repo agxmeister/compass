@@ -8,6 +8,7 @@ export type {
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
+    Endpoint,
 } from './types.js';
 
 export {
