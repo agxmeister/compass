@@ -14,10 +14,9 @@ import type {
     PerformActionResponse,
     Action,
     Endpoint,
-    ResultOptions,
 } from "./types.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { CallToolResultBuilderFactory } from '@/modules/mcp/index.js';
+import type { CallToolResultBuilderFactory, ResultOptions } from '@/modules/mcp/index.js';
 import {
     ProtocolRecordBuilder,
     ProtocolRecordBuilderFactory,
