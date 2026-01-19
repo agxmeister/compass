@@ -3,6 +3,7 @@ import { dependencies } from '@/dependencies.js';
 import {
     createSessionInputSchema,
     deleteSessionInputSchema,
+    captureScreenshotInputSchema,
     performActionInputSchema,
     createSessionResponseSchema,
     deleteSessionResponseSchema,
@@ -80,7 +81,7 @@ export class AxisService {
 
     private async captureScreenshot(sessionId: string): Promise<string | null> {
         try {
-            const validatedInput = deleteSessionInputSchema.parse({ sessionId });
+            const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
 
             const response = await this.apiRequest(
                 `/api/sessions/${validatedInput.sessionId}/screenshots`,

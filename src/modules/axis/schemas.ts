@@ -8,6 +8,10 @@ export const deleteSessionInputSchema = zod.object({
     sessionId: zod.string(),
 });
 
+export const captureScreenshotInputSchema = zod.object({
+    sessionId: zod.string(),
+});
+
 export const actionSchema = zod.discriminatedUnion("type", [
     zod.object({
         type: zod.literal("click"),
