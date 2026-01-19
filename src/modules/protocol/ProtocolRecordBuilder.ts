@@ -3,17 +3,17 @@ import type { ProtocolRecord } from "./types.js";
 
 export class ProtocolRecordBuilder {
     private endpoint?: Endpoint;
-    private data?: any;
-    private result?: any;
+    private data?: Record<string, unknown>;
+    private result?: Record<string, unknown>;
     private screenshotPath?: string;
 
-    addRequest(endpoint: Endpoint, data?: any): this {
+    addRequest(endpoint: Endpoint, data?: Record<string, unknown>): this {
         this.endpoint = endpoint;
         this.data = data;
         return this;
     }
 
-    addResponse(result: any): this {
+    addResponse(result: Record<string, unknown>): this {
         this.result = result;
         return this;
     }
@@ -26,6 +26,10 @@ export class ProtocolRecordBuilder {
     build(): ProtocolRecord {
         if (!this.endpoint) {
             throw new Error("Cannot build protocol record without request endpoint");
+        }
+
+        if (!this.result) {
+            throw new Error("Cannot build protocol record without response result");
         }
 
         const result = this.screenshotPath

@@ -6,11 +6,11 @@ export const protocolRecordSchema = zod.object({
     payload: zod.object({
         endpoint: zod.object({
             path: zod.string(),
-            parameters: zod.record(zod.any()).optional(),
+            parameters: zod.record(zod.unknown()).optional(),
         }),
-        data: zod.any().optional(),
+        data: zod.record(zod.unknown()).optional(),
     }),
-    result: zod.any(),
+    result: zod.record(zod.unknown()),
 });
 
 export const protocolSchema = zod.object({
