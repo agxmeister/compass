@@ -22,8 +22,8 @@ import {
     ProtocolRecordBuilder,
     ProtocolRecordBuilderFactory,
     ScreenshotService,
-    ProtocolService,
 } from '../protocol/index.js';
+import type { ProtocolServiceInterface } from '../protocol/index.js';
 
 @injectable()
 export class AxisService {
@@ -32,7 +32,7 @@ export class AxisService {
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.CallToolResultBuilderFactory) private readonly resultBuilderFactory: CallToolResultBuilderFactory,
         @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotService,
-        @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolService,
+        @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolServiceInterface,
     ) {}
 
     private replacePlaceholders(path: string, parameters: Record<string, any>): string {
