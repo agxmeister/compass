@@ -7,3 +7,7 @@ export type Protocol = zod.infer<typeof protocolSchema>;
 export interface ProtocolService {
     addRecord(record: ProtocolRecord): Promise<void>;
 }
+
+export interface ScreenshotService {
+    saveScreenshot(base64Data: string): Promise<string>;
+}

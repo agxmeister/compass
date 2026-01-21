@@ -5,7 +5,7 @@ import { dependencies } from './dependencies.js';
 import { AxisService } from './modules/axis/index.js';
 import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
-import { ProtocolService, ProtocolRepository, ScreenshotService, ProtocolRecordBuilderFactory, ProtocolServiceInterface } from './modules/protocol/index.js';
+import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
 
 export const container = new Container();
 
@@ -28,4 +28,5 @@ container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
 container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository);
 container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(ProtocolService);
 container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
-container.bind<ScreenshotService>(dependencies.ScreenshotService).to(ScreenshotService);
+container.bind<ScreenshotRepository>(dependencies.ScreenshotRepository).to(ScreenshotRepository);
+container.bind<ScreenshotServiceInterface>(dependencies.ScreenshotService).to(ScreenshotService);

@@ -1,30 +1,19 @@
 import { injectable, inject } from "inversify";
-import { promises as fs } from "fs";
-import path from "path";
 import { dependencies } from "@/dependencies.js";
+import { ScreenshotRepository } from "./ScreenshotRepository.js";
+import { ScreenshotService as ScreenshotServiceInterface } from "./types.js";
 
 @injectable()
-export class ScreenshotService {
+export class ScreenshotService implements ScreenshotServiceInterface {
     constructor(
-        @inject(dependencies.ProtocolDir) private readonly protocolDir: string,
-        @inject(dependencies.ProtocolName) private readonly protocolName: string,
+        @inject(dependencies.ScreenshotRepository) private readonly repository: ScreenshotRepository,
     ) {}
 
-    private getScreenshotsDir(): string {
-        return path.join(this.protocolDir, this.protocolName, "screenshots");
-    }
-
     async saveScreenshot(base64Data: string): Promise<string> {
-        const screenshotsDir = this.getScreenshotsDir();
-        await fs.mkdir(screenshotsDir, { recursive: true });
-
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
         const filename = `screenshot-${timestamp}.png`;
-        const filePath = path.join(screenshotsDir, filename);
-
         const buffer = Buffer.from(base64Data, "base64");
-        await fs.writeFile(filePath, buffer);
 
-        return filePath;
+        return this.repository.save(filename, buffer);
     }
 }

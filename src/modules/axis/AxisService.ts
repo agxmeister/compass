@@ -21,9 +21,8 @@ import type { CallToolResultBuilderFactory, ResultOptions } from '@/modules/mcp/
 import {
     ProtocolRecordBuilder,
     ProtocolRecordBuilderFactory,
-    ScreenshotService,
 } from '../protocol/index.js';
-import type { ProtocolServiceInterface } from '../protocol/index.js';
+import type { ProtocolServiceInterface, ScreenshotServiceInterface } from '../protocol/index.js';
 
 @injectable()
 export class AxisService {
@@ -31,7 +30,7 @@ export class AxisService {
         @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.CallToolResultBuilderFactory) private readonly resultBuilderFactory: CallToolResultBuilderFactory,
-        @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotService,
+        @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotServiceInterface,
         @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolServiceInterface,
     ) {}
 
