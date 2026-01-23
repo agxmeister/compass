@@ -15,6 +15,7 @@ import type {
     PerformActionResponse,
     Action,
     Endpoint,
+    BrowserService,
 } from "./types.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { CallToolResultBuilderFactory, ResultOptions } from '@/modules/mcp/index.js';
@@ -25,7 +26,7 @@ import {
 import type { ProtocolServiceInterface, ScreenshotServiceInterface } from '../protocol/index.js';
 
 @injectable()
-export class AxisService {
+export class AxisService implements BrowserService {
     constructor(
         @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,

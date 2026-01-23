@@ -9,6 +9,7 @@ export type {
     DeleteSessionResponse,
     PerformActionResponse,
     Endpoint,
+    BrowserService,
 } from './types.js';
 
 export {

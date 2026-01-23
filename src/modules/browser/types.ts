@@ -1,4 +1,6 @@
 import { z as zod } from "zod";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { ResultOptions } from "@/modules/mcp/index.js";
 import {
     createSessionInputSchema,
     deleteSessionInputSchema,
@@ -22,3 +24,23 @@ export type Endpoint = {
     path: string;
     parameters?: Record<string, any>;
 };
+
+export interface BrowserService {
+    createSession(
+        url: string,
+        formatResult: (result: CreateSessionResponse) => string,
+        options?: ResultOptions,
+    ): Promise<CallToolResult>;
+
+    deleteSession(
+        sessionId: string,
+        formatResult: (result: DeleteSessionResponse) => string,
+    ): Promise<CallToolResult>;
+
+    performAction(
+        sessionId: string,
+        action: Action,
+        formatResult: (result: PerformActionResponse) => string,
+        options?: ResultOptions,
+    ): Promise<CallToolResult>;
+}

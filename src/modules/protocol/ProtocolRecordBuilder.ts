@@ -1,4 +1,4 @@
-import type { Endpoint } from "@/modules/axis/index.js";
+import type { Endpoint } from "@/modules/browser/index.js";
 import type { ProtocolRecord } from "./types.js";
 
 export class ProtocolRecordBuilder {

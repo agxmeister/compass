@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
-import type { AxisService } from '@/modules/axis/index.js';
+import type { BrowserService } from '@/modules/browser/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { RegisterTool } from '../decorators.js';
@@ -18,11 +18,11 @@ export default class ClickTool implements Tool {
     };
 
     constructor(
-        @inject(dependencies.AxisService) private readonly axisService: AxisService,
+        @inject(dependencies.BrowserService) private readonly browserService: BrowserService,
     ) {}
 
     async execute(args: { sessionId: string; x: number; y: number }): Promise<CallToolResult> {
-        return this.axisService.performAction(
+        return this.browserService.performAction(
             args.sessionId,
             {
                 type: "click",

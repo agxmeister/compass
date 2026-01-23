@@ -1,5 +1,5 @@
 export const dependencies = {
-    AxisService: Symbol.for('AxisService'),
+    BrowserService: Symbol.for('BrowserService'),
     McpService: Symbol.for('McpService'),
     AxisApiUrl: Symbol.for('AxisApiUrl'),
     ToolsDirectory: Symbol.for('ToolsDirectory'),
