@@ -14,32 +14,14 @@ import type {
     DeleteSessionResponse,
     PerformActionResponse,
     Action,
-    Endpoint,
     BrowserService,
 } from "./types.js";
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { CallToolResultBuilderFactory, ResultOptions } from '@/modules/mcp/index.js';
-import {
-    ProtocolRecordBuilder,
-    ProtocolRecordBuilderFactory,
-} from '../protocol/index.js';
-import type { ProtocolServiceInterface, ScreenshotServiceInterface } from '../protocol/index.js';
 
 @injectable()
 export class AxisService implements BrowserService {
     constructor(
         @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
-        @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,
-        @inject(dependencies.CallToolResultBuilderFactory) private readonly resultBuilderFactory: CallToolResultBuilderFactory,
-        @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotServiceInterface,
-        @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolServiceInterface,
     ) {}
-
-    private replacePlaceholders(path: string, parameters: Record<string, any>): string {
-        return path.replace(/\{\{(\w+)\}\}/g, (_, key) => {
-            return parameters[key] ?? `{{${key}}}`;
-        });
-    }
 
     private async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
         const response = await fetch(`${this.baseApiUrl}${url}`, {
@@ -58,36 +40,52 @@ export class AxisService implements BrowserService {
         return response;
     }
 
-    private async apiRequestJson(
-        endpoint: Endpoint,
-        options: RequestInit = {},
-        recordBuilder: ProtocolRecordBuilder,
-    ): Promise<any> {
-        const parameters = endpoint.parameters ?? {};
-        const url = this.replacePlaceholders(endpoint.path, parameters);
+    async createSession(url: string): Promise<CreateSessionResponse> {
+        const validatedInput = createSessionInputSchema.parse({ url });
 
-        const response = await this.apiRequest(url, options);
-        const result = await response.json();
+        const response = await this.apiRequest("/api/sessions", {
+            method: "POST",
+            body: JSON.stringify(validatedInput),
+        });
 
-        recordBuilder
-            .addRequest(
-                { path: endpoint.path, parameters },
-                options.body ? JSON.parse(options.body as string) : undefined,
-            )
-            .addResponse(result);
-
-        return result;
+        const data = await response.json();
+        return createSessionResponseSchema.parse(data);
     }
 
-    private async captureScreenshot(sessionId: string): Promise<string | null> {
+    async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
+        const validatedInput = deleteSessionInputSchema.parse({ sessionId });
+
+        const response = await this.apiRequest(
+            `/api/sessions/${validatedInput.sessionId}`,
+            { method: "DELETE" },
+        );
+
+        const data = await response.json();
+        return deleteSessionResponseSchema.parse(data);
+    }
+
+    async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
+        const validatedInput = performActionInputSchema.parse({ sessionId, action });
+
+        const response = await this.apiRequest(
+            `/api/sessions/${validatedInput.sessionId}/actions`,
+            {
+                method: "POST",
+                body: JSON.stringify(validatedInput.action),
+            },
+        );
+
+        const data = await response.json();
+        return performActionResponseSchema.parse(data);
+    }
+
+    async captureScreenshot(sessionId: string): Promise<string | null> {
         try {
             const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
 
             const response = await this.apiRequest(
                 `/api/sessions/${validatedInput.sessionId}/screenshots`,
-                {
-                    method: "POST",
-                }
+                { method: "POST" },
             );
 
             const arrayBuffer = await response.arrayBuffer();
@@ -96,112 +94,5 @@ export class AxisService implements BrowserService {
             console.error('Failed to capture screenshot:', error);
             return null;
         }
-    }
-
-    private async buildResult(
-        text: string,
-        recordBuilder: ProtocolRecordBuilder,
-        options?: ResultOptions,
-    ): Promise<CallToolResult> {
-        const resultBuilder = this.resultBuilderFactory.create();
-        resultBuilder.addText(text);
-
-        if (options?.sessionId && options?.includeScreenshot) {
-            const screenshot = await this.captureScreenshot(options.sessionId);
-            if (screenshot) {
-                resultBuilder.addScreenshot(screenshot);
-
-                const screenshotPath = await this.screenshotService.saveScreenshot(screenshot);
-                recordBuilder.addScreenshot(screenshotPath);
-            }
-        }
-
-        const record = recordBuilder.build();
-        await this.protocolService.addRecord(record);
-
-        return resultBuilder.build();
-    }
-
-    async createSession(
-        url: string,
-        formatResult: (result: CreateSessionResponse) => string,
-        options?: ResultOptions,
-    ): Promise<CallToolResult> {
-        const recordBuilder = this.recordBuilderFactory.create();
-
-        const validatedInput = createSessionInputSchema.parse({ url });
-
-        const data = await this.apiRequestJson(
-            { path: "/api/sessions" },
-            {
-                method: "POST",
-                body: JSON.stringify(validatedInput),
-            },
-            recordBuilder,
-        );
-
-        const result = createSessionResponseSchema.parse(data);
-        const text = formatResult(result);
-
-        return this.buildResult(text, recordBuilder, {
-            sessionId: result.payload.id,
-            includeScreenshot: options?.includeScreenshot,
-        });
-    }
-
-    async deleteSession(
-        sessionId: string,
-        formatResult: (result: DeleteSessionResponse) => string,
-    ): Promise<CallToolResult> {
-        const recordBuilder = this.recordBuilderFactory.create();
-
-        const validatedInput = deleteSessionInputSchema.parse({ sessionId });
-
-        const data = await this.apiRequestJson(
-            {
-                path: "/api/sessions/{{sessionId}}",
-                parameters: { sessionId: validatedInput.sessionId },
-            },
-            {
-                method: "DELETE",
-            },
-            recordBuilder,
-        );
-
-        const result = deleteSessionResponseSchema.parse(data);
-        const text = formatResult(result);
-
-        return this.buildResult(text, recordBuilder);
-    }
-
-    async performAction(
-        sessionId: string,
-        action: Action,
-        formatResult: (result: PerformActionResponse) => string,
-        options?: ResultOptions,
-    ): Promise<CallToolResult> {
-        const recordBuilder = this.recordBuilderFactory.create();
-
-        const validatedInput = performActionInputSchema.parse({ sessionId, action });
-
-        const data = await this.apiRequestJson(
-            {
-                path: "/api/sessions/{{sessionId}}/actions",
-                parameters: { sessionId: validatedInput.sessionId },
-            },
-            {
-                method: "POST",
-                body: JSON.stringify(validatedInput.action),
-            },
-            recordBuilder,
-        );
-
-        const result = performActionResponseSchema.parse(data);
-        const text = formatResult(result);
-
-        return this.buildResult(text, recordBuilder, {
-            sessionId,
-            includeScreenshot: options?.includeScreenshot,
-        });
     }
 }

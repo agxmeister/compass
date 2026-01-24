@@ -4,6 +4,7 @@ export const dependencies = {
     AxisApiUrl: Symbol.for('AxisApiUrl'),
     ToolsDirectory: Symbol.for('ToolsDirectory'),
     ToolDiscoveryService: Symbol.for('ToolDiscoveryService'),
+    ToolService: Symbol.for('ToolService'),
     CallToolResultBuilderFactory: Symbol.for('CallToolResultBuilderFactory'),
     Tools: Symbol.for('Tools'),
     LoggerFactory: Symbol.for('LoggerFactory'),
