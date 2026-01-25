@@ -29,3 +29,17 @@ export interface BrowserService {
     performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
     captureScreenshot(sessionId: string): Promise<string | null>;
 }
+
+export type Result<T> = {
+    payload: T;
+    screenshot: string | null;
+};
+
+export interface SessionServiceInterface {
+    createSession(url: string, captureScreenshot?: boolean): Promise<Result<CreateSessionResponse>>;
+    deleteSession(sessionId: string): Promise<Result<DeleteSessionResponse>>;
+}
+
+export interface ActionServiceInterface {
+    performAction(sessionId: string, action: Action, captureScreenshot?: boolean): Promise<Result<PerformActionResponse>>;
+}

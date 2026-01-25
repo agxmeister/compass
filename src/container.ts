@@ -2,7 +2,7 @@ import { Container } from 'inversify';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
-import { AxisService, BrowserService } from './modules/browser/index.js';
+import { AxisService, BrowserService, SessionService, SessionServiceInterface, ActionService, ActionServiceInterface } from './modules/browser/index.js';
 import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory, ToolService } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
@@ -21,6 +21,8 @@ container.bind<string>(dependencies.LoggingName).toConstantValue(process.env.LOG
 container.bind<string>(dependencies.ProtocolName).toConstantValue(process.env.PROTOCOL_NAME || 'default');
 container.bind<string>(dependencies.ProtocolDir).toConstantValue(process.env.PROTOCOL_DIR || 'data/protocols');
 container.bind<BrowserService>(dependencies.BrowserService).to(AxisService);
+container.bind<SessionServiceInterface>(dependencies.SessionService).to(SessionService);
+container.bind<ActionServiceInterface>(dependencies.ActionService).to(ActionService);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
 container.bind<CallToolResultBuilderFactory>(dependencies.CallToolResultBuilderFactory).to(CallToolResultBuilderFactory);

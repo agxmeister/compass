@@ -1,5 +1,7 @@
 export const dependencies = {
     BrowserService: Symbol.for('BrowserService'),
+    SessionService: Symbol.for('SessionService'),
+    ActionService: Symbol.for('ActionService'),
     McpService: Symbol.for('McpService'),
     AxisApiUrl: Symbol.for('AxisApiUrl'),
     ToolsDirectory: Symbol.for('ToolsDirectory'),

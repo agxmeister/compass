@@ -1,4 +1,6 @@
 export { AxisService } from './AxisService.js';
+export { SessionService } from './SessionService.js';
+export { ActionService } from './ActionService.js';
 
 export type {
     CreateSessionInput,
@@ -10,6 +12,9 @@ export type {
     PerformActionResponse,
     Endpoint,
     BrowserService,
+    Result,
+    SessionServiceInterface,
+    ActionServiceInterface,
 } from './types.js';
 
 export {

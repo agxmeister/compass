@@ -2,7 +2,8 @@ import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type {
-    BrowserService,
+    SessionServiceInterface,
+    ActionServiceInterface,
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
@@ -16,7 +17,8 @@ import type { ResultOptions } from './types.js';
 @injectable()
 export class ToolService {
     constructor(
-        @inject(dependencies.BrowserService) private readonly browserService: BrowserService,
+        @inject(dependencies.SessionService) private readonly sessionService: SessionServiceInterface,
+        @inject(dependencies.ActionService) private readonly actionService: ActionServiceInterface,
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.CallToolResultBuilderFactory) private readonly resultBuilderFactory: CallToolResultBuilderFactory,
         @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotServiceInterface,
@@ -31,15 +33,12 @@ export class ToolService {
         const recordBuilder = this.recordBuilderFactory.create();
 
         recordBuilder.addRequest({ path: "/api/sessions" }, { url });
-        const result = await this.browserService.createSession(url);
-        recordBuilder.addResponse(result as unknown as Record<string, unknown>);
+        const result = await this.sessionService.createSession(url, options?.includeScreenshot);
+        recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
-        const text = formatResult(result);
+        const text = formatResult(result.payload);
 
-        return this.buildResult(text, recordBuilder, {
-            sessionId: result.payload.id,
-            includeScreenshot: options?.includeScreenshot,
-        });
+        return this.buildResult(text, recordBuilder, result.screenshot);
     }
 
     async deleteSession(
@@ -51,12 +50,12 @@ export class ToolService {
         recordBuilder.addRequest(
             { path: "/api/sessions/{{sessionId}}", parameters: { sessionId } },
         );
-        const result = await this.browserService.deleteSession(sessionId);
-        recordBuilder.addResponse(result as unknown as Record<string, unknown>);
+        const result = await this.sessionService.deleteSession(sessionId);
+        recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
-        const text = formatResult(result);
+        const text = formatResult(result.payload);
 
-        return this.buildResult(text, recordBuilder);
+        return this.buildResult(text, recordBuilder, result.screenshot);
     }
 
     async performAction(
@@ -71,33 +70,27 @@ export class ToolService {
             { path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId } },
             action as unknown as Record<string, unknown>,
         );
-        const result = await this.browserService.performAction(sessionId, action);
-        recordBuilder.addResponse(result as unknown as Record<string, unknown>);
+        const result = await this.actionService.performAction(sessionId, action, options?.includeScreenshot);
+        recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
-        const text = formatResult(result);
+        const text = formatResult(result.payload);
 
-        return this.buildResult(text, recordBuilder, {
-            sessionId,
-            includeScreenshot: options?.includeScreenshot,
-        });
+        return this.buildResult(text, recordBuilder, result.screenshot);
     }
 
     private async buildResult(
         text: string,
         recordBuilder: ReturnType<ProtocolRecordBuilderFactory['create']>,
-        options?: ResultOptions,
+        screenshot: string | null,
     ): Promise<CallToolResult> {
         const resultBuilder = this.resultBuilderFactory.create();
         resultBuilder.addText(text);
 
-        if (options?.sessionId && options?.includeScreenshot) {
-            const screenshot = await this.browserService.captureScreenshot(options.sessionId);
-            if (screenshot) {
-                resultBuilder.addScreenshot(screenshot);
+        if (screenshot) {
+            resultBuilder.addScreenshot(screenshot);
 
-                const screenshotPath = await this.screenshotService.saveScreenshot(screenshot);
-                recordBuilder.addScreenshot(screenshotPath);
-            }
+            const screenshotPath = await this.screenshotService.saveScreenshot(screenshot);
+            recordBuilder.addScreenshot(screenshotPath);
         }
 
         const record = recordBuilder.build();
