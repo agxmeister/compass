@@ -6,20 +6,24 @@ import { AxisService, BrowserService, SessionService, SessionServiceInterface, A
 import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory, ToolService } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
+import { ConfigFactory } from './modules/config/index.js';
 
 export const container = new Container();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const toolsDirectory = join(__dirname, 'modules', 'mcp', 'tools');
 
-container.bind<string>(dependencies.AxisApiUrl).toConstantValue(process.env.AXIS_API_URL!);
+const configFactory = new ConfigFactory();
+const config = configFactory.create();
+
+container.bind<string>(dependencies.AxisApiUrl).toConstantValue(config.axisApiUrl);
 container.bind<string>(dependencies.ToolsDirectory).toConstantValue(toolsDirectory);
-container.bind<string>(dependencies.LoggingLevel).toConstantValue(process.env.LOG_LEVEL || 'info');
-container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(process.env.LOG_ENVIRONMENT || 'development');
-container.bind<string>(dependencies.LoggingDir).toConstantValue(process.env.LOG_DIR || 'data/logs');
-container.bind<string>(dependencies.LoggingName).toConstantValue(process.env.LOG_NAME || 'compass.log');
-container.bind<string>(dependencies.ProtocolName).toConstantValue(process.env.PROTOCOL_NAME || 'default');
-container.bind<string>(dependencies.ProtocolDir).toConstantValue(process.env.PROTOCOL_DIR || 'data/protocols');
+container.bind<string>(dependencies.LoggingLevel).toConstantValue(config.logging.level);
+container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(config.logging.environment);
+container.bind<string>(dependencies.LoggingDir).toConstantValue(config.logging.dir);
+container.bind<string>(dependencies.LoggingName).toConstantValue(config.logging.name);
+container.bind<string>(dependencies.ProtocolName).toConstantValue(config.protocol.name);
+container.bind<string>(dependencies.ProtocolDir).toConstantValue(config.protocol.dir);
 container.bind<BrowserService>(dependencies.BrowserService).to(AxisService);
 container.bind<SessionServiceInterface>(dependencies.SessionService).to(SessionService);
 container.bind<ActionServiceInterface>(dependencies.ActionService).to(ActionService);
