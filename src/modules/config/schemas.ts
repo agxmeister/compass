@@ -12,8 +12,13 @@ export const protocolConfigSchema = zod.object({
     dir: zod.string().default('data/protocols'),
 });
 
+export const httpClientConfigSchema = zod.object({
+    timeout: zod.number().default(30000),
+});
+
 export const configSchema = zod.object({
     axisApiUrl: zod.string().url(),
+    http: httpClientConfigSchema,
     logging: loggingConfigSchema,
     protocol: protocolConfigSchema,
 });

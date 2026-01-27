@@ -16,34 +16,24 @@ import type {
     Action,
     BrowserService,
 } from "./types.js";
+import type { HttpClientInterface } from '@/modules/http/index.js';
+import { HttpClientFactory } from '@/modules/http/index.js';
 
 @injectable()
 export class AxisService implements BrowserService {
+    private readonly httpClient: HttpClientInterface;
+
     constructor(
-        @inject(dependencies.AxisApiUrl) private readonly baseApiUrl: string,
-    ) {}
-
-    private async apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
-        const response = await fetch(`${this.baseApiUrl}${url}`, {
-            ...options,
-            headers: {
-                "Content-Type": "application/json",
-                ...options.headers,
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `API request failed: ${response.statusText}`);
-        }
-
-        return response;
+        @inject(dependencies.AxisApiUrl) axisApiUrl: string,
+        @inject(dependencies.HttpClientFactory) httpClientFactory: HttpClientFactory,
+    ) {
+        this.httpClient = httpClientFactory.create(axisApiUrl);
     }
 
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
 
-        const response = await this.apiRequest("/api/sessions", {
+        const response = await this.httpClient.request("/api/sessions", {
             method: "POST",
             body: JSON.stringify(validatedInput),
         });
@@ -55,7 +45,7 @@ export class AxisService implements BrowserService {
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
-        const response = await this.apiRequest(
+        const response = await this.httpClient.request(
             `/api/sessions/${validatedInput.sessionId}`,
             { method: "DELETE" },
         );
@@ -67,7 +57,7 @@ export class AxisService implements BrowserService {
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
 
-        const response = await this.apiRequest(
+        const response = await this.httpClient.request(
             `/api/sessions/${validatedInput.sessionId}/actions`,
             {
                 method: "POST",
@@ -83,7 +73,7 @@ export class AxisService implements BrowserService {
         try {
             const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
 
-            const response = await this.apiRequest(
+            const response = await this.httpClient.request(
                 `/api/sessions/${validatedInput.sessionId}/screenshots`,
                 { method: "POST" },
             );
