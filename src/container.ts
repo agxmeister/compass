@@ -7,7 +7,7 @@ import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory, ToolSer
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
 import { ConfigFactory } from './modules/config/index.js';
-import { HttpClientFactory } from './modules/http/index.js';
+import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/http/index.js';
 
 export const container = new Container();
 
@@ -26,7 +26,7 @@ container.bind<string>(dependencies.LoggingName).toConstantValue(config.logging.
 container.bind<string>(dependencies.ProtocolName).toConstantValue(config.protocol.name);
 container.bind<string>(dependencies.ProtocolDir).toConstantValue(config.protocol.dir);
 container.bind<number>(dependencies.HttpTimeout).toConstantValue(config.http.timeout);
-container.bind<HttpClientFactory>(dependencies.HttpClientFactory).to(HttpClientFactory);
+container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(HttpClientFactory);
 container.bind<BrowserService>(dependencies.BrowserService).to(AxisService);
 container.bind<SessionServiceInterface>(dependencies.SessionService).to(SessionService);
 container.bind<ActionServiceInterface>(dependencies.ActionService).to(ActionService);

@@ -16,8 +16,7 @@ import type {
     Action,
     BrowserService,
 } from "./types.js";
-import type { HttpClientInterface } from '@/modules/http/index.js';
-import { HttpClientFactory } from '@/modules/http/index.js';
+import type { HttpClientInterface, HttpClientFactoryInterface } from '@/modules/http/index.js';
 
 @injectable()
 export class AxisService implements BrowserService {
@@ -25,7 +24,7 @@ export class AxisService implements BrowserService {
 
     constructor(
         @inject(dependencies.AxisApiUrl) axisApiUrl: string,
-        @inject(dependencies.HttpClientFactory) httpClientFactory: HttpClientFactory,
+        @inject(dependencies.HttpClientFactory) httpClientFactory: HttpClientFactoryInterface,
     ) {
         this.httpClient = httpClientFactory.create(axisApiUrl);
     }

@@ -1,4 +1,4 @@
-import type { HttpClientInterface, HttpRequestOptions } from './types.js';
+import type { HttpClient as HttpClientInterface, HttpRequestOptions } from './types.js';
 
 export class HttpClient implements HttpClientInterface {
     constructor(

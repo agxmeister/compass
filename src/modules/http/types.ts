@@ -9,6 +9,10 @@ export type HttpRequestOptions = {
     body?: string;
 };
 
-export interface HttpClientInterface {
+export interface HttpClient {
     request(url: string, options?: HttpRequestOptions): Promise<Response>;
+}
+
+export interface HttpClientFactory {
+    create(baseUrl: string): HttpClient;
 }
