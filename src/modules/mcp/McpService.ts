@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { injectable, inject, multiInject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { dependencies } from '@/dependencies.js';
@@ -35,11 +36,13 @@ export class McpService {
                     inputSchema: tool.inputSchema,
                 },
                 async (args) => {
-                    this.logger.info('Tool execution requested', { tool: tool.name, args });
+                    const traceId = randomUUID();
+                    this.logger.info('Tool execution requested', { traceId, tool: tool.name, args });
 
                     try {
                         const result = await tool.execute(args);
                         this.logger.info('Tool execution completed', {
+                            traceId,
                             tool: tool.name,
                             result: {
                                 ...result,
@@ -52,7 +55,7 @@ export class McpService {
                         );
                         return result;
                     } catch (error) {
-                        this.logger.error('Tool execution failed', { tool: tool.name, error });
+                        this.logger.error('Tool execution failed', { traceId, tool: tool.name, error });
                         return {
                             content: [
                                 {
