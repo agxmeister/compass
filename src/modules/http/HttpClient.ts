@@ -7,22 +7,14 @@ export class HttpClient implements HttpClientInterface {
     ) {}
 
     async request(url: string, options: HttpRequestOptions = {}): Promise<Response> {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-        try {
-            const response = await fetch(`${this.baseUrl}${url}`, {
-                method: options.method || 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...options.headers,
-                },
-                body: options.body,
-                signal: controller.signal,
-            });
-            return response;
-        } finally {
-            clearTimeout(timeoutId);
-        }
+        return fetch(`${this.baseUrl}${url}`, {
+            method: options.method || 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            },
+            body: options.body,
+            signal: AbortSignal.timeout(this.timeout),
+        });
     }
 }
