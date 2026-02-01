@@ -2,8 +2,8 @@ import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type {
-    SessionServiceInterface,
-    ActionServiceInterface,
+    BrowserSessionServiceInterface,
+    BrowserActionServiceInterface,
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
@@ -17,8 +17,8 @@ import type { ResultOptions } from './types.js';
 @injectable()
 export class ToolService {
     constructor(
-        @inject(dependencies.SessionService) private readonly sessionService: SessionServiceInterface,
-        @inject(dependencies.ActionService) private readonly actionService: ActionServiceInterface,
+        @inject(dependencies.BrowserSessionService) private readonly browserSessionService: BrowserSessionServiceInterface,
+        @inject(dependencies.BrowserActionService) private readonly browserActionService: BrowserActionServiceInterface,
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly recordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.CallToolResultBuilderFactory) private readonly resultBuilderFactory: CallToolResultBuilderFactory,
         @inject(dependencies.ScreenshotService) private readonly screenshotService: ScreenshotServiceInterface,
@@ -33,7 +33,7 @@ export class ToolService {
         const recordBuilder = this.recordBuilderFactory.create();
 
         recordBuilder.addRequest({ path: "/api/sessions" }, { url });
-        const result = await this.sessionService.createSession(url, options?.includeScreenshot);
+        const result = await this.browserSessionService.createSession(url, options?.includeScreenshot);
         recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
         const text = formatResult(result.payload);
@@ -50,7 +50,7 @@ export class ToolService {
         recordBuilder.addRequest(
             { path: "/api/sessions/{{sessionId}}", parameters: { sessionId } },
         );
-        const result = await this.sessionService.deleteSession(sessionId);
+        const result = await this.browserSessionService.deleteSession(sessionId);
         recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
         const text = formatResult(result.payload);
@@ -70,7 +70,7 @@ export class ToolService {
             { path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId } },
             action as unknown as Record<string, unknown>,
         );
-        const result = await this.actionService.performAction(sessionId, action, options?.includeScreenshot);
+        const result = await this.browserActionService.performAction(sessionId, action, options?.includeScreenshot);
         recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
         const text = formatResult(result.payload);

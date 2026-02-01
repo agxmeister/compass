@@ -1,9 +1,9 @@
 import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
-import type { BrowserService, SessionServiceInterface, CreateSessionResponse, DeleteSessionResponse, Result } from './types.js';
+import type { BrowserService, BrowserSessionServiceInterface, CreateSessionResponse, DeleteSessionResponse, Result } from './types.js';
 
 @injectable()
-export class SessionService implements SessionServiceInterface {
+export class BrowserSessionService implements BrowserSessionServiceInterface {
     constructor(
         @inject(dependencies.BrowserService) private readonly browserService: BrowserService,
     ) {}

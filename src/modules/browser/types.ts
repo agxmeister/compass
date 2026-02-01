@@ -35,11 +35,11 @@ export type Result<T> = {
     screenshot: string | null;
 };
 
-export interface SessionServiceInterface {
+export interface BrowserSessionServiceInterface {
     createSession(url: string, captureScreenshot?: boolean): Promise<Result<CreateSessionResponse>>;
     deleteSession(sessionId: string): Promise<Result<DeleteSessionResponse>>;
 }
 
-export interface ActionServiceInterface {
+export interface BrowserActionServiceInterface {
     performAction(sessionId: string, action: Action, captureScreenshot?: boolean): Promise<Result<PerformActionResponse>>;
 }
