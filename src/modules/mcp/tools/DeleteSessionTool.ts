@@ -1,9 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
-import type { ToolService } from '../ToolService.js';
+import type { ToolExecutor } from '../ToolExecutor.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { BrowserSessionServiceInterface } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -16,12 +17,14 @@ export default class DeleteSessionTool implements Tool {
     };
 
     constructor(
-        @inject(dependencies.ToolService) private readonly toolService: ToolService,
+        @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
+        @inject(dependencies.BrowserSessionService) private readonly browserSessionService: BrowserSessionServiceInterface,
     ) {}
 
     async execute(args: { sessionId: string }): Promise<CallToolResult> {
-        return this.toolService.deleteSession(
-            args.sessionId,
+        return this.toolExecutor.execute(
+            () => this.browserSessionService.deleteSession(args.sessionId),
+            { endpoint: { path: "/api/sessions/{{sessionId}}", parameters: { sessionId: args.sessionId } } },
             (result) => `Session ${result.payload.id} deleted successfully`,
         );
     }
