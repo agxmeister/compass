@@ -11,6 +11,7 @@ export type {
     DeleteSessionResponse,
     PerformActionResponse,
     Endpoint,
+    RequestRecorder,
     BrowserService,
     Result,
     BrowserSessionServiceInterface,

@@ -1,11 +1,5 @@
 import { z as zod } from "zod";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { Endpoint } from "@/modules/browser/index.js";
-
-export type ExecuteRequest = {
-    endpoint: Endpoint;
-    body?: Record<string, unknown>;
-};
 
 export interface Tool {
     readonly name: string;

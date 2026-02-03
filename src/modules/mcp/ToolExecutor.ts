@@ -1,11 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { Result } from '@/modules/browser/index.js';
+import type { Result, RequestRecorder } from '@/modules/browser/index.js';
 import type { ProtocolServiceInterface, ScreenshotServiceInterface } from '@/modules/protocol/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/protocol/index.js';
 import { CallToolResultBuilderFactory } from './CallToolResultBuilderFactory.js';
-import type { ExecuteRequest } from './types.js';
 
 @injectable()
 export class ToolExecutor {
@@ -17,14 +16,12 @@ export class ToolExecutor {
     ) {}
 
     async execute<T>(
-        operation: () => Promise<Result<T>>,
-        request: ExecuteRequest,
+        operation: (requestRecorder: RequestRecorder) => Promise<Result<T>>,
         formatResult: (result: T) => string,
     ): Promise<CallToolResult> {
         const recordBuilder = this.recordBuilderFactory.create();
 
-        recordBuilder.addRequest(request.endpoint, request.body);
-        const result = await operation();
+        const result = await operation(recordBuilder);
         recordBuilder.addResponse(result.payload as unknown as Record<string, unknown>);
 
         const text = formatResult(result.payload);

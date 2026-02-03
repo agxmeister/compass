@@ -4,7 +4,7 @@ import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { BrowserActionServiceInterface } from '@/modules/browser/index.js';
+import type { BrowserActionServiceInterface, PerformActionResponse } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -24,9 +24,8 @@ export default class OpenPageTool implements Tool {
 
     async execute(args: { sessionId: string; url: string }): Promise<CallToolResult> {
         const action = { type: "open-page" as const, url: args.url };
-        return this.toolExecutor.execute(
-            () => this.browserActionService.performAction(args.sessionId, action, true),
-            { endpoint: { path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: args.sessionId } }, body: action },
+        return this.toolExecutor.execute<PerformActionResponse>(
+            (requestRecorder) => this.browserActionService.performAction(args.sessionId, action, true, requestRecorder),
             (result) => `${result.message}\nAction: ${JSON.stringify(result.payload, null, 4)}`,
         );
     }

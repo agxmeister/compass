@@ -4,4 +4,4 @@ export { CallToolResultBuilder } from './CallToolResultBuilder.js';
 export { CallToolResultBuilderFactory } from './CallToolResultBuilderFactory.js';
 export { ToolExecutor } from './ToolExecutor.js';
 export { RegisterTool } from './decorators.js';
-export type { Tool, ResultOptions, ExecuteRequest } from './types.js';
+export type { Tool, ResultOptions } from './types.js';

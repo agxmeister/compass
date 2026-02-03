@@ -4,7 +4,7 @@ import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { BrowserSessionServiceInterface } from '@/modules/browser/index.js';
+import type { BrowserSessionServiceInterface, CreateSessionResponse } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -22,9 +22,8 @@ export default class CreateSessionTool implements Tool {
     ) {}
 
     async execute(args: { url: string }): Promise<CallToolResult> {
-        return this.toolExecutor.execute(
-            () => this.browserSessionService.createSession(args.url, true),
-            { endpoint: { path: "/api/sessions" }, body: { url: args.url } },
+        return this.toolExecutor.execute<CreateSessionResponse>(
+            (requestRecorder) => this.browserSessionService.createSession(args.url, true, requestRecorder),
             (result) => `Session created successfully!\nSession ID: ${result.payload.id}\nCreated: ${result.payload.createDate}`,
         );
     }

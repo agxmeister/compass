@@ -15,6 +15,7 @@ import type {
     PerformActionResponse,
     Action,
     BrowserService,
+    RequestRecorder,
 } from "./types.js";
 import type { HttpClientInterface, HttpClientFactoryInterface } from '@/modules/http/index.js';
 
@@ -29,8 +30,10 @@ export class AxisService implements BrowserService {
         this.httpClient = httpClientFactory.create(axisApiUrl);
     }
 
-    async createSession(url: string): Promise<CreateSessionResponse> {
+    async createSession(url: string, requestRecorder: RequestRecorder): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
+
+        requestRecorder.addRequest({ path: "/api/sessions" }, validatedInput);
 
         const response = await this.httpClient.request("/api/sessions", {
             method: "POST",
@@ -41,8 +44,10 @@ export class AxisService implements BrowserService {
         return createSessionResponseSchema.parse(data);
     }
 
-    async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
+    async deleteSession(sessionId: string, requestRecorder: RequestRecorder): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
+
+        requestRecorder.addRequest({ path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } });
 
         const response = await this.httpClient.request(
             `/api/sessions/${validatedInput.sessionId}`,
@@ -53,8 +58,13 @@ export class AxisService implements BrowserService {
         return deleteSessionResponseSchema.parse(data);
     }
 
-    async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
+    async performAction(sessionId: string, action: Action, requestRecorder: RequestRecorder): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
+
+        requestRecorder.addRequest(
+            { path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } },
+            validatedInput.action as Record<string, unknown>,
+        );
 
         const response = await this.httpClient.request(
             `/api/sessions/${validatedInput.sessionId}/actions`,
