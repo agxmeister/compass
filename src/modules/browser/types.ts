@@ -28,10 +28,14 @@ export interface RequestRecorder {
 }
 
 export interface BrowserService {
-    createSession(url: string, requestRecorder: RequestRecorder): Promise<CreateSessionResponse>;
-    deleteSession(sessionId: string, requestRecorder: RequestRecorder): Promise<DeleteSessionResponse>;
-    performAction(sessionId: string, action: Action, requestRecorder: RequestRecorder): Promise<PerformActionResponse>;
+    createSession(url: string): Promise<CreateSessionResponse>;
+    deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
+    performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
     captureScreenshot(sessionId: string): Promise<string | null>;
+}
+
+export interface BrowserServiceFactory {
+    create(requestRecorder: RequestRecorder): BrowserService;
 }
 
 export type Result<T> = {
@@ -40,10 +44,18 @@ export type Result<T> = {
 };
 
 export interface BrowserSessionServiceInterface {
-    createSession(url: string, captureScreenshot: boolean, requestRecorder: RequestRecorder): Promise<Result<CreateSessionResponse>>;
-    deleteSession(sessionId: string, requestRecorder: RequestRecorder): Promise<Result<DeleteSessionResponse>>;
+    createSession(url: string, captureScreenshot: boolean): Promise<Result<CreateSessionResponse>>;
+    deleteSession(sessionId: string): Promise<Result<DeleteSessionResponse>>;
+}
+
+export interface BrowserSessionServiceFactory {
+    create(requestRecorder: RequestRecorder): BrowserSessionServiceInterface;
 }
 
 export interface BrowserActionServiceInterface {
-    performAction(sessionId: string, action: Action, captureScreenshot: boolean, requestRecorder: RequestRecorder): Promise<Result<PerformActionResponse>>;
+    performAction(sessionId: string, action: Action, captureScreenshot: boolean): Promise<Result<PerformActionResponse>>;
+}
+
+export interface BrowserActionServiceFactory {
+    create(requestRecorder: RequestRecorder): BrowserActionServiceInterface;
 }

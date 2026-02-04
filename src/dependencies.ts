@@ -1,7 +1,7 @@
 export const dependencies = {
-    BrowserService: Symbol.for('BrowserService'),
-    BrowserSessionService: Symbol.for('BrowserSessionService'),
-    BrowserActionService: Symbol.for('BrowserActionService'),
+    BrowserServiceFactory: Symbol.for('BrowserServiceFactory'),
+    BrowserSessionServiceFactory: Symbol.for('BrowserSessionServiceFactory'),
+    BrowserActionServiceFactory: Symbol.for('BrowserActionServiceFactory'),
     HttpClientFactory: Symbol.for('HttpClientFactory'),
     HttpTimeout: Symbol.for('HttpTimeout'),
     McpService: Symbol.for('McpService'),
@@ -9,6 +9,7 @@ export const dependencies = {
     ToolsDirectory: Symbol.for('ToolsDirectory'),
     ToolDiscoveryService: Symbol.for('ToolDiscoveryService'),
     ToolExecutor: Symbol.for('ToolExecutor'),
+    ToolResultBuilderFactory: Symbol.for('ToolResultBuilderFactory'),
     CallToolResultBuilderFactory: Symbol.for('CallToolResultBuilderFactory'),
     Tools: Symbol.for('Tools'),
     LoggerFactory: Symbol.for('LoggerFactory'),

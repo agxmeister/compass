@@ -7,8 +7,3 @@ export interface Tool {
     readonly inputSchema: Record<string, zod.ZodTypeAny>;
     execute(args: any): Promise<CallToolResult>;
 }
-
-export type ResultOptions = {
-    sessionId?: string;
-    includeScreenshot?: boolean;
-};

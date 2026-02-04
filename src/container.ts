@@ -2,8 +2,8 @@ import { Container } from 'inversify';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
-import { AxisService, BrowserService, BrowserSessionService, BrowserSessionServiceInterface, BrowserActionService, BrowserActionServiceInterface } from './modules/browser/index.js';
-import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory, ToolExecutor } from './modules/mcp/index.js';
+import { AxisServiceFactory, BrowserServiceFactory, BrowserSessionServiceFactory, BrowserSessionServiceFactoryInterface, BrowserActionServiceFactory, BrowserActionServiceFactoryInterface } from './modules/browser/index.js';
+import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory, ToolExecutor, ToolResultBuilderFactory } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
 import { ConfigFactory } from './modules/config/index.js';
@@ -27,9 +27,9 @@ container.bind<string>(dependencies.ProtocolName).toConstantValue(config.protoco
 container.bind<string>(dependencies.ProtocolDir).toConstantValue(config.protocol.dir);
 container.bind<number>(dependencies.HttpTimeout).toConstantValue(config.http.timeout);
 container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(HttpClientFactory);
-container.bind<BrowserService>(dependencies.BrowserService).to(AxisService);
-container.bind<BrowserSessionServiceInterface>(dependencies.BrowserSessionService).to(BrowserSessionService);
-container.bind<BrowserActionServiceInterface>(dependencies.BrowserActionService).to(BrowserActionService);
+container.bind<BrowserServiceFactory>(dependencies.BrowserServiceFactory).to(AxisServiceFactory);
+container.bind<BrowserSessionServiceFactoryInterface>(dependencies.BrowserSessionServiceFactory).to(BrowserSessionServiceFactory);
+container.bind<BrowserActionServiceFactoryInterface>(dependencies.BrowserActionServiceFactory).to(BrowserActionServiceFactory);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
 container.bind<CallToolResultBuilderFactory>(dependencies.CallToolResultBuilderFactory).to(CallToolResultBuilderFactory);
@@ -40,3 +40,4 @@ container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderF
 container.bind<ScreenshotRepository>(dependencies.ScreenshotRepository).to(ScreenshotRepository);
 container.bind<ScreenshotServiceInterface>(dependencies.ScreenshotService).to(ScreenshotService);
 container.bind<ToolExecutor>(dependencies.ToolExecutor).to(ToolExecutor);
+container.bind<ToolResultBuilderFactory>(dependencies.ToolResultBuilderFactory).to(ToolResultBuilderFactory);
