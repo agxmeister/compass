@@ -2,10 +2,10 @@ import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
-import type { ToolResultBuilderFactory } from '../ToolResultBuilderFactory.js';
+import type { ToolResultBuilderFactory } from '@/modules/mcp/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { BrowserActionServiceFactoryInterface } from '@/modules/browser/index.js';
+import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -22,18 +22,19 @@ export default class ClickTool implements Tool {
     constructor(
         @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
         @inject(dependencies.ToolResultBuilderFactory) private readonly toolResultBuilderFactory: ToolResultBuilderFactory,
-        @inject(dependencies.BrowserActionServiceFactory) private readonly browserActionServiceFactory: BrowserActionServiceFactoryInterface,
+        @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory,
     ) {}
 
     async execute(args: { sessionId: string; x: number; y: number }): Promise<CallToolResult> {
         const action = { type: "click" as const, x: args.x, y: args.y };
         return this.toolExecutor.execute(async (protocolRecordBuilder) => {
-            const result = await this.browserActionServiceFactory.create(protocolRecordBuilder)
-                .performAction(args.sessionId, action, true);
+            const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
+            const response = await browserService.performAction(args.sessionId, action);
+            const screenshot = await browserService.captureScreenshot(args.sessionId);
             return this.toolResultBuilderFactory.create(protocolRecordBuilder)
-                .setResponse(result.payload as unknown as Record<string, unknown>)
-                .setText(`${result.payload.message}\nClick: ${JSON.stringify(result.payload.payload, null, 4)}`)
-                .setScreenshot(result.screenshot)
+                .setResponse(response as unknown as Record<string, unknown>)
+                .setText(`${response.message}\nClick: ${JSON.stringify(response.payload, null, 4)}`)
+                .setScreenshot(screenshot)
                 .build();
         });
     }

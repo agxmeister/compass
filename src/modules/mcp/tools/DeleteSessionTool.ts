@@ -2,10 +2,10 @@ import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
-import type { ToolResultBuilderFactory } from '../ToolResultBuilderFactory.js';
+import type { ToolResultBuilderFactory } from '@/modules/mcp/index.js';
 import type { Tool } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { BrowserSessionServiceFactoryInterface } from '@/modules/browser/index.js';
+import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 @RegisterTool()
@@ -20,17 +20,16 @@ export default class DeleteSessionTool implements Tool {
     constructor(
         @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
         @inject(dependencies.ToolResultBuilderFactory) private readonly toolResultBuilderFactory: ToolResultBuilderFactory,
-        @inject(dependencies.BrowserSessionServiceFactory) private readonly browserSessionServiceFactory: BrowserSessionServiceFactoryInterface,
+        @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory,
     ) {}
 
     async execute(args: { sessionId: string }): Promise<CallToolResult> {
         return this.toolExecutor.execute(async (protocolRecordBuilder) => {
-            const result = await this.browserSessionServiceFactory.create(protocolRecordBuilder)
-                .deleteSession(args.sessionId);
+            const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
+            const response = await browserService.deleteSession(args.sessionId);
             return this.toolResultBuilderFactory.create(protocolRecordBuilder)
-                .setResponse(result.payload as unknown as Record<string, unknown>)
-                .setText(`Session ${result.payload.payload.id} deleted successfully`)
-                .setScreenshot(result.screenshot)
+                .setResponse(response as unknown as Record<string, unknown>)
+                .setText(`Session ${response.payload.id} deleted successfully`)
                 .build();
         });
     }

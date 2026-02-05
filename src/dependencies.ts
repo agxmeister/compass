@@ -1,7 +1,5 @@
 export const dependencies = {
     BrowserServiceFactory: Symbol.for('BrowserServiceFactory'),
-    BrowserSessionServiceFactory: Symbol.for('BrowserSessionServiceFactory'),
-    BrowserActionServiceFactory: Symbol.for('BrowserActionServiceFactory'),
     HttpClientFactory: Symbol.for('HttpClientFactory'),
     HttpTimeout: Symbol.for('HttpTimeout'),
     McpService: Symbol.for('McpService'),

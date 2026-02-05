@@ -37,25 +37,3 @@ export interface BrowserService {
 export interface BrowserServiceFactory {
     create(requestRecorder: RequestRecorder): BrowserService;
 }
-
-export type Result<T> = {
-    payload: T;
-    screenshot: string | null;
-};
-
-export interface BrowserSessionServiceInterface {
-    createSession(url: string, captureScreenshot: boolean): Promise<Result<CreateSessionResponse>>;
-    deleteSession(sessionId: string): Promise<Result<DeleteSessionResponse>>;
-}
-
-export interface BrowserSessionServiceFactory {
-    create(requestRecorder: RequestRecorder): BrowserSessionServiceInterface;
-}
-
-export interface BrowserActionServiceInterface {
-    performAction(sessionId: string, action: Action, captureScreenshot: boolean): Promise<Result<PerformActionResponse>>;
-}
-
-export interface BrowserActionServiceFactory {
-    create(requestRecorder: RequestRecorder): BrowserActionServiceInterface;
-}

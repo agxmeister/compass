@@ -1,9 +1,5 @@
 export { AxisService } from './AxisService.js';
 export { AxisServiceFactory } from './AxisServiceFactory.js';
-export { BrowserSessionService } from './BrowserSessionService.js';
-export { BrowserSessionServiceFactory } from './BrowserSessionServiceFactory.js';
-export { BrowserActionService } from './BrowserActionService.js';
-export { BrowserActionServiceFactory } from './BrowserActionServiceFactory.js';
 
 export type {
     CreateSessionInput,
@@ -17,11 +13,6 @@ export type {
     RequestRecorder,
     BrowserService,
     BrowserServiceFactory,
-    Result,
-    BrowserSessionServiceInterface,
-    BrowserSessionServiceFactory as BrowserSessionServiceFactoryInterface,
-    BrowserActionServiceInterface,
-    BrowserActionServiceFactory as BrowserActionServiceFactoryInterface,
 } from './types.js';
 
 export {
