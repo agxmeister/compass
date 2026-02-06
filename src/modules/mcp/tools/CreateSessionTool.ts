@@ -30,7 +30,7 @@ export default class CreateSessionTool implements Tool {
             const screenshot = await browserService.captureScreenshot(response.payload.id);
             return this.toolResultBuilderFactory.create(protocolRecordBuilder)
                 .setResponse(response as unknown as Record<string, unknown>)
-                .setText(`Session created successfully!\nSession ID: ${response.payload.id}\nCreated: ${response.payload.createDate}`)
+                .setText(JSON.stringify(response, null, 4))
                 .setScreenshot(screenshot)
                 .build();
         });

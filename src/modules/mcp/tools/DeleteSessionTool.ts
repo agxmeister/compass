@@ -29,7 +29,7 @@ export default class DeleteSessionTool implements Tool {
             const response = await browserService.deleteSession(args.sessionId);
             return this.toolResultBuilderFactory.create(protocolRecordBuilder)
                 .setResponse(response as unknown as Record<string, unknown>)
-                .setText(`Session ${response.payload.id} deleted successfully`)
+                .setText(JSON.stringify(response, null, 4))
                 .build();
         });
     }
