@@ -16,11 +16,13 @@ import type {
     RequestRecorder,
 } from "./types.js";
 import type { HttpClientInterface } from '@/modules/http/index.js';
+import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';
 
 export class AxisService implements BrowserService {
     constructor(
         private readonly httpClient: HttpClientInterface,
         private readonly requestRecorder: RequestRecorder,
+        private readonly screenshotService: ScreenshotServiceInterface,
     ) {}
 
     async createSession(url: string): Promise<CreateSessionResponse> {
@@ -34,7 +36,9 @@ export class AxisService implements BrowserService {
         });
 
         const data = await response.json();
-        return createSessionResponseSchema.parse(data);
+        const result = createSessionResponseSchema.parse(data);
+        this.requestRecorder.addResponse(result as unknown as Record<string, unknown>);
+        return result;
     }
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
@@ -48,7 +52,9 @@ export class AxisService implements BrowserService {
         );
 
         const data = await response.json();
-        return deleteSessionResponseSchema.parse(data);
+        const result = deleteSessionResponseSchema.parse(data);
+        this.requestRecorder.addResponse(result as unknown as Record<string, unknown>);
+        return result;
     }
 
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
@@ -68,7 +74,9 @@ export class AxisService implements BrowserService {
         );
 
         const data = await response.json();
-        return performActionResponseSchema.parse(data);
+        const result = performActionResponseSchema.parse(data);
+        this.requestRecorder.addResponse(result as unknown as Record<string, unknown>);
+        return result;
     }
 
     async captureScreenshot(sessionId: string): Promise<string> {
@@ -80,6 +88,9 @@ export class AxisService implements BrowserService {
         );
 
         const arrayBuffer = await response.arrayBuffer();
-        return Buffer.from(arrayBuffer).toString('base64');
+        const base64 = Buffer.from(arrayBuffer).toString('base64');
+        const screenshotPath = await this.screenshotService.saveScreenshot(base64);
+        this.requestRecorder.addScreenshot(screenshotPath);
+        return base64;
     }
 }

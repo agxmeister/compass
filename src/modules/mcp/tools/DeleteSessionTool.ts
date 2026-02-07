@@ -27,8 +27,7 @@ export default class DeleteSessionTool implements Tool {
         return this.toolExecutor.execute(async (protocolRecordBuilder) => {
             const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
             const response = await browserService.deleteSession(args.sessionId);
-            return this.toolResultBuilderFactory.create(protocolRecordBuilder)
-                .setResponse(response as unknown as Record<string, unknown>)
+            return this.toolResultBuilderFactory.create()
                 .setText(JSON.stringify(response, null, 4))
                 .build();
         });

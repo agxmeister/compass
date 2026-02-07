@@ -25,6 +25,8 @@ export type Endpoint = {
 
 export interface RequestRecorder {
     addRequest(endpoint: Endpoint, data?: Record<string, unknown>): void;
+    addResponse(result: Record<string, unknown>): void;
+    addScreenshot(path: string): void;
 }
 
 export interface BrowserService {

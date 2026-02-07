@@ -28,8 +28,7 @@ export default class CreateSessionTool implements Tool {
             const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
             const response = await browserService.createSession(args.url);
             const screenshot = await browserService.captureScreenshot(response.payload.id);
-            return this.toolResultBuilderFactory.create(protocolRecordBuilder)
-                .setResponse(response as unknown as Record<string, unknown>)
+            return this.toolResultBuilderFactory.create()
                 .setText(JSON.stringify(response, null, 4))
                 .setScreenshot(screenshot)
                 .build();

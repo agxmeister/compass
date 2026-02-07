@@ -30,8 +30,7 @@ export default class OpenPageTool implements Tool {
             const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
             const response = await browserService.performAction(args.sessionId, action);
             const screenshot = await browserService.captureScreenshot(args.sessionId);
-            return this.toolResultBuilderFactory.create(protocolRecordBuilder)
-                .setResponse(response as unknown as Record<string, unknown>)
+            return this.toolResultBuilderFactory.create()
                 .setText(JSON.stringify(response, null, 4))
                 .setScreenshot(screenshot)
                 .build();
