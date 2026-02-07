@@ -1,5 +1,5 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { ProtocolServiceInterface, ScreenshotServiceInterface } from '@/modules/protocol/index.js';
+import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';
 import type { ProtocolRecordBuilder } from '@/modules/protocol/index.js';
 import { CallToolResultBuilderFactory } from './CallToolResultBuilderFactory.js';
 
@@ -11,7 +11,6 @@ export class ToolResultBuilder {
         private readonly protocolRecordBuilder: ProtocolRecordBuilder,
         private readonly callToolResultBuilderFactory: CallToolResultBuilderFactory,
         private readonly screenshotService: ScreenshotServiceInterface,
-        private readonly protocolService: ProtocolServiceInterface,
     ) {
         this.callToolResultBuilder = this.callToolResultBuilderFactory.create();
     }
@@ -26,11 +25,9 @@ export class ToolResultBuilder {
         return this;
     }
 
-    setScreenshot(screenshot: string | null): this {
-        if (screenshot) {
-            this.screenshot = screenshot;
-            this.callToolResultBuilder.addScreenshot(screenshot);
-        }
+    setScreenshot(screenshot: string): this {
+        this.screenshot = screenshot;
+        this.callToolResultBuilder.addScreenshot(screenshot);
         return this;
     }
 
@@ -39,9 +36,6 @@ export class ToolResultBuilder {
             const screenshotPath = await this.screenshotService.saveScreenshot(this.screenshot);
             this.protocolRecordBuilder.addScreenshot(screenshotPath);
         }
-
-        const record = this.protocolRecordBuilder.build();
-        await this.protocolService.addRecord(record);
 
         return this.callToolResultBuilder.build();
     }

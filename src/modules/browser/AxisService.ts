@@ -71,20 +71,15 @@ export class AxisService implements BrowserService {
         return performActionResponseSchema.parse(data);
     }
 
-    async captureScreenshot(sessionId: string): Promise<string | null> {
-        try {
-            const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
+    async captureScreenshot(sessionId: string): Promise<string> {
+        const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
 
-            const response = await this.httpClient.request(
-                `/api/sessions/${validatedInput.sessionId}/screenshots`,
-                { method: "POST" },
-            );
+        const response = await this.httpClient.request(
+            `/api/sessions/${validatedInput.sessionId}/screenshots`,
+            { method: "POST" },
+        );
 
-            const arrayBuffer = await response.arrayBuffer();
-            return Buffer.from(arrayBuffer).toString('base64');
-        } catch (error) {
-            console.error('Failed to capture screenshot:', error);
-            return null;
-        }
+        const arrayBuffer = await response.arrayBuffer();
+        return Buffer.from(arrayBuffer).toString('base64');
     }
 }

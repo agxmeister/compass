@@ -31,7 +31,7 @@ export interface BrowserService {
     createSession(url: string): Promise<CreateSessionResponse>;
     deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
     performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
-    captureScreenshot(sessionId: string): Promise<string | null>;
+    captureScreenshot(sessionId: string): Promise<string>;
 }
 
 export interface BrowserServiceFactory {
