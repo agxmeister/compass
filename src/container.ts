@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, BrowserServiceFactory } from './modules/browser/index.js';
-import { McpService, ToolDiscoveryService, CallToolResultBuilderFactory, ToolExecutor, ToolResultBuilderFactory } from './modules/mcp/index.js';
+import { McpService, ToolDiscoveryService, ToolExecutor, ToolResultBuilderFactory } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
 import { ConfigFactory } from './modules/config/index.js';
@@ -30,7 +30,6 @@ container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(Ht
 container.bind<BrowserServiceFactory>(dependencies.BrowserServiceFactory).to(AxisServiceFactory);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
-container.bind<CallToolResultBuilderFactory>(dependencies.CallToolResultBuilderFactory).to(CallToolResultBuilderFactory);
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
 container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository);
 container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(ProtocolService);

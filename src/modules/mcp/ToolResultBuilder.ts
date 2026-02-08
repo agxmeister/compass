@@ -1,26 +1,39 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import { CallToolResultBuilderFactory } from './CallToolResultBuilderFactory.js';
 
 export class ToolResultBuilder {
-    private readonly callToolResultBuilder: ReturnType<CallToolResultBuilderFactory['create']>;
-
-    constructor(
-        private readonly callToolResultBuilderFactory: CallToolResultBuilderFactory,
-    ) {
-        this.callToolResultBuilder = this.callToolResultBuilderFactory.create();
-    }
+    private text?: string;
+    private screenshot?: string;
 
     setText(text: string): this {
-        this.callToolResultBuilder.addText(text);
+        this.text = text;
         return this;
     }
 
     setScreenshot(screenshot: string): this {
-        this.callToolResultBuilder.addScreenshot(screenshot);
+        this.screenshot = screenshot;
         return this;
     }
 
     build(): CallToolResult {
-        return this.callToolResultBuilder.build();
+        if (!this.text) {
+            throw new Error("Cannot build CallToolResult without text");
+        }
+
+        const content: CallToolResult['content'] = [
+            {
+                type: "text",
+                text: this.text,
+            },
+        ];
+
+        if (this.screenshot) {
+            content.push({
+                type: "image",
+                data: this.screenshot,
+                mimeType: "image/png",
+            });
+        }
+
+        return { content };
     }
 }
