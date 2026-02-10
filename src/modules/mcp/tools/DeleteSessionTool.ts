@@ -9,14 +9,14 @@ import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
-    sessionId: zod.string().describe("The ID of the session to delete"),
+    sessionId: zod.string().describe("Identifier of a browser session."),
 };
 
 @RegisterTool()
 @injectable()
 export default class DeleteSessionTool implements Tool<typeof inputSchema> {
-    readonly name = "delete_session";
-    readonly description = "Delete an existing browser session";
+    readonly name = "delete-session";
+    readonly description = "Close a browser.";
     readonly inputSchema = inputSchema;
 
     constructor(

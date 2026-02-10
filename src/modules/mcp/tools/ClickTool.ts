@@ -9,16 +9,16 @@ import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
-    sessionId: zod.string().describe("The ID of the session"),
-    x: zod.number().describe("X coordinate"),
-    y: zod.number().describe("Y coordinate"),
+    sessionId: zod.string().describe("Identifier of a browser session."),
+    x: zod.number().describe("X coordinate to click."),
+    y: zod.number().describe("Y coordinate to click."),
 };
 
 @RegisterTool()
 @injectable()
 export default class ClickTool implements Tool<typeof inputSchema> {
     readonly name = "click";
-    readonly description = "Click at specific coordinates in a browser session";
+    readonly description = "Click at the given coordinates on a browser page.";
     readonly inputSchema = inputSchema;
 
     constructor(

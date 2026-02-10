@@ -9,14 +9,14 @@ import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
-    url: zod.string().describe("The URL to navigate to"),
+    url: zod.string().describe("URL to navigate to."),
 };
 
 @RegisterTool()
 @injectable()
 export default class CreateSessionTool implements Tool<typeof inputSchema> {
-    readonly name = "create_session";
-    readonly description = "Create a new browser session and navigate to a URL";
+    readonly name = "create-session";
+    readonly description = "Open a browser and navigate to a page with the given URL.";
     readonly inputSchema = inputSchema;
 
     constructor(

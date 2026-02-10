@@ -9,15 +9,15 @@ import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
-    sessionId: zod.string().describe("The ID of the session"),
-    url: zod.string().describe("URL to navigate to"),
+    sessionId: zod.string().describe("Identifier of a browser session."),
+    url: zod.string().describe("URL to navigate to."),
 };
 
 @RegisterTool()
 @injectable()
-export default class OpenPageTool implements Tool<typeof inputSchema> {
-    readonly name = "open_page";
-    readonly description = "Navigate to a URL in an existing browser session";
+export default class NavigateTool implements Tool<typeof inputSchema> {
+    readonly name = "navigate";
+    readonly description = "Navigate to a page with the given URL in a browser.";
     readonly inputSchema = inputSchema;
 
     constructor(
@@ -30,7 +30,7 @@ export default class OpenPageTool implements Tool<typeof inputSchema> {
         return this.toolExecutor.execute(async (protocolRecordBuilder) => {
             const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
             const response = await browserService.performAction(args.sessionId, {
-                type: "open-page" as const,
+                type: "navigate" as const,
                 url: args.url
             });
             const screenshot = await browserService.captureScreenshot(args.sessionId);

@@ -19,7 +19,7 @@ export const actionSchema = zod.discriminatedUnion("type", [
         y: zod.number(),
     }),
     zod.object({
-        type: zod.literal("open-page"),
+        type: zod.literal("navigate"),
         url: zod.string(),
     }),
 ]);
