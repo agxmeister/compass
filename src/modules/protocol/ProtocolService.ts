@@ -7,10 +7,9 @@ import { dependencies } from "@/dependencies.js";
 export class ProtocolService implements ProtocolServiceInterface {
     constructor(
         @inject(dependencies.ProtocolRepository) private readonly repository: ProtocolRepository,
-        @inject(dependencies.ProtocolName) private readonly protocolId: string,
     ) {}
 
     async addRecord(record: ProtocolRecord): Promise<void> {
-        await this.repository.addRecord(this.protocolId, record);
+        await this.repository.addRecord(record);
     }
 }

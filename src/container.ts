@@ -17,14 +17,13 @@ const toolsDirectory = join(__dirname, 'modules', 'mcp', 'tools');
 const configFactory = new ConfigFactory();
 const config = configFactory.create();
 
+const journeyDir = join(config.journey.dir, config.journey.name);
+
 container.bind<string>(dependencies.AxisApiUrl).toConstantValue(config.axisApiUrl);
 container.bind<string>(dependencies.ToolsDirectory).toConstantValue(toolsDirectory);
 container.bind<string>(dependencies.LoggingLevel).toConstantValue(config.logging.level);
 container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(config.logging.environment);
-container.bind<string>(dependencies.LoggingDir).toConstantValue(config.logging.dir);
-container.bind<string>(dependencies.LoggingName).toConstantValue(config.logging.name);
-container.bind<string>(dependencies.ProtocolName).toConstantValue(config.protocol.name);
-container.bind<string>(dependencies.ProtocolDir).toConstantValue(config.protocol.dir);
+container.bind<string>(dependencies.JourneyDir).toConstantValue(journeyDir);
 container.bind<number>(dependencies.HttpTimeout).toConstantValue(config.http.timeout);
 container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(HttpClientFactory);
 container.bind<BrowserServiceFactory>(dependencies.BrowserServiceFactory).to(AxisServiceFactory);

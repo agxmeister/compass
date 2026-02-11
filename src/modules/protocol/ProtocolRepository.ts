@@ -8,15 +8,15 @@ import { dependencies } from "../../dependencies.js";
 @injectable()
 export class ProtocolRepository {
     constructor(
-        @inject(dependencies.ProtocolDir) private readonly dataDir: string,
+        @inject(dependencies.JourneyDir) private readonly journeyDir: string,
     ) {}
 
-    private getFilePath(protocolId: string): string {
-        return path.join(this.dataDir, `${protocolId}.json`);
+    private getFilePath(): string {
+        return path.join(this.journeyDir, "protocol.json");
     }
 
-    async load(protocolId: string): Promise<Protocol> {
-        const filePath = this.getFilePath(protocolId);
+    async load(): Promise<Protocol> {
+        const filePath = this.getFilePath();
 
         try {
             const content = await fs.readFile(filePath, "utf-8");
@@ -24,8 +24,9 @@ export class ProtocolRepository {
             return protocolSchema.parse(data);
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+                const journeyName = path.basename(this.journeyDir);
                 const newProtocol: Protocol = {
-                    protocolId,
+                    protocolId: journeyName,
                     records: [],
                 };
                 await this.save(newProtocol);
@@ -36,14 +37,14 @@ export class ProtocolRepository {
     }
 
     async save(protocol: Protocol): Promise<void> {
-        await fs.mkdir(this.dataDir, { recursive: true });
-        const filePath = this.getFilePath(protocol.protocolId);
+        await fs.mkdir(this.journeyDir, { recursive: true });
+        const filePath = this.getFilePath();
         const content = JSON.stringify(protocol, null, 4);
         await fs.writeFile(filePath, content, "utf-8");
     }
 
-    async addRecord(protocolId: string, record: ProtocolRecord): Promise<void> {
-        const protocol = await this.load(protocolId);
+    async addRecord(record: ProtocolRecord): Promise<void> {
+        const protocol = await this.load();
         protocol.records.push(record);
         await this.save(protocol);
     }

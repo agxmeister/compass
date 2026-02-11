@@ -6,12 +6,11 @@ import { dependencies } from "@/dependencies.js";
 @injectable()
 export class ScreenshotRepository {
     constructor(
-        @inject(dependencies.ProtocolDir) private readonly protocolDir: string,
-        @inject(dependencies.ProtocolName) private readonly protocolName: string,
+        @inject(dependencies.JourneyDir) private readonly journeyDir: string,
     ) {}
 
     private getScreenshotsDir(): string {
-        return path.join(this.protocolDir, this.protocolName, "screenshots");
+        return path.join(this.journeyDir, "screenshots");
     }
 
     async save(filename: string, data: Buffer): Promise<string> {

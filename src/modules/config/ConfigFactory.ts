@@ -13,12 +13,10 @@ export class ConfigFactory {
             logging: {
                 level: process.env.LOG_LEVEL,
                 environment: process.env.LOG_ENVIRONMENT,
-                dir: process.env.LOG_DIR,
-                name: process.env.LOG_NAME,
             },
-            protocol: {
-                name: process.env.PROTOCOL_NAME,
-                dir: process.env.PROTOCOL_DIR,
+            journey: {
+                name: process.env.JOURNEY_NAME,
+                dir: process.env.JOURNEY_DIR,
             },
         });
     }

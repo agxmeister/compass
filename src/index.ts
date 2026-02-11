@@ -1,12 +1,10 @@
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { config } from "dotenv";
+import 'dotenv/config';
 import 'reflect-metadata';
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { container } from "./container.js";
 import { dependencies } from "./dependencies.js";
 import type { McpService } from "./modules/mcp/index.js";
 import type { ToolDiscoveryService } from "./modules/mcp/index.js";
-
-config();
 
 async function main() {
     try {
