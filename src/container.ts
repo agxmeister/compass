@@ -30,7 +30,7 @@ container.bind<BrowserServiceFactory>(dependencies.BrowserServiceFactory).to(Axi
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
-container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository);
+container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository).inSingletonScope();
 container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(ProtocolService);
 container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
 container.bind<ScreenshotRepository>(dependencies.ScreenshotRepository).to(ScreenshotRepository);

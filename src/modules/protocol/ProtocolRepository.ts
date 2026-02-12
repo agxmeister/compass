@@ -7,6 +7,8 @@ import { dependencies } from "../../dependencies.js";
 
 @injectable()
 export class ProtocolRepository {
+    private writeQueue: Promise<void> = Promise.resolve();
+
     constructor(
         @inject(dependencies.JourneyDir) private readonly journeyDir: string,
     ) {}
@@ -44,8 +46,10 @@ export class ProtocolRepository {
     }
 
     async addRecord(record: ProtocolRecord): Promise<void> {
-        const protocol = await this.load();
-        protocol.records.push(record);
-        await this.save(protocol);
+        await (this.writeQueue = this.writeQueue.then(async () => {
+            const protocol = await this.load();
+            protocol.records.push(record);
+            await this.save(protocol);
+        }));
     }
 }
