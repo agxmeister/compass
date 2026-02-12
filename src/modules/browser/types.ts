@@ -19,6 +19,7 @@ export type DeleteSessionResponse = zod.infer<typeof deleteSessionResponseSchema
 export type PerformActionResponse = zod.infer<typeof performActionResponseSchema>;
 
 export type Endpoint = {
+    method: string;
     path: string;
     parameters?: Record<string, unknown>;
 };

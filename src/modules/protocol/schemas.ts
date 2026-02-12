@@ -5,6 +5,7 @@ export const protocolRecordSchema = zod.object({
     type: zod.literal("axis-api-call"),
     payload: zod.object({
         endpoint: zod.object({
+            method: zod.string(),
             path: zod.string(),
             parameters: zod.record(zod.unknown()).optional(),
         }),

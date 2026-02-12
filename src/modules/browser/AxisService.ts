@@ -28,7 +28,7 @@ export class AxisService implements BrowserService {
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
 
-        this.requestRecorder.addRequest({ path: "/api/sessions" }, validatedInput);
+        this.requestRecorder.addRequest({ method: "POST", path: "/api/sessions" }, validatedInput);
 
         const response = await this.httpClient.request("/api/sessions", {
             method: "POST",
@@ -44,7 +44,7 @@ export class AxisService implements BrowserService {
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
-        this.requestRecorder.addRequest({ path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } });
+        this.requestRecorder.addRequest({ method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } });
 
         const response = await this.httpClient.request(
             `/api/sessions/${validatedInput.sessionId}`,
@@ -61,7 +61,7 @@ export class AxisService implements BrowserService {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
 
         this.requestRecorder.addRequest(
-            { path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } },
+            { method: "POST", path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } },
             validatedInput.action as Record<string, unknown>,
         );
 
