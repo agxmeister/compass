@@ -10,7 +10,7 @@ export type {
     DeleteSessionResponse,
     PerformActionResponse,
     Endpoint,
-    RequestRecorder,
+    ProtocolRecorder,
     BrowserService,
     BrowserServiceFactory,
 } from './types.js';

@@ -13,7 +13,7 @@ import type {
     PerformActionResponse,
     Action,
     BrowserService,
-    RequestRecorder,
+    ProtocolRecorder,
 } from "./types.js";
 import type { HttpClientInterface } from '@/modules/http/index.js';
 import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';
@@ -21,14 +21,14 @@ import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';
 export class AxisService implements BrowserService {
     constructor(
         private readonly httpClient: HttpClientInterface,
-        private readonly requestRecorder: RequestRecorder,
+        private readonly protocolRecorder: ProtocolRecorder,
         private readonly screenshotService: ScreenshotServiceInterface,
     ) {}
 
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
 
-        this.requestRecorder.addRequest({ method: "POST", path: "/api/sessions" }, validatedInput);
+        this.protocolRecorder.addRequest({ method: "POST", path: "/api/sessions" }, validatedInput);
 
         const response = await this.httpClient.request("/api/sessions", {
             method: "POST",
@@ -37,14 +37,14 @@ export class AxisService implements BrowserService {
 
         const data = await response.json();
         const result = createSessionResponseSchema.parse(data);
-        this.requestRecorder.addResponse(result as unknown as Record<string, unknown>);
+        this.protocolRecorder.addResponse(result as unknown as Record<string, unknown>);
         return result;
     }
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
 
-        this.requestRecorder.addRequest({ method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } });
+        this.protocolRecorder.addRequest({ method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } });
 
         const response = await this.httpClient.request(
             `/api/sessions/${validatedInput.sessionId}`,
@@ -53,14 +53,14 @@ export class AxisService implements BrowserService {
 
         const data = await response.json();
         const result = deleteSessionResponseSchema.parse(data);
-        this.requestRecorder.addResponse(result as unknown as Record<string, unknown>);
+        this.protocolRecorder.addResponse(result as unknown as Record<string, unknown>);
         return result;
     }
 
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
 
-        this.requestRecorder.addRequest(
+        this.protocolRecorder.addRequest(
             { method: "POST", path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } },
             validatedInput.action as Record<string, unknown>,
         );
@@ -75,7 +75,7 @@ export class AxisService implements BrowserService {
 
         const data = await response.json();
         const result = performActionResponseSchema.parse(data);
-        this.requestRecorder.addResponse(result as unknown as Record<string, unknown>);
+        this.protocolRecorder.addResponse(result as unknown as Record<string, unknown>);
         return result;
     }
 
@@ -90,7 +90,7 @@ export class AxisService implements BrowserService {
         const arrayBuffer = await response.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString('base64');
         const screenshotPath = await this.screenshotService.saveScreenshot(base64);
-        this.requestRecorder.addScreenshot(screenshotPath);
+        this.protocolRecorder.addScreenshot(screenshotPath);
         return base64;
     }
 }
