@@ -9,8 +9,8 @@ export type {
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
-    Endpoint,
-    ProtocolRecorder,
+    HttpEndpoint,
+    ProtocolRecordBuilder,
     BrowserService,
     BrowserServiceFactory,
 } from './types.js';

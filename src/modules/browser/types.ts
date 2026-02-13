@@ -8,6 +8,7 @@ import {
     deleteSessionResponseSchema,
     performActionResponseSchema,
 } from "./schemas.js";
+import type { HttpEndpoint, ProtocolRecordBuilder } from "@/modules/protocol/types.js";
 
 export type CreateSessionInput = zod.infer<typeof createSessionInputSchema>;
 export type DeleteSessionInput = zod.infer<typeof deleteSessionInputSchema>;
@@ -18,17 +19,7 @@ export type CreateSessionResponse = zod.infer<typeof createSessionResponseSchema
 export type DeleteSessionResponse = zod.infer<typeof deleteSessionResponseSchema>;
 export type PerformActionResponse = zod.infer<typeof performActionResponseSchema>;
 
-export type Endpoint = {
-    method: string;
-    path: string;
-    parameters?: Record<string, unknown>;
-};
-
-export interface ProtocolRecorder {
-    addRequest(endpoint: Endpoint, data?: Record<string, unknown>): void;
-    addResponse(result: Record<string, unknown>): void;
-    addScreenshot(path: string): void;
-}
+export type { HttpEndpoint, ProtocolRecordBuilder };
 
 export interface BrowserService {
     createSession(url: string): Promise<CreateSessionResponse>;
@@ -38,5 +29,5 @@ export interface BrowserService {
 }
 
 export interface BrowserServiceFactory {
-    create(protocolRecorder: ProtocolRecorder): BrowserService;
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService;
 }

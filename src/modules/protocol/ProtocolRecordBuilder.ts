@@ -1,20 +1,23 @@
-import type { Endpoint } from "@/modules/browser/index.js";
-import type { ProtocolRecord } from "./types.js";
+import type {
+    HttpEndpoint,
+    ProtocolRecord,
+    ProtocolRecordBuilder as ProtocolRecordBuilderInterface,
+} from "./types.js";
 
-export class ProtocolRecordBuilder {
-    private endpoint?: Endpoint;
-    private data?: Record<string, unknown>;
-    private result?: Record<string, unknown>;
+export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
+    private endpoint?: HttpEndpoint;
+    private input?: Record<string, unknown>;
+    private output?: Record<string, unknown>;
     private screenshotPath?: string;
 
-    addRequest(endpoint: Endpoint, data?: Record<string, unknown>): this {
+    addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this {
         this.endpoint = endpoint;
-        this.data = data;
+        this.input = input;
         return this;
     }
 
-    addResponse(result: Record<string, unknown>): this {
-        this.result = result;
+    addHttpResponse(output: Record<string, unknown>): this {
+        this.output = output;
         return this;
     }
 
@@ -28,20 +31,20 @@ export class ProtocolRecordBuilder {
             throw new Error("Cannot build protocol record without request endpoint");
         }
 
-        if (!this.result) {
-            throw new Error("Cannot build protocol record without response result");
+        if (!this.output) {
+            throw new Error("Cannot build protocol record without response output");
         }
 
         const result = this.screenshotPath
-            ? { ...this.result, screenshot: this.screenshotPath }
-            : this.result;
+            ? { ...this.output, screenshot: this.screenshotPath }
+            : this.output;
 
         return {
             timestamp: new Date().toISOString(),
             type: "axis-api-call",
             payload: {
                 endpoint: this.endpoint,
-                data: this.data,
+                data: this.input,
             },
             result,
         };

@@ -4,6 +4,18 @@ import { protocolRecordSchema, protocolSchema } from "./schemas.js";
 export type ProtocolRecord = zod.infer<typeof protocolRecordSchema>;
 export type Protocol = zod.infer<typeof protocolSchema>;
 
+export type HttpEndpoint = {
+    method: string;
+    path: string;
+    parameters?: Record<string, unknown>;
+};
+
+export interface ProtocolRecordBuilder {
+    addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this;
+    addHttpResponse(output: Record<string, unknown>): this;
+    addScreenshot(path: string): this;
+}
+
 export interface ProtocolService {
     addRecord(record: ProtocolRecord): Promise<void>;
 }
