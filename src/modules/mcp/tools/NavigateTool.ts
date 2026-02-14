@@ -2,7 +2,6 @@ import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
-import type { ToolResultBuilderFactory } from '@/modules/mcp/index.js';
 import type { Tool, ToolInput } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { BrowserServiceFactory } from '@/modules/browser/index.js';
@@ -22,19 +21,18 @@ export default class NavigateTool implements Tool<typeof inputSchema> {
 
     constructor(
         @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
-        @inject(dependencies.ToolResultBuilderFactory) private readonly toolResultBuilderFactory: ToolResultBuilderFactory,
         @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory,
     ) {}
 
     async execute(args: ToolInput<typeof inputSchema>): Promise<CallToolResult> {
-        return this.toolExecutor.execute(async (protocolRecordBuilder) => {
+        return this.toolExecutor.execute(async (protocolRecordBuilder, toolResultBuilder) => {
             const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
             const response = await browserService.performAction(args.sessionId, {
                 type: "navigate" as const,
                 url: args.url
             });
             const screenshot = await browserService.captureScreenshot(args.sessionId);
-            return this.toolResultBuilderFactory.create()
+            return toolResultBuilder
                 .setText(JSON.stringify(response, null, 4))
                 .setScreenshot(screenshot)
                 .build();
