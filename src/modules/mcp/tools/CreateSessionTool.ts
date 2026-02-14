@@ -4,7 +4,6 @@ import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
 import type { Tool, ToolInput } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
@@ -20,18 +19,17 @@ export default class CreateSessionTool implements Tool<typeof inputSchema> {
 
     constructor(
         @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
-        @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory,
     ) {}
 
     async execute(args: ToolInput<typeof inputSchema>): Promise<CallToolResult> {
-        return this.toolExecutor.execute(async (protocolRecordBuilder, toolResultBuilder) => {
-            const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
-            const response = await browserService.createSession(args.url);
-            const screenshot = await browserService.captureScreenshot(response.payload.id);
-            return toolResultBuilder
-                .setText(JSON.stringify(response, null, 4))
-                .setScreenshot(screenshot)
-                .build();
-        });
+        return this.toolExecutor.execute(
+            async (browserService, toolResultBuilder) => {
+                const response = await browserService.createSession(args.url);
+                return toolResultBuilder
+                    .setText(JSON.stringify(response, null, 4))
+                    .setScreenshot(await browserService.captureScreenshot(response.payload.id))
+                    .build();
+            }
+        );
     }
 }

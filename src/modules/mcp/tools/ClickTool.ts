@@ -4,7 +4,6 @@ import { dependencies } from '@/dependencies.js';
 import type { ToolExecutor } from '../ToolExecutor.js';
 import type { Tool, ToolInput } from '../types.js';
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
@@ -22,22 +21,20 @@ export default class ClickTool implements Tool<typeof inputSchema> {
 
     constructor(
         @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
-        @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory,
     ) {}
 
     async execute(args: ToolInput<typeof inputSchema>): Promise<CallToolResult> {
-        return this.toolExecutor.execute(async (protocolRecordBuilder, toolResultBuilder) => {
-            const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
-            const response = await browserService.performAction(args.sessionId, {
-                type: "click" as const,
-                x: args.x,
-                y: args.y
-            });
-            const screenshot = await browserService.captureScreenshot(args.sessionId);
-            return toolResultBuilder
-                .setText(JSON.stringify(response, null, 4))
-                .setScreenshot(screenshot)
-                .build();
-        });
+        return this.toolExecutor.execute(
+            async (browserService, toolResultBuilder) =>
+                toolResultBuilder
+                    .setText(JSON.stringify(
+                        await browserService.performAction(args.sessionId, {
+                            type: "click" as const,
+                            x: args.x,
+                            y: args.y
+                        }), null, 4))
+                    .setScreenshot(await browserService.captureScreenshot(args.sessionId))
+                    .build()
+        );
     }
 }
