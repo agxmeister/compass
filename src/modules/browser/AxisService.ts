@@ -27,16 +27,11 @@ export class AxisService implements BrowserService {
 
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
+        const endpoint = { method: "POST", path: "/api/sessions" };
 
-        this.protocolRecordBuilder.addHttpRequest({ method: "POST", path: "/api/sessions" }, validatedInput);
-
-        const response = await this.httpClient.request("/api/sessions", {
-            method: "POST",
-            body: JSON.stringify(validatedInput),
-        });
-
+        this.protocolRecordBuilder.addHttpRequest(endpoint, validatedInput);
+        const response = await this.httpClient.request(endpoint, validatedInput);
         const validatedOutput = createSessionResponseSchema.parse(await response.json());
-
         this.protocolRecordBuilder.addHttpResponse(validatedOutput);
 
         return validatedOutput;
@@ -44,16 +39,11 @@ export class AxisService implements BrowserService {
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
+        const endpoint = { method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } };
 
-        this.protocolRecordBuilder.addHttpRequest({ method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } });
-
-        const response = await this.httpClient.request(
-            `/api/sessions/${validatedInput.sessionId}`,
-            { method: "DELETE" },
-        );
-
+        this.protocolRecordBuilder.addHttpRequest(endpoint);
+        const response = await this.httpClient.request(endpoint);
         const validatedOutput = deleteSessionResponseSchema.parse(await response.json());
-
         this.protocolRecordBuilder.addHttpResponse(validatedOutput as unknown as Record<string, unknown>);
 
         return validatedOutput;
@@ -61,22 +51,12 @@ export class AxisService implements BrowserService {
 
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
+        const endpoint = { method: "POST", path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } };
+        const body = validatedInput.action as Record<string, unknown>;
 
-        this.protocolRecordBuilder.addHttpRequest(
-            { method: "POST", path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } },
-            validatedInput.action as Record<string, unknown>,
-        );
-
-        const response = await this.httpClient.request(
-            `/api/sessions/${validatedInput.sessionId}/actions`,
-            {
-                method: "POST",
-                body: JSON.stringify(validatedInput.action),
-            },
-        );
-
+        this.protocolRecordBuilder.addHttpRequest(endpoint, body);
+        const response = await this.httpClient.request(endpoint, body);
         const validatedOutput = performActionResponseSchema.parse(await response.json());
-
         this.protocolRecordBuilder.addHttpResponse(validatedOutput as unknown as Record<string, unknown>);
 
         return validatedOutput;
@@ -84,12 +64,9 @@ export class AxisService implements BrowserService {
 
     async captureScreenshot(sessionId: string): Promise<string> {
         const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
+        const endpoint = { method: "POST", path: "/api/sessions/{{sessionId}}/screenshots", parameters: { sessionId: validatedInput.sessionId } };
 
-        const response = await this.httpClient.request(
-            `/api/sessions/${validatedInput.sessionId}/screenshots`,
-            { method: "POST" },
-        );
-
+        const response = await this.httpClient.request(endpoint);
         const arrayBuffer = await response.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString('base64');
         const screenshotPath = await this.screenshotService.saveScreenshot(base64);

@@ -1,14 +1,11 @@
 import { z as zod } from "zod";
 import { protocolRecordSchema, protocolSchema } from "./schemas.js";
+import type { HttpEndpoint } from "@/modules/http/types.js";
 
 export type ProtocolRecord = zod.infer<typeof protocolRecordSchema>;
 export type Protocol = zod.infer<typeof protocolSchema>;
 
-export type HttpEndpoint = {
-    method: string;
-    path: string;
-    parameters?: Record<string, unknown>;
-};
+export type { HttpEndpoint };
 
 export interface ProtocolRecordBuilder {
     addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this;

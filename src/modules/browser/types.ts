@@ -8,7 +8,8 @@ import {
     deleteSessionResponseSchema,
     performActionResponseSchema,
 } from "./schemas.js";
-import type { HttpEndpoint, ProtocolRecordBuilder } from "@/modules/protocol/types.js";
+import type { HttpEndpoint } from "@/modules/http/types.js";
+import type { ProtocolRecordBuilder } from "@/modules/protocol/types.js";
 
 export type CreateSessionInput = zod.infer<typeof createSessionInputSchema>;
 export type DeleteSessionInput = zod.infer<typeof deleteSessionInputSchema>;
