@@ -7,6 +7,7 @@ import type {
 export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
     private endpoint?: HttpEndpoint;
     private input?: Record<string, unknown>;
+    private status?: number;
     private output?: Record<string, unknown>;
     private screenshotPath?: string;
 
@@ -16,7 +17,8 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
         return this;
     }
 
-    addHttpResponse(output: Record<string, unknown>): this {
+    addHttpResponse(status: number, output: Record<string, unknown>): this {
+        this.status = status;
         this.output = output;
         return this;
     }
@@ -31,22 +33,26 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
             throw new Error("Cannot build protocol record without request endpoint");
         }
 
+        if (!this.status) {
+            throw new Error("Cannot build protocol record without response status");
+        }
+
         if (!this.output) {
             throw new Error("Cannot build protocol record without response output");
         }
 
-        const result = this.screenshotPath
-            ? { ...this.output, screenshot: this.screenshotPath }
-            : this.output;
-
         return {
             timestamp: new Date().toISOString(),
             type: "axis-api-call",
-            payload: {
+            request: {
                 endpoint: this.endpoint,
-                data: this.input,
+                body: this.input,
             },
-            result,
+            response: {
+                status: this.status,
+                body: this.output,
+            },
+            ...(this.screenshotPath && { screenshot: this.screenshotPath }),
         };
     }
 }

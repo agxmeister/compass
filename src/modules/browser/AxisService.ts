@@ -32,7 +32,7 @@ export class AxisService implements BrowserService {
         this.protocolRecordBuilder.addHttpRequest(endpoint, validatedInput);
         const response = await this.httpClient.request(endpoint, validatedInput);
         const validatedOutput = createSessionResponseSchema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(validatedOutput);
+        this.protocolRecordBuilder.addHttpResponse(response.status, validatedOutput);
 
         return validatedOutput;
     }
@@ -44,7 +44,7 @@ export class AxisService implements BrowserService {
         this.protocolRecordBuilder.addHttpRequest(endpoint);
         const response = await this.httpClient.request(endpoint);
         const validatedOutput = deleteSessionResponseSchema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(validatedOutput as unknown as Record<string, unknown>);
+        this.protocolRecordBuilder.addHttpResponse(response.status, validatedOutput);
 
         return validatedOutput;
     }
@@ -57,7 +57,7 @@ export class AxisService implements BrowserService {
         this.protocolRecordBuilder.addHttpRequest(endpoint, body);
         const response = await this.httpClient.request(endpoint, body);
         const validatedOutput = performActionResponseSchema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(validatedOutput as unknown as Record<string, unknown>);
+        this.protocolRecordBuilder.addHttpResponse(response.status, validatedOutput);
 
         return validatedOutput;
     }

@@ -28,7 +28,7 @@ export class ProtocolRepository {
             if ((error as NodeJS.ErrnoException).code === "ENOENT") {
                 const journeyName = path.basename(this.journeyDir);
                 const newProtocol: Protocol = {
-                    protocolId: journeyName,
+                    journey: journeyName,
                     records: [],
                 };
                 await this.save(newProtocol);
