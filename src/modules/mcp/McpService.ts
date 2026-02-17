@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { injectable, inject, multiInject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface, LoggerFactory } from '@/modules/logging/index.js';
 import type { Tool } from './types.js';
@@ -37,23 +38,19 @@ export class McpService {
                 },
                 async (args) => {
                     const traceId = randomUUID();
-                    this.logger.info('Tool execution requested', { traceId, tool: tool.name, args });
+                    this.logger.info('Tool execution requested', { traceId, tool: tool.name, input: args });
 
                     try {
-                        const result = await tool.execute(args);
-                        this.logger.info('Tool execution completed', {
-                            traceId,
-                            tool: tool.name,
-                            result: {
-                                ...result,
-                                content: result.content.map(item =>
-                                    item.type === 'image'
-                                        ? { type: 'image', mimeType: item.mimeType }
-                                        : item
-                                ),
-                            }}
-                        );
-                        return result;
+                        const output = await tool.execute(args);
+                        this.logger.info('Tool execution completed', { traceId, tool: tool.name, output: output.data });
+
+                        const content: CallToolResult['content'] = [
+                            { type: "text", text: JSON.stringify(output.data, null, 4) },
+                        ];
+                        if (output.screenshot) {
+                            content.push({ type: "image", data: output.screenshot, mimeType: "image/png" });
+                        }
+                        return { content };
                     } catch (error) {
                         this.logger.error('Tool execution failed', { traceId, tool: tool.name, error });
                         return {

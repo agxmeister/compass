@@ -1,11 +1,11 @@
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { ToolOutput } from "./types.js";
 
 export class ToolResultBuilder {
-    private text?: string;
+    private data?: Record<string, unknown>;
     private screenshot?: string;
 
-    setText(text: string): this {
-        this.text = text;
+    setData(data: Record<string, unknown>): this {
+        this.data = data;
         return this;
     }
 
@@ -14,26 +14,14 @@ export class ToolResultBuilder {
         return this;
     }
 
-    build(): CallToolResult {
-        if (!this.text) {
-            throw new Error("Cannot build CallToolResult without text");
+    build(): ToolOutput {
+        if (!this.data) {
+            throw new Error("Cannot build ToolOutput without data");
         }
 
-        const content: CallToolResult['content'] = [
-            {
-                type: "text",
-                text: this.text,
-            },
-        ];
-
-        if (this.screenshot) {
-            content.push({
-                type: "image",
-                data: this.screenshot,
-                mimeType: "image/png",
-            });
-        }
-
-        return { content };
+        return {
+            data: this.data,
+            ...(this.screenshot && { screenshot: this.screenshot }),
+        };
     }
 }
