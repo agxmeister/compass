@@ -30,7 +30,7 @@ export default class NavigateTool implements Tool<typeof inputSchema> {
                             type: "navigate" as const,
                             url: args.url
                         }))
-                    .setScreenshot(await browserService.captureScreenshot(args.sessionId))
+                    .setScreenshot((await browserService.captureScreenshot(args.sessionId)).body)
                     .build()
         );
     }

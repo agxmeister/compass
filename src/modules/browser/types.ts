@@ -7,6 +7,7 @@ import {
     createSessionResponseSchema,
     deleteSessionResponseSchema,
     performActionResponseSchema,
+    captureScreenshotResponseSchema,
 } from "./schemas.js";
 import type { HttpEndpoint } from "@/modules/http/types.js";
 import type { ProtocolRecordBuilder } from "@/modules/protocol/types.js";
@@ -22,11 +23,13 @@ export type PerformActionResponse = zod.infer<typeof performActionResponseSchema
 
 export type { HttpEndpoint, ProtocolRecordBuilder };
 
+export type CaptureScreenshotResponse = zod.infer<typeof captureScreenshotResponseSchema>;
+
 export interface BrowserService {
     createSession(url: string): Promise<CreateSessionResponse>;
     deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
     performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
-    captureScreenshot(sessionId: string): Promise<string>;
+    captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse>;
 }
 
 export interface BrowserServiceFactory {

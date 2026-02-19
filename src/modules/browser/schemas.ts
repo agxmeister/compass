@@ -46,3 +46,8 @@ export const apiResponseSchema = <T extends zod.ZodTypeAny>(payloadSchema: T) =>
 export const createSessionResponseSchema = apiResponseSchema(sessionPayloadSchema);
 export const deleteSessionResponseSchema = apiResponseSchema(deletedSessionPayloadSchema);
 export const performActionResponseSchema = apiResponseSchema(zod.any());
+
+export const captureScreenshotResponseSchema = zod.object({
+    path: zod.string(),
+    body: zod.string(),
+});

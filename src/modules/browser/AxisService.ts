@@ -11,6 +11,7 @@ import type {
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
+    CaptureScreenshotResponse,
     Action,
     BrowserService,
     ProtocolRecordBuilder,
@@ -62,15 +63,15 @@ export class AxisService implements BrowserService {
         return validatedOutput;
     }
 
-    async captureScreenshot(sessionId: string): Promise<string> {
+    async captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse> {
         const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
         const endpoint = { method: "POST", path: "/api/sessions/{{sessionId}}/screenshots", parameters: { sessionId: validatedInput.sessionId } };
 
         const response = await this.httpClient.request(endpoint);
         const arrayBuffer = await response.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString('base64');
-        const screenshotPath = await this.screenshotService.saveScreenshot(base64);
-        this.protocolRecordBuilder.addScreenshot(screenshotPath);
-        return base64;
+        const body = Buffer.from(arrayBuffer).toString('base64');
+        const path = await this.screenshotService.saveScreenshot(body);
+        this.protocolRecordBuilder.addScreenshot(path);
+        return { path, body };
     }
 }

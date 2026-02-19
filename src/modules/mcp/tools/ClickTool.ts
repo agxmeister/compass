@@ -32,7 +32,7 @@ export default class ClickTool implements Tool<typeof inputSchema> {
                             x: args.x,
                             y: args.y
                         }))
-                    .setScreenshot(await browserService.captureScreenshot(args.sessionId))
+                    .setScreenshot((await browserService.captureScreenshot(args.sessionId)).body)
                     .build()
         );
     }
