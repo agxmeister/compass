@@ -1,6 +1,6 @@
-import { z as zod } from "zod";
-import type { HttpClient } from "@/modules/http/types.js";
-import type { HttpEndpoint, HttpService as HttpServiceInterface, ProtocolRecordBuilder } from "./types.js";
+import { z as zod } from 'zod';
+import type { ProtocolRecordBuilder } from '@/modules/protocol/types.js';
+import type { HttpClient, HttpEndpoint, HttpService as HttpServiceInterface } from './types.js';
 
 export class HttpService implements HttpServiceInterface {
     constructor(

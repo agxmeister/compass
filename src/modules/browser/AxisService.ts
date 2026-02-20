@@ -7,6 +7,7 @@ import {
     deleteSessionResponseSchema,
     performActionResponseSchema,
 } from "./schemas.js";
+import type { HttpServiceInterface as HttpService } from '@/modules/http/index.js';
 import type {
     CreateSessionResponse,
     DeleteSessionResponse,
@@ -14,7 +15,6 @@ import type {
     CaptureScreenshotResponse,
     Action,
     BrowserService,
-    HttpService,
     ProtocolRecordBuilder,
 } from "./types.js";
 import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';

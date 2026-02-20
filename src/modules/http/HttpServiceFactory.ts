@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
-import type { HttpClientFactoryInterface } from '@/modules/http/index.js';
-import type { HttpService as HttpServiceInterface, HttpServiceFactory as HttpServiceFactoryInterface, ProtocolRecordBuilder } from './types.js';
+import type { ProtocolRecordBuilder } from '@/modules/protocol/types.js';
+import type { HttpClientFactory as HttpClientFactoryInterface, HttpService as HttpServiceInterface, HttpServiceFactory as HttpServiceFactoryInterface } from './types.js';
 import { HttpService } from './HttpService.js';
 
 @injectable()
