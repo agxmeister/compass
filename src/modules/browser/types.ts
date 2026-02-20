@@ -23,6 +23,15 @@ export type PerformActionResponse = zod.infer<typeof performActionResponseSchema
 
 export type { HttpEndpoint, ProtocolRecordBuilder };
 
+export interface HttpService {
+    requestJson<T extends Record<string, unknown>>(endpoint: HttpEndpoint, schema: zod.ZodType<T>, body?: Record<string, unknown>): Promise<T>;
+    requestBinary(endpoint: HttpEndpoint): Promise<ArrayBuffer>;
+}
+
+export interface HttpServiceFactory {
+    create(baseUrl: string, protocolRecordBuilder: ProtocolRecordBuilder): HttpService;
+}
+
 export type CaptureScreenshotResponse = zod.infer<typeof captureScreenshotResponseSchema>;
 
 export interface BrowserService {

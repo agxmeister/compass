@@ -14,14 +14,14 @@ import type {
     CaptureScreenshotResponse,
     Action,
     BrowserService,
+    HttpService,
     ProtocolRecordBuilder,
 } from "./types.js";
-import type { HttpClientInterface } from '@/modules/http/index.js';
 import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';
 
 export class AxisService implements BrowserService {
     constructor(
-        private readonly httpClient: HttpClientInterface,
+        private readonly httpService: HttpService,
         private readonly protocolRecordBuilder: ProtocolRecordBuilder,
         private readonly screenshotService: ScreenshotServiceInterface,
     ) {}
@@ -29,46 +29,26 @@ export class AxisService implements BrowserService {
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
         const endpoint = { method: "POST", path: "/api/sessions" };
-
-        this.protocolRecordBuilder.addHttpRequest(endpoint, validatedInput);
-        const response = await this.httpClient.request(endpoint, validatedInput);
-        const validatedOutput = createSessionResponseSchema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(response.status, validatedOutput);
-
-        return validatedOutput;
+        return this.httpService.requestJson(endpoint, createSessionResponseSchema, validatedInput);
     }
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
         const endpoint = { method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } };
-
-        this.protocolRecordBuilder.addHttpRequest(endpoint);
-        const response = await this.httpClient.request(endpoint);
-        const validatedOutput = deleteSessionResponseSchema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(response.status, validatedOutput);
-
-        return validatedOutput;
+        return this.httpService.requestJson(endpoint, deleteSessionResponseSchema);
     }
 
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
         const endpoint = { method: "POST", path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } };
         const body = validatedInput.action as Record<string, unknown>;
-
-        this.protocolRecordBuilder.addHttpRequest(endpoint, body);
-        const response = await this.httpClient.request(endpoint, body);
-        const validatedOutput = performActionResponseSchema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(response.status, validatedOutput);
-
-        return validatedOutput;
+        return this.httpService.requestJson(endpoint, performActionResponseSchema, body);
     }
 
     async captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse> {
         const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
         const endpoint = { method: "POST", path: "/api/sessions/{{sessionId}}/screenshots", parameters: { sessionId: validatedInput.sessionId } };
-
-        const response = await this.httpClient.request(endpoint);
-        const arrayBuffer = await response.arrayBuffer();
+        const arrayBuffer = await this.httpService.requestBinary(endpoint);
         const body = Buffer.from(arrayBuffer).toString('base64');
         const path = await this.screenshotService.saveScreenshot(body);
         this.protocolRecordBuilder.addScreenshot(path);

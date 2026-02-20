@@ -1,5 +1,6 @@
 export { AxisService } from './AxisService.js';
 export { AxisServiceFactory } from './AxisServiceFactory.js';
+export { HttpServiceFactory } from './HttpServiceFactory.js';
 
 export type {
     CreateSessionInput,
@@ -13,6 +14,8 @@ export type {
     ProtocolRecordBuilder,
     BrowserService,
     BrowserServiceFactory,
+    HttpService,
+    HttpServiceFactory as HttpServiceFactoryInterface,
 } from './types.js';
 
 export {
