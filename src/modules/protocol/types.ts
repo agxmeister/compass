@@ -10,7 +10,7 @@ export type { HttpEndpoint };
 export interface ProtocolRecordBuilder {
     addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this;
     addHttpResponse(status: number, output: Record<string, unknown>): this;
-    addScreenshot(path: string): this;
+    addBinary(path: string, type: string): this;
 }
 
 export interface ProtocolService {

@@ -51,7 +51,7 @@ export class AxisService implements BrowserService {
         const arrayBuffer = await this.httpService.requestBinary(endpoint);
         const body = Buffer.from(arrayBuffer).toString('base64');
         const path = await this.screenshotService.saveScreenshot(body);
-        this.protocolRecordBuilder.addScreenshot(path);
+        this.protocolRecordBuilder.addBinary(path, "image/png");
         return { path, body };
     }
 }

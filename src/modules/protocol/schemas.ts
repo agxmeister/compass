@@ -15,7 +15,10 @@ export const protocolRecordSchema = zod.object({
         status: zod.number(),
         body: zod.record(zod.unknown()),
     }),
-    screenshot: zod.string().optional(),
+    binaries: zod.array(zod.object({
+        path: zod.string(),
+        type: zod.string(),
+    })).optional(),
 });
 
 export const protocolSchema = zod.object({

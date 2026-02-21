@@ -9,7 +9,7 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
     private input?: Record<string, unknown>;
     private status?: number;
     private output?: Record<string, unknown>;
-    private screenshotPath?: string;
+    private binaries: Array<{ path: string; type: string }> = [];
 
     addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this {
         this.endpoint = endpoint;
@@ -23,8 +23,8 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
         return this;
     }
 
-    addScreenshot(path: string): this {
-        this.screenshotPath = path;
+    addBinary(path: string, type: string): this {
+        this.binaries.push({ path, type });
         return this;
     }
 
@@ -52,7 +52,7 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
                 status: this.status,
                 body: this.output,
             },
-            ...(this.screenshotPath && { screenshot: this.screenshotPath }),
+            ...(this.binaries.length > 0 && { binaries: this.binaries }),
         };
     }
 }
