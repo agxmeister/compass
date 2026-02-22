@@ -1,5 +1,4 @@
 import { z as zod } from 'zod';
-import type { ProtocolRecordBuilder } from '@/modules/protocol/types.js';
 
 export type HttpEndpoint = {
     method: string;
@@ -21,5 +20,5 @@ export interface HttpService {
 }
 
 export interface HttpServiceFactory {
-    create(baseUrl: string, protocolRecordBuilder: ProtocolRecordBuilder): HttpService;
+    create(baseUrl: string): HttpService;
 }
