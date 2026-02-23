@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, BrowserDriverFactory, BrowserServiceFactory } from './modules/browser/index.js';
-import { McpService, ToolDiscoveryService, ToolExecutor, ToolResultBuilderFactory } from './modules/mcp/index.js';
+import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
 import { ConfigFactory } from './modules/config/index.js';
@@ -36,5 +36,5 @@ container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(Protoc
 container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
 container.bind<ScreenshotRepository>(dependencies.ScreenshotRepository).to(ScreenshotRepository);
 container.bind<ScreenshotServiceInterface>(dependencies.ScreenshotService).to(ScreenshotService);
-container.bind<ToolExecutor>(dependencies.ToolExecutor).to(ToolExecutor);
+container.bind<ToolService<BrowserToolContext>>(dependencies.ToolService).to(BrowserToolService);
 container.bind<ToolResultBuilderFactory>(dependencies.ToolResultBuilderFactory).to(ToolResultBuilderFactory);

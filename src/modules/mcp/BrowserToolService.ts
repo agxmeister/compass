@@ -2,13 +2,12 @@ import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
 import type { ProtocolServiceInterface } from '@/modules/protocol/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/protocol/index.js';
-import type { BrowserServiceFactory, BrowserService } from '@/modules/browser/index.js';
+import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
-import type { ToolResultBuilder } from './ToolResultBuilder.js';
-import type { ToolOutput } from './types.js';
+import type { ToolOutput, ToolService, BrowserToolContext } from './types.js';
 
 @injectable()
-export class ToolExecutor {
+export class BrowserToolService implements ToolService<BrowserToolContext> {
     constructor(
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly protocolRecordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.ToolResultBuilderFactory) private readonly toolResultBuilderFactory: ToolResultBuilderFactory,
@@ -16,16 +15,15 @@ export class ToolExecutor {
         @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolServiceInterface,
     ) {}
 
-    async execute(
-        handler: (browserService: BrowserService, toolResultBuilder: ToolResultBuilder) => Promise<ToolOutput>,
-    ): Promise<ToolOutput> {
+    async execute(handler: (context: BrowserToolContext) => Promise<ToolOutput>): Promise<ToolOutput> {
         const protocolRecordBuilder = this.protocolRecordBuilderFactory.create();
+
         const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
         const toolResultBuilder = this.toolResultBuilderFactory.create();
-        const result = await handler(browserService, toolResultBuilder);
 
-        const record = protocolRecordBuilder.build();
-        await this.protocolService.addRecord(record);
+        const result = await handler({ browserService, toolResultBuilder });
+
+        await this.protocolService.addRecord(protocolRecordBuilder.build());
 
         return result;
     }

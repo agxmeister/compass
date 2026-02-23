@@ -1,8 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
-import type { ToolExecutor } from '../ToolExecutor.js';
-import type { Tool, ToolInput, ToolOutput } from '../types.js';
+import type { Tool, ToolInput, ToolOutput, ToolService, BrowserToolContext } from '../types.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {
@@ -17,12 +16,12 @@ export default class DeleteSessionTool implements Tool<typeof inputSchema> {
     readonly inputSchema = inputSchema;
 
     constructor(
-        @inject(dependencies.ToolExecutor) private readonly toolExecutor: ToolExecutor,
+        @inject(dependencies.ToolService) private readonly toolService: ToolService<BrowserToolContext>,
     ) {}
 
     async execute(args: ToolInput<typeof inputSchema>): Promise<ToolOutput> {
-        return this.toolExecutor.execute(
-            async (browserService, toolResultBuilder) =>
+        return this.toolService.execute(
+            async ({ browserService, toolResultBuilder }) =>
                 toolResultBuilder
                     .setData(
                         await browserService.deleteSession(args.sessionId))
