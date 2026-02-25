@@ -2,7 +2,7 @@ import { Container } from 'inversify';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
-import { AxisServiceFactory, BrowserDriverFactory, BrowserServiceFactory } from './modules/browser/index.js';
+import { AxisServiceFactory, HttpBrowserDriverFactory, type BrowserDriverFactory, type BrowserServiceFactory } from './modules/browser/index.js';
 import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/logging/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
@@ -26,7 +26,7 @@ container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(config.l
 container.bind<string>(dependencies.JourneyDir).toConstantValue(journeyDir);
 container.bind<number>(dependencies.HttpTimeout).toConstantValue(config.http.timeout);
 container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(HttpClientFactory);
-container.bind<BrowserDriverFactory>(dependencies.BrowserDriverFactory).to(BrowserDriverFactory);
+container.bind<BrowserDriverFactory>(dependencies.BrowserDriverFactory).to(HttpBrowserDriverFactory);
 container.bind<BrowserServiceFactory>(dependencies.BrowserServiceFactory).to(AxisServiceFactory);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);

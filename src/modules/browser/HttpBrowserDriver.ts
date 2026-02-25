@@ -4,7 +4,7 @@ import type { ProtocolRecordBuilder } from '@/modules/protocol/types.js';
 import type { ScreenshotServiceInterface } from '@/modules/protocol/index.js';
 import type { BrowserDriver as BrowserDriverInterface, CaptureScreenshotResponse } from './types.js';
 
-export class BrowserDriver implements BrowserDriverInterface {
+export class HttpBrowserDriver implements BrowserDriverInterface {
     constructor(
         private readonly httpClient: HttpClient,
         private readonly protocolRecordBuilder: ProtocolRecordBuilder,

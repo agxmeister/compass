@@ -1,7 +1,7 @@
 export { AxisService } from './AxisService.js';
 export { AxisServiceFactory } from './AxisServiceFactory.js';
-export { BrowserDriver } from './BrowserDriver.js';
-export { BrowserDriverFactory } from './BrowserDriverFactory.js';
+export { HttpBrowserDriver } from './HttpBrowserDriver.js';
+export { HttpBrowserDriverFactory } from './HttpBrowserDriverFactory.js';
 
 export type {
     CreateSessionInput,
@@ -14,6 +14,8 @@ export type {
     CaptureScreenshotResponse,
     HttpEndpoint,
     ProtocolRecordBuilder,
+    BrowserDriver,
+    BrowserDriverFactory,
     BrowserService,
     BrowserServiceFactory,
 } from './types.js';
