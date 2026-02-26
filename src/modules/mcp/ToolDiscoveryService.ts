@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { dependencies } from '@/dependencies.js';
-import { Logger as LoggerInterface, LoggerFactory } from '@/modules/logging/index.js';
+import { Logger as LoggerInterface, LoggerFactory } from '@/modules/log/index.js';
 
 @injectable()
 export class ToolDiscoveryService {

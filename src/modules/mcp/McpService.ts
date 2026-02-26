@@ -3,7 +3,7 @@ import { injectable, inject, multiInject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { dependencies } from '@/dependencies.js';
-import { Logger as LoggerInterface, LoggerFactory } from '@/modules/logging/index.js';
+import { Logger as LoggerInterface, LoggerFactory } from '@/modules/log/index.js';
 import type { Tool } from './types.js';
 
 @injectable()

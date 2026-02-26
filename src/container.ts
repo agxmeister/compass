@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, HttpBrowserDriverFactory, type BrowserDriverFactory, type BrowserServiceFactory } from './modules/browser/index.js';
 import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext } from './modules/mcp/index.js';
-import { LoggerFactory } from './modules/logging/index.js';
+import { LoggerFactory } from './modules/log/index.js';
 import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
 import { ConfigFactory } from './modules/config/index.js';
 import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/http/index.js';
