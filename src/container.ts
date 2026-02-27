@@ -5,7 +5,7 @@ import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, HttpBrowserDriverFactory, type BrowserDriverFactory, type BrowserServiceFactory } from './modules/browser/index.js';
 import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/log/index.js';
-import { ProtocolService, ProtocolRepository, ScreenshotService, ScreenshotRepository, ProtocolRecordBuilderFactory, ProtocolServiceInterface, ScreenshotServiceInterface } from './modules/protocol/index.js';
+import { ProtocolService, ProtocolRepository, BinaryService, BinaryRepository, ProtocolRecordBuilderFactory, type ProtocolServiceInterface, type BinaryServiceInterface } from './modules/protocol/index.js';
 import { ConfigFactory } from './modules/config/index.js';
 import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/http/index.js';
 
@@ -34,7 +34,7 @@ container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
 container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository).inSingletonScope();
 container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(ProtocolService);
 container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
-container.bind<ScreenshotRepository>(dependencies.ScreenshotRepository).to(ScreenshotRepository);
-container.bind<ScreenshotServiceInterface>(dependencies.ScreenshotService).to(ScreenshotService);
+container.bind<BinaryRepository>(dependencies.BinaryRepository).to(BinaryRepository);
+container.bind<BinaryServiceInterface>(dependencies.BinaryService).to(BinaryService);
 container.bind<ToolService<BrowserToolContext>>(dependencies.ToolService).to(BrowserToolService);
 container.bind<ToolResultBuilderFactory>(dependencies.ToolResultBuilderFactory).to(ToolResultBuilderFactory);

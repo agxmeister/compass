@@ -4,20 +4,20 @@ import path from "path";
 import { dependencies } from "@/dependencies.js";
 
 @injectable()
-export class ScreenshotRepository {
+export class BinaryRepository {
     constructor(
         @inject(dependencies.JourneyDir) private readonly journeyDir: string,
     ) {}
 
-    private getScreenshotsDir(): string {
-        return path.join(this.journeyDir, "screenshots");
+    private getBinariesDir(): string {
+        return path.join(this.journeyDir, "binaries");
     }
 
     async save(filename: string, data: Buffer): Promise<string> {
-        const screenshotsDir = this.getScreenshotsDir();
-        await fs.mkdir(screenshotsDir, { recursive: true });
+        const binariesDir = this.getBinariesDir();
+        await fs.mkdir(binariesDir, { recursive: true });
 
-        const filePath = path.join(screenshotsDir, filename);
+        const filePath = path.join(binariesDir, filename);
         await fs.writeFile(filePath, data);
 
         return filePath;

@@ -17,6 +17,6 @@ export interface ProtocolService {
     addRecord(record: ProtocolRecord): Promise<void>;
 }
 
-export interface ScreenshotService {
+export interface BinaryService {
     saveScreenshot(base64Data: string): Promise<string>;
 }

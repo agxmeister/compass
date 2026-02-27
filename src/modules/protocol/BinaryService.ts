@@ -1,12 +1,12 @@
 import { injectable, inject } from "inversify";
 import { dependencies } from "@/dependencies.js";
-import { ScreenshotRepository } from "./ScreenshotRepository.js";
-import { ScreenshotService as ScreenshotServiceInterface } from "./types.js";
+import { BinaryRepository } from "./BinaryRepository.js";
+import { BinaryService as BinaryServiceInterface } from "./types.js";
 
 @injectable()
-export class ScreenshotService implements ScreenshotServiceInterface {
+export class BinaryService implements BinaryServiceInterface {
     constructor(
-        @inject(dependencies.ScreenshotRepository) private readonly repository: ScreenshotRepository,
+        @inject(dependencies.BinaryRepository) private readonly repository: BinaryRepository,
     ) {}
 
     async saveScreenshot(base64Data: string): Promise<string> {
