@@ -5,7 +5,8 @@ import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, HttpBrowserDriverFactory, type BrowserDriverFactory, type BrowserServiceFactory } from './modules/browser/index.js';
 import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/log/index.js';
-import { ProtocolService, ProtocolRepository, BinaryService, BinaryRepository, ProtocolRecordBuilderFactory, type ProtocolServiceInterface, type BinaryServiceInterface } from './modules/journey/index.js';
+import { ProtocolService, ProtocolRepository, ProtocolRecordBuilderFactory, type ProtocolServiceInterface } from './modules/journey/index.js';
+import { BinaryService, BinaryRepository, type BinaryServiceInterface } from './modules/binary/index.js';
 import { ConfigFactory } from './modules/config/index.js';
 import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/http/index.js';
 

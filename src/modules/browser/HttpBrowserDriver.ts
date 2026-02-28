@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
 import type { HttpClient, HttpEndpoint } from '@/modules/http/types.js';
 import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
-import type { BinaryServiceInterface } from '@/modules/journey/index.js';
+import type { BinaryServiceInterface } from '@/modules/binary/index.js';
 import type { BrowserDriver as BrowserDriverInterface, CaptureScreenshotResponse } from './types.js';
 
 export class HttpBrowserDriver implements BrowserDriverInterface {
