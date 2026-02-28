@@ -10,7 +10,7 @@ import {
     captureScreenshotResponseSchema,
 } from "./schemas.js";
 import type { HttpEndpoint } from "@/modules/http/types.js";
-import type { ProtocolRecordBuilder } from "@/modules/protocol/types.js";
+import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
 
 export type CreateSessionInput = zod.infer<typeof createSessionInputSchema>;
 export type DeleteSessionInput = zod.infer<typeof deleteSessionInputSchema>;

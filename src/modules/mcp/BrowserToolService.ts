@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
-import type { ProtocolServiceInterface } from '@/modules/protocol/index.js';
-import { ProtocolRecordBuilderFactory } from '@/modules/protocol/index.js';
+import type { ProtocolServiceInterface } from '@/modules/journey/index.js';
+import { ProtocolRecordBuilderFactory } from '@/modules/journey/index.js';
 import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
 import type { ToolOutput, ToolService, BrowserToolContext } from './types.js';
