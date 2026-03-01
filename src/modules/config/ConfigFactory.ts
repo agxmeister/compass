@@ -10,9 +10,10 @@ export class ConfigFactory {
             http: {
                 timeout: process.env.HTTP_TIMEOUT ? parseInt(process.env.HTTP_TIMEOUT, 10) : undefined,
             },
-            logging: {
+            log: {
                 level: process.env.LOG_LEVEL,
                 environment: process.env.LOG_ENVIRONMENT,
+                dir: process.env.LOG_DIR,
             },
             journey: {
                 name: process.env.JOURNEY_NAME,

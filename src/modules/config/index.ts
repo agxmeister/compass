@@ -1,3 +1,3 @@
 export { ConfigFactory } from './ConfigFactory.js';
-export type { Config, LoggingConfig, JourneyConfig } from './types.js';
-export { configSchema, loggingConfigSchema, journeyConfigSchema } from './schemas.js';
+export type { Config, LogConfig, JourneyConfig } from './types.js';
+export { configSchema, logConfigSchema, journeyConfigSchema } from './schemas.js';

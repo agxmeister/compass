@@ -12,11 +12,11 @@ export class LoggerFactory {
     constructor(
         @inject(dependencies.LoggingLevel) level: string,
         @inject(dependencies.LoggingEnvironment) environment: string,
-        @inject(dependencies.JourneyDir) journeyDir: string,
+        @inject(dependencies.LogDir) logDir: string,
     ) {
-        mkdirSync(journeyDir, { recursive: true });
+        mkdirSync(logDir, { recursive: true });
 
-        const fullPath = join(journeyDir, 'compass.log');
+        const fullPath = join(logDir, 'compass.log');
 
         const destination = pino.destination({
             dest: fullPath,

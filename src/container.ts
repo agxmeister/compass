@@ -22,8 +22,9 @@ const journeyDir = join(config.journey.dir, config.journey.name);
 
 container.bind<string>(dependencies.AxisApiUrl).toConstantValue(config.axisApiUrl);
 container.bind<string>(dependencies.ToolsDirectory).toConstantValue(toolsDirectory);
-container.bind<string>(dependencies.LoggingLevel).toConstantValue(config.logging.level);
-container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(config.logging.environment);
+container.bind<string>(dependencies.LoggingLevel).toConstantValue(config.log.level);
+container.bind<string>(dependencies.LoggingEnvironment).toConstantValue(config.log.environment);
+container.bind<string>(dependencies.LogDir).toConstantValue(config.log.dir);
 container.bind<string>(dependencies.JourneyDir).toConstantValue(journeyDir);
 container.bind<number>(dependencies.HttpTimeout).toConstantValue(config.http.timeout);
 container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(HttpClientFactory);

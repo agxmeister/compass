@@ -13,6 +13,7 @@ export const dependencies = {
     LoggerFactory: Symbol.for('LoggerFactory'),
     LoggingLevel: Symbol.for('LoggingLevel'),
     LoggingEnvironment: Symbol.for('LoggingEnvironment'),
+    LogDir: Symbol.for('LogDir'),
     JourneyDir: Symbol.for('JourneyDir'),
     ProtocolService: Symbol.for('ProtocolService'),
     ProtocolRepository: Symbol.for('ProtocolRepository'),

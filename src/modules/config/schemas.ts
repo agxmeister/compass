@@ -1,8 +1,9 @@
 import { z as zod } from 'zod';
 
-export const loggingConfigSchema = zod.object({
+export const logConfigSchema = zod.object({
     level: zod.enum(['debug', 'info', 'warn', 'error']).default('info'),
     environment: zod.enum(['development', 'production']).default('development'),
+    dir: zod.string().default('data'),
 });
 
 export const journeyConfigSchema = zod.object({
@@ -17,6 +18,6 @@ export const httpClientConfigSchema = zod.object({
 export const configSchema = zod.object({
     axisApiUrl: zod.string().url(),
     http: httpClientConfigSchema,
-    logging: loggingConfigSchema,
+    log: logConfigSchema,
     journey: journeyConfigSchema,
 });
