@@ -9,17 +9,19 @@ export class HttpBrowserDriver implements BrowserDriverInterface {
         private readonly httpClient: HttpClient,
         private readonly protocolRecordBuilder: ProtocolRecordBuilder,
         private readonly binaryService: BinaryServiceInterface,
-    ) {}
+    ) {
+        this.protocolRecordBuilder.setType('http-api-call');
+    }
 
     async act<T extends Record<string, unknown>>(
         endpoint: HttpEndpoint,
         schema: zod.ZodType<T>,
         body?: Record<string, unknown>,
     ): Promise<T> {
-        this.protocolRecordBuilder.addHttpRequest(endpoint, body);
+        this.protocolRecordBuilder.setHttpRequest(endpoint, body);
         const response = await this.httpClient.request(endpoint, body);
         const validated = schema.parse(await response.json());
-        this.protocolRecordBuilder.addHttpResponse(response.status, validated);
+        this.protocolRecordBuilder.setHttpResponse(response.status, validated);
         return validated;
     }
 

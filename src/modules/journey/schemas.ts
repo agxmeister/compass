@@ -2,7 +2,7 @@ import { z as zod } from "zod";
 
 export const protocolRecordSchema = zod.object({
     timestamp: zod.string(),
-    type: zod.literal("http-api-call"),
+    type: zod.string(),
     request: zod.object({
         endpoint: zod.object({
             method: zod.string(),

@@ -5,19 +5,25 @@ import type {
 } from "./types.js";
 
 export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
+    private type?: string;
     private endpoint?: HttpEndpoint;
     private input?: Record<string, unknown>;
     private status?: number;
     private output?: Record<string, unknown>;
     private binaries: Array<{ path: string; type: string }> = [];
 
-    addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this {
+    setType(type: string): this {
+        this.type = type;
+        return this;
+    }
+
+    setHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this {
         this.endpoint = endpoint;
         this.input = input;
         return this;
     }
 
-    addHttpResponse(status: number, output: Record<string, unknown>): this {
+    setHttpResponse(status: number, output: Record<string, unknown>): this {
         this.status = status;
         this.output = output;
         return this;
@@ -29,6 +35,10 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
     }
 
     build(): ProtocolRecord {
+        if (!this.type) {
+            throw new Error("Cannot build protocol record without type");
+        }
+
         if (!this.endpoint) {
             throw new Error("Cannot build protocol record without request endpoint");
         }
@@ -43,7 +53,7 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
 
         return {
             timestamp: new Date().toISOString(),
-            type: "http-api-call",
+            type: this.type,
             request: {
                 endpoint: this.endpoint,
                 body: this.input,

@@ -8,8 +8,9 @@ export type Protocol = zod.infer<typeof protocolSchema>;
 export type { HttpEndpoint };
 
 export interface ProtocolRecordBuilder {
-    addHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this;
-    addHttpResponse(status: number, output: Record<string, unknown>): this;
+    setType(type: string): this;
+    setHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this;
+    setHttpResponse(status: number, output: Record<string, unknown>): this;
     addBinary(path: string, type: string): this;
 }
 
