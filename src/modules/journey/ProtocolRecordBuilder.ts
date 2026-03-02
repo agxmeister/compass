@@ -43,7 +43,7 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
 
         return {
             timestamp: new Date().toISOString(),
-            type: "axis-api-call",
+            type: "http-api-call",
             request: {
                 endpoint: this.endpoint,
                 body: this.input,
