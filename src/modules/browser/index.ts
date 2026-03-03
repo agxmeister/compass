@@ -1,7 +1,5 @@
 export { AxisService } from './AxisService.js';
 export { AxisServiceFactory } from './AxisServiceFactory.js';
-export { HttpBrowserDriver } from './HttpBrowserDriver.js';
-export { HttpBrowserDriverFactory } from './HttpBrowserDriverFactory.js';
 
 export type {
     CreateSessionInput,
@@ -12,10 +10,9 @@ export type {
     DeleteSessionResponse,
     PerformActionResponse,
     CaptureScreenshotResponse,
-    HttpEndpoint,
     ProtocolRecordBuilder,
-    BrowserDriver,
-    BrowserDriverFactory,
+    Driver,
+    DriverFactory,
     BrowserService,
     BrowserServiceFactory,
 } from './types.js';

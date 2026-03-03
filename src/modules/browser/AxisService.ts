@@ -14,12 +14,12 @@ import type {
     CaptureScreenshotResponse,
     Action,
     BrowserService,
-    BrowserDriver,
+    Driver,
 } from "./types.js";
 
 export class AxisService implements BrowserService {
     constructor(
-        private readonly driver: BrowserDriver,
+        private readonly driver: Driver,
     ) {}
 
     async createSession(url: string): Promise<CreateSessionResponse> {

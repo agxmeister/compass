@@ -1,12 +1,12 @@
 import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
-import type { BrowserService, BrowserServiceFactory, BrowserDriverFactory, ProtocolRecordBuilder } from './types.js';
+import type { BrowserService, BrowserServiceFactory, DriverFactory, ProtocolRecordBuilder } from './types.js';
 import { AxisService } from './AxisService.js';
 
 @injectable()
 export class AxisServiceFactory implements BrowserServiceFactory {
     constructor(
-        @inject(dependencies.BrowserDriverFactory) private readonly driverFactory: BrowserDriverFactory,
+        @inject(dependencies.BrowserDriverFactory) private readonly driverFactory: DriverFactory,
     ) {}
 
     create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService {
