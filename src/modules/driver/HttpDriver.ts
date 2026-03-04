@@ -4,7 +4,12 @@ import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
 import type { BinaryServiceInterface } from '@/modules/binary/index.js';
 import type { Driver, CaptureScreenshotResponse } from './types.js';
 
-export class HttpDriver implements Driver {
+export interface HttpCommand {
+    endpoint: HttpEndpoint;
+    body?: Record<string, unknown>;
+}
+
+export class HttpDriver implements Driver<HttpCommand> {
     constructor(
         private readonly httpClient: HttpClient,
         private readonly protocolRecordBuilder: ProtocolRecordBuilder,
@@ -14,19 +19,18 @@ export class HttpDriver implements Driver {
     }
 
     async act<T extends Record<string, unknown>>(
-        endpoint: HttpEndpoint,
+        command: HttpCommand,
         schema: zod.ZodType<T>,
-        body?: Record<string, unknown>,
     ): Promise<T> {
-        this.protocolRecordBuilder.setHttpRequest(endpoint, body);
-        const response = await this.httpClient.request(endpoint, body);
+        this.protocolRecordBuilder.setHttpRequest(command.endpoint, command.body);
+        const response = await this.httpClient.request(command.endpoint, command.body);
         const validated = schema.parse(await response.json());
         this.protocolRecordBuilder.setHttpResponse(response.status, validated);
         return validated;
     }
 
-    async observe(endpoint: HttpEndpoint, type: string): Promise<CaptureScreenshotResponse> {
-        const response = await this.httpClient.request(endpoint);
+    async observe(command: HttpCommand, type: string): Promise<CaptureScreenshotResponse> {
+        const response = await this.httpClient.request(command.endpoint);
         const arrayBuffer = await response.arrayBuffer();
         const body = Buffer.from(arrayBuffer).toString('base64');
         const path = await this.binaryService.saveScreenshot(body);

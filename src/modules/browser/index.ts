@@ -11,8 +11,6 @@ export type {
     PerformActionResponse,
     CaptureScreenshotResponse,
     ProtocolRecordBuilder,
-    Driver,
-    DriverFactory,
     BrowserService,
     BrowserServiceFactory,
 } from './types.js';

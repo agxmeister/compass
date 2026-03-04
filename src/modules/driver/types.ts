@@ -1,5 +1,4 @@
 import { z as zod } from "zod";
-import type { HttpEndpoint } from "@/modules/http/types.js";
 import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
 
 export interface CaptureScreenshotResponse {
@@ -7,11 +6,11 @@ export interface CaptureScreenshotResponse {
     body: string;
 }
 
-export interface Driver {
-    act<T extends Record<string, unknown>>(endpoint: HttpEndpoint, schema: zod.ZodType<T>, body?: Record<string, unknown>): Promise<T>;
-    observe(endpoint: HttpEndpoint, type: string): Promise<CaptureScreenshotResponse>;
+export interface Driver<Command> {
+    act<T extends Record<string, unknown>>(command: Command, schema: zod.ZodType<T>): Promise<T>;
+    observe(command: Command, type: string): Promise<CaptureScreenshotResponse>;
 }
 
-export interface DriverFactory {
-    create(protocolRecordBuilder: ProtocolRecordBuilder): Driver;
+export interface DriverFactory<Command> {
+    create(protocolRecordBuilder: ProtocolRecordBuilder): Driver<Command>;
 }
