@@ -9,7 +9,6 @@ import {
     performActionResponseSchema,
 } from "./schemas.js";
 import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
-import type { CaptureScreenshotResponse } from "@/modules/driver/types.js";
 
 export type CreateSessionInput = zod.infer<typeof createSessionInputSchema>;
 export type DeleteSessionInput = zod.infer<typeof deleteSessionInputSchema>;
@@ -20,7 +19,11 @@ export type CreateSessionResponse = zod.infer<typeof createSessionResponseSchema
 export type DeleteSessionResponse = zod.infer<typeof deleteSessionResponseSchema>;
 export type PerformActionResponse = zod.infer<typeof performActionResponseSchema>;
 
-export type { CaptureScreenshotResponse, ProtocolRecordBuilder };
+export type { ProtocolRecordBuilder };
+
+export interface CaptureScreenshotResponse {
+    body: string;
+}
 
 export interface BrowserService {
     createSession(url: string): Promise<CreateSessionResponse>;

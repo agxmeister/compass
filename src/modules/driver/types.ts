@@ -1,14 +1,9 @@
 import { z as zod } from "zod";
 import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
 
-export interface CaptureScreenshotResponse {
-    path: string;
-    body: string;
-}
-
 export interface Driver<Command> {
     act<T extends Record<string, unknown>>(command: Command, schema: zod.ZodType<T>): Promise<T>;
-    observe(command: Command, type: string): Promise<CaptureScreenshotResponse>;
+    observe<T>(command: Command, mimeType: string, handler: (data: Buffer) => Promise<T>): Promise<T>;
 }
 
 export interface DriverFactory<Command> {

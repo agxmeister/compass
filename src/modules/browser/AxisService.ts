@@ -15,8 +15,7 @@ import type {
     Action,
     BrowserService,
 } from "./types.js";
-import type { Driver } from "@/modules/driver/index.js";
-import type { HttpCommand } from "@/modules/driver/index.js";
+import type { Driver, HttpCommand } from "@/modules/driver/index.js";
 
 export class AxisService implements BrowserService {
     constructor(
@@ -26,7 +25,13 @@ export class AxisService implements BrowserService {
     async createSession(url: string): Promise<CreateSessionResponse> {
         const validatedInput = createSessionInputSchema.parse({ url });
         return this.driver.act(
-            { endpoint: { method: "POST", path: "/api/sessions" }, body: validatedInput },
+            {
+                endpoint: {
+                    method: "POST",
+                    path: "/api/sessions",
+                },
+                body: validatedInput,
+            },
             createSessionResponseSchema,
         );
     }
@@ -34,7 +39,15 @@ export class AxisService implements BrowserService {
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
         return this.driver.act(
-            { endpoint: { method: "DELETE", path: "/api/sessions/{{sessionId}}", parameters: { sessionId: validatedInput.sessionId } } },
+            {
+                endpoint: {
+                    method: "DELETE",
+                    path: "/api/sessions/{{sessionId}}",
+                    parameters: {
+                        sessionId: validatedInput.sessionId,
+                    },
+                },
+            },
             deleteSessionResponseSchema,
         );
     }
@@ -42,7 +55,16 @@ export class AxisService implements BrowserService {
     async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
         return this.driver.act(
-            { endpoint: { method: "POST", path: "/api/sessions/{{sessionId}}/actions", parameters: { sessionId: validatedInput.sessionId } }, body: validatedInput.action as Record<string, unknown> },
+            {
+                endpoint: {
+                    method: "POST",
+                    path: "/api/sessions/{{sessionId}}/actions",
+                    parameters: {
+                        sessionId: validatedInput.sessionId,
+                    },
+                },
+                body: validatedInput.action,
+            },
             performActionResponseSchema,
         );
     }
@@ -50,8 +72,17 @@ export class AxisService implements BrowserService {
     async captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse> {
         const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
         return this.driver.observe(
-            { endpoint: { method: "POST", path: "/api/sessions/{{sessionId}}/screenshots", parameters: { sessionId: validatedInput.sessionId } } },
+            {
+                endpoint: {
+                    method: "POST",
+                    path: "/api/sessions/{{sessionId}}/screenshots",
+                    parameters: {
+                        sessionId: validatedInput.sessionId
+                    }
+                }
+            },
             "image/png",
+            async (data) => ({ body: data.toString('base64') }),
         );
     }
 }

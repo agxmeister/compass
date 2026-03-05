@@ -2,7 +2,7 @@ import { z as zod } from 'zod';
 import type { HttpClient, HttpEndpoint } from '@/modules/http/types.js';
 import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
 import type { BinaryServiceInterface } from '@/modules/binary/index.js';
-import type { Driver, CaptureScreenshotResponse } from './types.js';
+import type { Driver } from './types.js';
 
 export interface HttpCommand {
     endpoint: HttpEndpoint;
@@ -29,12 +29,12 @@ export class HttpDriver implements Driver<HttpCommand> {
         return validated;
     }
 
-    async observe(command: HttpCommand, type: string): Promise<CaptureScreenshotResponse> {
+    async observe<T>(command: HttpCommand, mimeType: string, handler: (data: Buffer) => Promise<T>): Promise<T> {
         const response = await this.httpClient.request(command.endpoint);
         const arrayBuffer = await response.arrayBuffer();
-        const body = Buffer.from(arrayBuffer).toString('base64');
-        const path = await this.binaryService.saveScreenshot(body);
-        this.protocolRecordBuilder.addBinary(path, type);
-        return { path, body };
+        const buffer = Buffer.from(arrayBuffer);
+        const path = await this.binaryService.saveScreenshot(buffer.toString('base64'));
+        this.protocolRecordBuilder.addBinary(path, mimeType);
+        return handler(buffer);
     }
 }
