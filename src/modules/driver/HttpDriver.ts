@@ -6,7 +6,8 @@ import type { Driver } from './types.js';
 
 export interface HttpCommand {
     endpoint: HttpEndpoint;
-    body?: Record<string, unknown>;
+    requestBody?: Record<string, unknown>;
+    responseMimeType?: string;
 }
 
 export class HttpDriver implements Driver<HttpCommand> {
@@ -22,19 +23,19 @@ export class HttpDriver implements Driver<HttpCommand> {
         command: HttpCommand,
         schema: zod.ZodType<T>,
     ): Promise<T> {
-        this.protocolRecordBuilder.setHttpRequest(command.endpoint, command.body);
-        const response = await this.httpClient.request(command.endpoint, command.body);
+        this.protocolRecordBuilder.setHttpRequest(command.endpoint, command.requestBody);
+        const response = await this.httpClient.request(command.endpoint, command.requestBody);
         const validated = schema.parse(await response.json());
         this.protocolRecordBuilder.setHttpResponse(response.status, validated);
         return validated;
     }
 
-    async observe<T>(command: HttpCommand, mimeType: string, handler: (data: Buffer) => Promise<T>): Promise<T> {
+    async observe<T>(command: HttpCommand, handler: (data: Buffer) => Promise<T>): Promise<T> {
         const response = await this.httpClient.request(command.endpoint);
         const arrayBuffer = await response.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         const path = await this.binaryService.saveScreenshot(buffer.toString('base64'));
-        this.protocolRecordBuilder.addBinary(path, mimeType);
+        this.protocolRecordBuilder.addBinary(path, command.responseMimeType ?? 'application/octet-stream');
         return handler(buffer);
     }
 }

@@ -30,7 +30,7 @@ export class AxisService implements BrowserService {
                     method: "POST",
                     path: "/api/sessions",
                 },
-                body: validatedInput,
+                requestBody: validatedInput,
             },
             createSessionResponseSchema,
         );
@@ -63,7 +63,7 @@ export class AxisService implements BrowserService {
                         sessionId: validatedInput.sessionId,
                     },
                 },
-                body: validatedInput.action,
+                requestBody: validatedInput.action,
             },
             performActionResponseSchema,
         );
@@ -77,11 +77,11 @@ export class AxisService implements BrowserService {
                     method: "POST",
                     path: "/api/sessions/{{sessionId}}/screenshots",
                     parameters: {
-                        sessionId: validatedInput.sessionId
-                    }
-                }
+                        sessionId: validatedInput.sessionId,
+                    },
+                },
+                responseMimeType: "image/png",
             },
-            "image/png",
             async (data) => ({ body: data.toString('base64') }),
         );
     }
