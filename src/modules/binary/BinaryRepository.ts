@@ -9,17 +9,25 @@ export class BinaryRepository {
         @inject(dependencies.JourneyDir) private readonly journeyDir: string,
     ) {}
 
-    private getBinariesDir(): string {
+    private getBaseDir(): string {
         return path.join(this.journeyDir, "binaries");
     }
 
     async save(filename: string, data: Buffer): Promise<string> {
-        const binariesDir = this.getBinariesDir();
+        const binariesDir = this.getBaseDir();
         await fs.mkdir(binariesDir, { recursive: true });
 
         const filePath = path.join(binariesDir, filename);
         await fs.writeFile(filePath, data);
 
-        return filePath;
+        return filename;
+    }
+
+    getPath(filename: string): string {
+        return path.join(this.getBaseDir(), filename);
+    }
+
+    async getContent(filename: string): Promise<Buffer> {
+        return fs.readFile(this.getPath(filename));
     }
 }

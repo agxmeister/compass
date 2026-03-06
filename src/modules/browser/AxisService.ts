@@ -16,10 +16,12 @@ import type {
     BrowserService,
 } from "./types.js";
 import type { Driver, HttpCommand } from "@/modules/driver/index.js";
+import type { BinaryServiceInterface } from "@/modules/binary/index.js";
 
 export class AxisService implements BrowserService {
     constructor(
         private readonly driver: Driver<HttpCommand>,
+        private readonly binaryService: BinaryServiceInterface,
     ) {}
 
     async createSession(url: string): Promise<CreateSessionResponse> {
@@ -71,18 +73,15 @@ export class AxisService implements BrowserService {
 
     async captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse> {
         const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
-        return this.driver.observe(
-            {
-                endpoint: {
-                    method: "POST",
-                    path: "/api/sessions/{{sessionId}}/screenshots",
-                    parameters: {
-                        sessionId: validatedInput.sessionId,
-                    },
+        const binary = await this.driver.observe({
+            endpoint: {
+                method: "POST",
+                path: "/api/sessions/{{sessionId}}/screenshots",
+                parameters: {
+                    sessionId: validatedInput.sessionId,
                 },
-                responseMimeType: "image/png",
             },
-            async (data) => ({ body: data.toString('base64') }),
-        );
+        });
+        return { body: await this.binaryService.getScreenshotContent(binary) };
     }
 }
