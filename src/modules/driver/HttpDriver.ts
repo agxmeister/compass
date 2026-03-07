@@ -34,7 +34,7 @@ export class HttpDriver implements Driver<HttpCommand> {
         const arrayBuffer = await response.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString('base64');
         const binary = await this.binaryService.saveScreenshot(base64);
-        this.protocolRecordBuilder.addBinary(this.binaryService.getPath(binary), binary.mimeType);
+        this.protocolRecordBuilder.addBinary(binary);
         return binary;
     }
 }

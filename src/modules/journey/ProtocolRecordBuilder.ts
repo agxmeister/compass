@@ -3,6 +3,7 @@ import type {
     ProtocolRecord,
     ProtocolRecordBuilder as ProtocolRecordBuilderInterface,
 } from "./types.js";
+import type { Binary, BinaryServiceInterface } from "@/modules/binary/index.js";
 
 export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
     private type?: string;
@@ -10,7 +11,11 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
     private input?: Record<string, unknown>;
     private status?: number;
     private output?: Record<string, unknown>;
-    private binaries: Array<{ path: string; type: string }> = [];
+    private binaries: Binary[] = [];
+
+    constructor(
+        private readonly binaryService: BinaryServiceInterface,
+    ) {}
 
     setType(type: string): this {
         this.type = type;
@@ -29,8 +34,8 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
         return this;
     }
 
-    addBinary(path: string, type: string): this {
-        this.binaries.push({ path, type });
+    addBinary(binary: Binary): this {
+        this.binaries.push(binary);
         return this;
     }
 
@@ -62,7 +67,12 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
                 status: this.status,
                 body: this.output,
             },
-            ...(this.binaries.length > 0 && { binaries: this.binaries }),
+            ...(this.binaries.length > 0 && {
+                binaries: this.binaries.map((binary) => ({
+                    path: this.binaryService.getPath(binary),
+                    type: binary.mimeType,
+                })),
+            }),
         };
     }
 }
