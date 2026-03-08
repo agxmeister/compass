@@ -9,7 +9,6 @@ export type {
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
-    CaptureScreenshotResponse,
     ProtocolRecordBuilder,
     BrowserService,
     BrowserServiceFactory,

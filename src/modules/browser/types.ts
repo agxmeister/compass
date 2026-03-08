@@ -21,15 +21,11 @@ export type PerformActionResponse = zod.infer<typeof performActionResponseSchema
 
 export type { ProtocolRecordBuilder };
 
-export interface CaptureScreenshotResponse {
-    body: string;
-}
-
 export interface BrowserService {
     createSession(url: string): Promise<CreateSessionResponse>;
     deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
     performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
-    captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse>;
+    captureScreenshot(sessionId: string): Promise<string>;
 }
 
 export interface BrowserServiceFactory {

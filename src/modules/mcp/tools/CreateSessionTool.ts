@@ -25,7 +25,7 @@ export default class CreateSessionTool implements Tool<typeof inputSchema> {
                 const response = await browserService.createSession(args.url);
                 return toolResultBuilder
                     .setData(response)
-                    .setScreenshot((await browserService.captureScreenshot(response.payload.id)).body)
+                    .setScreenshot(await browserService.captureScreenshot(response.payload.id))
                     .build();
             }
         );

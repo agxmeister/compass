@@ -11,7 +11,6 @@ import type {
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
-    CaptureScreenshotResponse,
     Action,
     BrowserService,
 } from "./types.js";
@@ -71,7 +70,7 @@ export class AxisService implements BrowserService {
         );
     }
 
-    async captureScreenshot(sessionId: string): Promise<CaptureScreenshotResponse> {
+    async captureScreenshot(sessionId: string): Promise<string> {
         const validatedInput = captureScreenshotInputSchema.parse({ sessionId });
         const binary = await this.driver.observe({
             endpoint: {
@@ -82,6 +81,6 @@ export class AxisService implements BrowserService {
                 },
             },
         });
-        return { body: await this.binaryService.getScreenshotContent(binary) };
+        return this.binaryService.getScreenshotContent(binary);
     }
 }
