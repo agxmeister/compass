@@ -21,13 +21,21 @@ export type PerformActionResponse = zod.infer<typeof performActionResponseSchema
 
 export type { ProtocolRecordBuilder };
 
-export interface BrowserService {
-    createSession(url: string): Promise<CreateSessionResponse>;
-    deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
-    performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
+export interface BrowserService<
+    CreateResult extends Record<string, unknown>,
+    DeleteResult extends Record<string, unknown>,
+    ActionResult extends Record<string, unknown>
+> {
+    createSession(url: string): Promise<CreateResult>;
+    deleteSession(sessionId: string): Promise<DeleteResult>;
+    performAction(sessionId: string, action: Action): Promise<ActionResult>;
     captureScreenshot(sessionId: string): Promise<string>;
 }
 
-export interface BrowserServiceFactory {
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService;
+export interface BrowserServiceFactory<
+    CreateResult extends Record<string, unknown>,
+    DeleteResult extends Record<string, unknown>,
+    ActionResult extends Record<string, unknown>
+> {
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateResult, DeleteResult, ActionResult>;
 }

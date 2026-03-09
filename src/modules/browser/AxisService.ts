@@ -17,7 +17,7 @@ import type {
 import type { Driver, HttpCommand } from "@/modules/driver/index.js";
 import type { BinaryServiceInterface } from "@/modules/binary/index.js";
 
-export class AxisService implements BrowserService {
+export class AxisService implements BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse> {
     constructor(
         private readonly driver: Driver<HttpCommand>,
         private readonly binaryService: BinaryServiceInterface,
