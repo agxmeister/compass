@@ -2,7 +2,8 @@ import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
 import type { ProtocolServiceInterface } from '@/modules/journey/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/journey/index.js';
-import type { BrowserServiceFactory, CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from '@/modules/browser/index.js';
+import type { BrowserServiceFactory } from '@/modules/browser/index.js';
+import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from '@/modules/browser/axis/index.js';
 import { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
 import type { ToolOutput, ToolService, BrowserToolContext } from './types.js';
 

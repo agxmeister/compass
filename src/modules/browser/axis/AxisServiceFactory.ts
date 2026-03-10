@@ -1,8 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { dependencies } from '@/dependencies.js';
-import type { BrowserService, BrowserServiceFactory, ProtocolRecordBuilder, CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from './types.js';
+import type { BrowserService, BrowserServiceFactory } from '../types.js';
+import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
 import type { DriverFactory, HttpCommand } from '@/modules/driver/index.js';
 import type { BinaryServiceInterface } from '@/modules/binary/index.js';
+import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from './types.js';
 import { AxisService } from './AxisService.js';
 
 @injectable()

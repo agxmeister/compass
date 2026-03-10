@@ -11,9 +11,8 @@ import type {
     CreateSessionResponse,
     DeleteSessionResponse,
     PerformActionResponse,
-    Action,
-    BrowserService,
 } from "./types.js";
+import type { BrowserService, Action } from "../types.js";
 import type { Driver, HttpCommand } from "@/modules/driver/index.js";
 import type { BinaryServiceInterface } from "@/modules/binary/index.js";
 

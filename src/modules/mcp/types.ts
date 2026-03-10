@@ -1,5 +1,6 @@
 import { z as zod } from "zod";
-import type { BrowserService, CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from '@/modules/browser/index.js';
+import type { BrowserService } from '@/modules/browser/index.js';
+import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from '@/modules/browser/axis/index.js';
 import type { ToolResultBuilder } from './ToolResultBuilder.js';
 
 export type ToolInput<Schema extends Record<string, zod.ZodTypeAny>> = zod.infer<zod.ZodObject<Schema>>;
