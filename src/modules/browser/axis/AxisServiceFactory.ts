@@ -4,17 +4,17 @@ import type { BrowserService, BrowserServiceFactory } from '../types.js';
 import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
 import type { DriverFactory, HttpCommand } from '@/modules/driver/index.js';
 import type { BinaryServiceInterface } from '@/modules/binary/index.js';
-import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from './types.js';
+import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action } from './types.js';
 import { AxisService } from './AxisService.js';
 
 @injectable()
-export class AxisServiceFactory implements BrowserServiceFactory<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse> {
+export class AxisServiceFactory implements BrowserServiceFactory<CreateSessionResponse & { sessionId: string }, DeleteSessionResponse, PerformActionResponse, Action> {
     constructor(
         @inject(dependencies.BrowserDriverFactory) private readonly driverFactory: DriverFactory<HttpCommand>,
         @inject(dependencies.BinaryService) private readonly binaryService: BinaryServiceInterface,
     ) {}
 
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse> {
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionResponse & { sessionId: string }, DeleteSessionResponse, PerformActionResponse, Action> {
         const driver = this.driverFactory.create(protocolRecordBuilder);
         return new AxisService(driver, this.binaryService);
     }

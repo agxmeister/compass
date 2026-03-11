@@ -1,26 +1,24 @@
-import { z as zod } from "zod";
-import { actionSchema } from "./schemas.js";
 import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
 
 export type { ProtocolRecordBuilder };
 
-export type Action = zod.infer<typeof actionSchema>;
-
 export interface BrowserService<
-    CreateResult extends Record<string, unknown>,
-    DeleteResult extends Record<string, unknown>,
-    ActionResult extends Record<string, unknown>
+    CreateSessionResponse extends Record<string, unknown> & { sessionId: string },
+    DeleteSessionResponse extends Record<string, unknown>,
+    PerformActionResponse extends Record<string, unknown>,
+    Action
 > {
-    createSession(url: string): Promise<CreateResult>;
-    deleteSession(sessionId: string): Promise<DeleteResult>;
-    performAction(sessionId: string, action: Action): Promise<ActionResult>;
+    createSession(url: string): Promise<CreateSessionResponse>;
+    deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
+    performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
     captureScreenshot(sessionId: string): Promise<string>;
 }
 
 export interface BrowserServiceFactory<
-    CreateResult extends Record<string, unknown>,
-    DeleteResult extends Record<string, unknown>,
-    ActionResult extends Record<string, unknown>
+    CreateSessionResponse extends Record<string, unknown> & { sessionId: string },
+    DeleteSessionResponse extends Record<string, unknown>,
+    PerformActionResponse extends Record<string, unknown>,
+    Action
 > {
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateResult, DeleteResult, ActionResult>;
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action>;
 }

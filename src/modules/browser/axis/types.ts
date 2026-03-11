@@ -1,5 +1,6 @@
 import { z as zod } from "zod";
 import {
+    actionSchema,
     createSessionInputSchema,
     deleteSessionInputSchema,
     performActionInputSchema,
@@ -11,6 +12,8 @@ import {
 export type CreateSessionInput = zod.infer<typeof createSessionInputSchema>;
 export type DeleteSessionInput = zod.infer<typeof deleteSessionInputSchema>;
 export type PerformActionInput = zod.infer<typeof performActionInputSchema>;
+
+export type Action = zod.infer<typeof actionSchema>;
 
 export type CreateSessionResponse = zod.infer<typeof createSessionResponseSchema>;
 export type DeleteSessionResponse = zod.infer<typeof deleteSessionResponseSchema>;

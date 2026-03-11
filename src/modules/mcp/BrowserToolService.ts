@@ -3,7 +3,6 @@ import { dependencies } from '@/dependencies.js';
 import type { ProtocolServiceInterface } from '@/modules/journey/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/journey/index.js';
 import type { BrowserServiceFactory } from '@/modules/browser/index.js';
-import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from '@/modules/browser/axis/index.js';
 import { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
 import type { ToolOutput, ToolService, BrowserToolContext } from './types.js';
 
@@ -12,7 +11,7 @@ export class BrowserToolService implements ToolService<BrowserToolContext> {
     constructor(
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly protocolRecordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.ToolResultBuilderFactory) private readonly toolResultBuilderFactory: ToolResultBuilderFactory,
-        @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse>,
+        @inject(dependencies.BrowserServiceFactory) private readonly browserServiceFactory: BrowserServiceFactory<Record<string, unknown> & { sessionId: string }, Record<string, unknown>, Record<string, unknown>, unknown>,
         @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolServiceInterface,
     ) {}
 

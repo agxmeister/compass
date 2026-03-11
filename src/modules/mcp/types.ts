@@ -1,6 +1,5 @@
 import { z as zod } from "zod";
 import type { BrowserService } from '@/modules/browser/index.js';
-import type { CreateSessionResponse, DeleteSessionResponse, PerformActionResponse } from '@/modules/browser/axis/index.js';
 import type { ToolResultBuilder } from './ToolResultBuilder.js';
 
 export type ToolInput<Schema extends Record<string, zod.ZodTypeAny>> = zod.infer<zod.ZodObject<Schema>>;
@@ -22,6 +21,6 @@ export interface ToolService<Context> {
 }
 
 export interface BrowserToolContext {
-    browserService: BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse>;
+    browserService: BrowserService<Record<string, unknown> & { sessionId: string }, Record<string, unknown>, Record<string, unknown>, unknown>;
     toolResultBuilder: ToolResultBuilder;
 }
