@@ -27,6 +27,15 @@ export class BinaryRepository {
         return path.join(this.getBaseDir(), filename);
     }
 
+    async exists(filename: string): Promise<boolean> {
+        try {
+            await fs.access(this.getPath(filename));
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
     async getContent(filename: string): Promise<Buffer> {
         return fs.readFile(this.getPath(filename));
     }
