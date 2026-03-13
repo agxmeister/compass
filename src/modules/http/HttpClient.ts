@@ -23,7 +23,7 @@ export class HttpClient implements HttpClientInterface {
             return endpoint.path;
         }
         return Object.entries(endpoint.parameters).reduce(
-            (path, [key, value]) => path.replace(`{{${key}}}`, String(value)),
+            (path, [key, value]) => path.replace(`{{${key}}}`, encodeURIComponent(String(value))),
             endpoint.path,
         );
     }
