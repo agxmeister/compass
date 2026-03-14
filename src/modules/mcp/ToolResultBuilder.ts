@@ -15,7 +15,7 @@ export class ToolResultBuilder {
     }
 
     build(): ToolOutput {
-        if (!this.data) {
+        if (this.data === undefined) {
             throw new Error("Cannot build ToolOutput without data");
         }
 

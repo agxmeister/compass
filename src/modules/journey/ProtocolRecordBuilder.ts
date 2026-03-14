@@ -40,19 +40,19 @@ export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
     }
 
     build(): ProtocolRecord {
-        if (!this.type) {
+        if (this.type === undefined) {
             throw new Error("Cannot build protocol record without type");
         }
 
-        if (!this.endpoint) {
+        if (this.endpoint === undefined) {
             throw new Error("Cannot build protocol record without request endpoint");
         }
 
-        if (!this.status) {
+        if (this.status === undefined) {
             throw new Error("Cannot build protocol record without response status");
         }
 
-        if (!this.output) {
+        if (this.output === undefined) {
             throw new Error("Cannot build protocol record without response output");
         }
 
