@@ -31,7 +31,7 @@ container.bind<string>(dependencies.JourneyDir).toConstantValue(journeyDir);
 container.bind<number>(dependencies.HttpTimeout).toConstantValue(config.http.timeout);
 container.bind<HttpClientFactoryInterface>(dependencies.HttpClientFactory).to(HttpClientFactory);
 container.bind<DriverFactory<HttpCommand>>(dependencies.BrowserDriverFactory).to(HttpDriverFactory);
-container.bind<BrowserServiceFactory<CreateSessionResponse & { sessionId: string }, DeleteSessionResponse, PerformActionResponse, Action>>(dependencies.BrowserServiceFactory).to(AxisServiceFactory);
+container.bind<BrowserServiceFactory<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action>>(dependencies.BrowserServiceFactory).to(AxisServiceFactory);
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);

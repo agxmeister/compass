@@ -21,6 +21,6 @@ export interface ToolService<Context> {
 }
 
 export interface BrowserToolContext {
-    browserService: BrowserService<Record<string, unknown> & { sessionId: string }, Record<string, unknown>, Record<string, unknown>, unknown>;
+    browserService: BrowserService<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, unknown>;
     toolResultBuilder: ToolResultBuilder;
 }

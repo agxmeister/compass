@@ -13,19 +13,19 @@ import type {
     PerformActionResponse,
     Action,
 } from "./types.js";
-import type { BrowserService } from "../types.js";
+import type { BrowserService, CreateSessionResult } from "../types.js";
 import type { Driver, HttpCommand } from "@/modules/driver/index.js";
 import type { BinaryServiceInterface } from "@/modules/binary/index.js";
 
-export class AxisService implements BrowserService<CreateSessionResponse & { sessionId: string }, DeleteSessionResponse, PerformActionResponse, Action> {
+export class AxisService implements BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action> {
     constructor(
         private readonly driver: Driver<HttpCommand>,
         private readonly binaryService: BinaryServiceInterface,
     ) {}
 
-    async createSession(url: string): Promise<CreateSessionResponse & { sessionId: string }> {
+    async createSession(url: string): Promise<CreateSessionResult<CreateSessionResponse>> {
         const validatedInput = createSessionInputSchema.parse({ url });
-        const response = await this.driver.act(
+        const data = await this.driver.act(
             {
                 endpoint: {
                     method: "POST",
@@ -35,7 +35,7 @@ export class AxisService implements BrowserService<CreateSessionResponse & { ses
             },
             createSessionResponseSchema,
         );
-        return { ...response, sessionId: response.payload.id };
+        return { sessionId: data.payload.id, data };
     }
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {

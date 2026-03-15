@@ -8,13 +8,13 @@ import type { CreateSessionResponse, DeleteSessionResponse, PerformActionRespons
 import { AxisService } from './AxisService.js';
 
 @injectable()
-export class AxisServiceFactory implements BrowserServiceFactory<CreateSessionResponse & { sessionId: string }, DeleteSessionResponse, PerformActionResponse, Action> {
+export class AxisServiceFactory implements BrowserServiceFactory<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action> {
     constructor(
         @inject(dependencies.BrowserDriverFactory) private readonly driverFactory: DriverFactory<HttpCommand>,
         @inject(dependencies.BinaryService) private readonly binaryService: BinaryServiceInterface,
     ) {}
 
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionResponse & { sessionId: string }, DeleteSessionResponse, PerformActionResponse, Action> {
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action> {
         const driver = this.driverFactory.create(protocolRecordBuilder);
         return new AxisService(driver, this.binaryService);
     }
