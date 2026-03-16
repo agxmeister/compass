@@ -38,6 +38,8 @@ export const deletedSessionPayloadSchema = zod.object({
     id: zod.string(),
 });
 
+export const performActionPayloadSchema = zod.record(zod.unknown());
+
 export const apiResponseSchema = <T extends zod.ZodTypeAny>(payloadSchema: T) =>
     zod.object({
         payload: payloadSchema,
@@ -45,4 +47,4 @@ export const apiResponseSchema = <T extends zod.ZodTypeAny>(payloadSchema: T) =>
 
 export const createSessionResponseSchema = apiResponseSchema(sessionPayloadSchema);
 export const deleteSessionResponseSchema = apiResponseSchema(deletedSessionPayloadSchema);
-export const performActionResponseSchema = apiResponseSchema(zod.any());
+export const performActionResponseSchema = apiResponseSchema(performActionPayloadSchema);
