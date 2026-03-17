@@ -29,7 +29,7 @@ export const performActionInputSchema = zod.object({
     action: actionSchema,
 });
 
-export const sessionPayloadSchema = zod.object({
+export const createSessionPayloadSchema = zod.object({
     id: zod.string(),
     createDate: zod.string(),
 });
@@ -38,13 +38,23 @@ export const deletedSessionPayloadSchema = zod.object({
     id: zod.string(),
 });
 
-export const performActionPayloadSchema = zod.record(zod.unknown());
+export const performActionPayloadSchema = zod.discriminatedUnion("type", [
+    zod.object({
+        type: zod.literal("click"),
+        x: zod.number(),
+        y: zod.number(),
+    }),
+    zod.object({
+        type: zod.literal("navigate"),
+        url: zod.string(),
+    }),
+]);
 
 export const apiResponseSchema = <T extends zod.ZodTypeAny>(payloadSchema: T) =>
     zod.object({
         payload: payloadSchema,
     });
 
-export const createSessionResponseSchema = apiResponseSchema(sessionPayloadSchema);
+export const createSessionResponseSchema = apiResponseSchema(createSessionPayloadSchema);
 export const deleteSessionResponseSchema = apiResponseSchema(deletedSessionPayloadSchema);
 export const performActionResponseSchema = apiResponseSchema(performActionPayloadSchema);
