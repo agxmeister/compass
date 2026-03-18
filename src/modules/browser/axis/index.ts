@@ -6,7 +6,7 @@ export type {
     CreateSessionInput,
     DeleteSessionInput,
     PerformActionInput,
-    CreateSessionResponse,
-    DeleteSessionResponse,
-    PerformActionResponse,
+    CreateSessionPayload,
+    DeletedSessionPayload,
+    PerformActionPayload,
 } from './types.js';

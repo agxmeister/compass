@@ -8,24 +8,24 @@ import {
     performActionResponseSchema,
 } from "./schemas.js";
 import type {
-    CreateSessionResponse,
-    DeleteSessionResponse,
-    PerformActionResponse,
+    CreateSessionPayload,
+    DeletedSessionPayload,
+    PerformActionPayload,
     Action,
 } from "./types.js";
-import type { BrowserService, CreateSessionResult } from "../types.js";
+import type { BrowserService, CreateSessionResult, DeleteSessionResult, PerformActionResult } from "../types.js";
 import type { Driver, HttpCommand } from "@/modules/driver/index.js";
 import type { BinaryServiceInterface } from "@/modules/binary/index.js";
 
-export class AxisService implements BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action> {
+export class AxisService implements BrowserService<CreateSessionPayload, DeletedSessionPayload, PerformActionPayload, Action> {
     constructor(
         private readonly driver: Driver<HttpCommand>,
         private readonly binaryService: BinaryServiceInterface,
     ) {}
 
-    async createSession(url: string): Promise<CreateSessionResult<CreateSessionResponse>> {
+    async createSession(url: string): Promise<CreateSessionResult<CreateSessionPayload>> {
         const validatedInput = createSessionInputSchema.parse({ url });
-        const data = await this.driver.act(
+        const response = await this.driver.act(
             {
                 endpoint: {
                     method: "POST",
@@ -35,12 +35,12 @@ export class AxisService implements BrowserService<CreateSessionResponse, Delete
             },
             createSessionResponseSchema,
         );
-        return { sessionId: data.payload.id, data };
+        return { sessionId: response.payload.id, ...response.payload };
     }
 
-    async deleteSession(sessionId: string): Promise<DeleteSessionResponse> {
+    async deleteSession(sessionId: string): Promise<DeleteSessionResult<DeletedSessionPayload>> {
         const validatedInput = deleteSessionInputSchema.parse({ sessionId });
-        return this.driver.act(
+        const response = await this.driver.act(
             {
                 endpoint: {
                     method: "DELETE",
@@ -52,11 +52,12 @@ export class AxisService implements BrowserService<CreateSessionResponse, Delete
             },
             deleteSessionResponseSchema,
         );
+        return response.payload;
     }
 
-    async performAction(sessionId: string, action: Action): Promise<PerformActionResponse> {
+    async performAction(sessionId: string, action: Action): Promise<PerformActionResult<PerformActionPayload>> {
         const validatedInput = performActionInputSchema.parse({ sessionId, action });
-        return this.driver.act(
+        const response = await this.driver.act(
             {
                 endpoint: {
                     method: "POST",
@@ -69,6 +70,7 @@ export class AxisService implements BrowserService<CreateSessionResponse, Delete
             },
             performActionResponseSchema,
         );
+        return response.payload;
     }
 
     async captureScreenshot(sessionId: string): Promise<string> {

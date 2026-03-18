@@ -2,28 +2,27 @@ import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
 
 export type { ProtocolRecordBuilder };
 
-export interface CreateSessionResult<T extends Record<string, unknown>> {
-    sessionId: string;
-    data: T;
-}
+export type CreateSessionResult<T extends Record<string, unknown>> = { sessionId: string } & T;
+export type DeleteSessionResult<T extends Record<string, unknown>> = T;
+export type PerformActionResult<T extends Record<string, unknown>> = T;
 
 export interface BrowserService<
-    CreateSessionResponse extends Record<string, unknown>,
-    DeleteSessionResponse extends Record<string, unknown>,
-    PerformActionResponse extends Record<string, unknown>,
+    CreateSessionPayload extends Record<string, unknown>,
+    DeleteSessionPayload extends Record<string, unknown>,
+    PerformActionPayload extends Record<string, unknown>,
     Action
 > {
-    createSession(url: string): Promise<CreateSessionResult<CreateSessionResponse>>;
-    deleteSession(sessionId: string): Promise<DeleteSessionResponse>;
-    performAction(sessionId: string, action: Action): Promise<PerformActionResponse>;
+    createSession(url: string): Promise<CreateSessionResult<CreateSessionPayload>>;
+    deleteSession(sessionId: string): Promise<DeleteSessionResult<DeleteSessionPayload>>;
+    performAction(sessionId: string, action: Action): Promise<PerformActionResult<PerformActionPayload>>;
     captureScreenshot(sessionId: string): Promise<string>;
 }
 
 export interface BrowserServiceFactory<
-    CreateSessionResponse extends Record<string, unknown>,
-    DeleteSessionResponse extends Record<string, unknown>,
-    PerformActionResponse extends Record<string, unknown>,
+    CreateSessionPayload extends Record<string, unknown>,
+    DeleteSessionPayload extends Record<string, unknown>,
+    PerformActionPayload extends Record<string, unknown>,
     Action
 > {
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionResponse, DeleteSessionResponse, PerformActionResponse, Action>;
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionPayload, DeleteSessionPayload, PerformActionPayload, Action>;
 }
