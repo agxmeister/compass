@@ -5,6 +5,9 @@ import { container } from "./container.js";
 import { dependencies } from "./dependencies.js";
 import type { McpService } from "./modules/mcp/index.js";
 import type { ToolDiscoveryService } from "./modules/mcp/index.js";
+import type { LoggerFactory } from "./modules/log/index.js";
+
+const logger = container.get<LoggerFactory>(dependencies.LoggerFactory).createLogger();
 
 async function main() {
     try {
@@ -16,11 +19,13 @@ async function main() {
 
         const transport = new StdioServerTransport();
         await server.connect(transport);
-    } catch {
+    } catch (error) {
+        logger.error("Failed to start server", { error: error instanceof Error ? error.message : String(error) });
         process.exit(1);
     }
 }
 
-main().catch((_) => {
+main().catch((error) => {
+    logger.error("Unexpected error", { error: error instanceof Error ? error.message : String(error) });
     process.exit(1);
 });
