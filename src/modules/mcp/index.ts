@@ -4,4 +4,4 @@ export { BrowserToolService } from './BrowserToolService.js';
 export { ToolResultBuilder } from './ToolResultBuilder.js';
 export { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
 export { RegisterTool } from './decorators.js';
-export type { Tool, ToolInput, ToolService, BrowserToolContext } from './types.js';
+export type { Tool, ToolInput, ToolService, BrowserToolOutput, BrowserToolContext } from './types.js';

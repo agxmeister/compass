@@ -1,4 +1,4 @@
-import type { ToolOutput } from "./types.js";
+import type { BrowserToolOutput } from "./types.js";
 
 export class ToolResultBuilder {
     private data?: Record<string, unknown>;
@@ -14,7 +14,7 @@ export class ToolResultBuilder {
         return this;
     }
 
-    build(): ToolOutput {
+    build(): BrowserToolOutput {
         if (this.data === undefined) {
             throw new Error("Cannot build ToolOutput without data");
         }

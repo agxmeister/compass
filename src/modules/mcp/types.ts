@@ -4,21 +4,24 @@ import type { ToolResultBuilder } from './ToolResultBuilder.js';
 
 export type ToolInput<Schema extends Record<string, zod.ZodTypeAny>> = zod.infer<zod.ZodObject<Schema>>;
 
-export interface ToolOutput {
-    data: Record<string, unknown>;
-    screenshot?: string;
-}
-
-export interface Tool<Schema extends Record<string, zod.ZodTypeAny> = Record<string, zod.ZodTypeAny>> {
+export interface Tool<
+    Schema extends Record<string, zod.ZodTypeAny> = Record<string, zod.ZodTypeAny>,
+    Output = unknown
+> {
     readonly name: string;
     readonly description: string;
     readonly inputSchema: Schema;
-    execute(args: ToolInput<Schema>): Promise<ToolOutput>;
+    execute(args: ToolInput<Schema>): Promise<Output>;
 }
 
-export interface ToolService<Context> {
-    execute(handler: (context: Context) => Promise<ToolOutput>): Promise<ToolOutput>;
+export interface ToolService<Context, Output = unknown> {
+    execute(handler: (context: Context) => Promise<Output>): Promise<Output>;
 }
+
+export type BrowserToolOutput = {
+    data: Record<string, unknown>;
+    screenshot?: string;
+};
 
 export interface BrowserToolContext {
     browserService: BrowserService<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, unknown>;

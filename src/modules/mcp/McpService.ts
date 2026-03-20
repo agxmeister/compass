@@ -4,14 +4,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface, LoggerFactory } from '@/modules/log/index.js';
-import type { Tool } from './types.js';
+import type { Tool, BrowserToolOutput } from './types.js';
 
 @injectable()
 export class McpService {
     private readonly logger: LoggerInterface;
 
     constructor(
-        @multiInject(dependencies.Tools) private readonly tools: Tool[],
+        @multiInject(dependencies.Tools) private readonly tools: Tool<Record<string, never>, BrowserToolOutput>[],
         @inject(dependencies.LoggerFactory) loggerFactory: LoggerFactory,
     ) {
         this.logger = loggerFactory.createLogger();

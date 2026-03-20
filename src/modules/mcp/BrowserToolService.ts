@@ -4,10 +4,10 @@ import type { ProtocolServiceInterface } from '@/modules/journey/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/journey/index.js';
 import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
-import type { ToolOutput, ToolService, BrowserToolContext } from './types.js';
+import type { BrowserToolOutput, ToolService, BrowserToolContext } from './types.js';
 
 @injectable()
-export class BrowserToolService implements ToolService<BrowserToolContext> {
+export class BrowserToolService implements ToolService<BrowserToolContext, BrowserToolOutput> {
     constructor(
         @inject(dependencies.ProtocolRecordBuilderFactory) private readonly protocolRecordBuilderFactory: ProtocolRecordBuilderFactory,
         @inject(dependencies.ToolResultBuilderFactory) private readonly toolResultBuilderFactory: ToolResultBuilderFactory,
@@ -15,7 +15,7 @@ export class BrowserToolService implements ToolService<BrowserToolContext> {
         @inject(dependencies.ProtocolService) private readonly protocolService: ProtocolServiceInterface,
     ) {}
 
-    async execute(handler: (context: BrowserToolContext) => Promise<ToolOutput>): Promise<ToolOutput> {
+    async execute(handler: (context: BrowserToolContext) => Promise<BrowserToolOutput>): Promise<BrowserToolOutput> {
         const protocolRecordBuilder = this.protocolRecordBuilderFactory.create();
 
         const browserService = this.browserServiceFactory.create(protocolRecordBuilder);
