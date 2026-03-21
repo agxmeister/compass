@@ -5,7 +5,7 @@ import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, type BrowserServiceFactory } from './modules/browser/index.js';
 import type { CreateSessionPayload, DeletedSessionPayload, PerformActionPayload, Action } from './modules/browser/axis/index.js';
 import { HttpDriverFactory, type DriverFactory, type HttpCommand } from './modules/driver/index.js';
-import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext, type BrowserToolOutput } from './modules/mcp/index.js';
+import { McpService, ToolDiscoveryService, BrowserToolService, ToolResultBuilderFactory, type ToolService, type BrowserToolContext, type ToolOutput } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/log/index.js';
 import { ProtocolService, ProtocolRepository, ProtocolRecordBuilderFactory, type ProtocolServiceInterface } from './modules/journey/index.js';
 import { BinaryService, BinaryRepository, type BinaryServiceInterface } from './modules/binary/index.js';
@@ -40,5 +40,5 @@ container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(Protoc
 container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
 container.bind<BinaryRepository>(dependencies.BinaryRepository).to(BinaryRepository);
 container.bind<BinaryServiceInterface>(dependencies.BinaryService).to(BinaryService);
-container.bind<ToolService<BrowserToolContext, BrowserToolOutput>>(dependencies.ToolService).to(BrowserToolService);
+container.bind<ToolService<BrowserToolContext, ToolOutput>>(dependencies.ToolService).to(BrowserToolService);
 container.bind<ToolResultBuilderFactory>(dependencies.ToolResultBuilderFactory).to(ToolResultBuilderFactory);

@@ -4,7 +4,8 @@ import type { ProtocolServiceInterface } from '@/modules/journey/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/journey/index.js';
 import type { BrowserServiceFactory } from '@/modules/browser/index.js';
 import { ToolResultBuilderFactory } from './ToolResultBuilderFactory.js';
-import type { BrowserToolOutput, ToolService, BrowserToolContext } from './types.js';
+import type { ToolService, BrowserToolContext } from './types.js';
+import type { BrowserToolOutput } from './BrowserToolOutput.js';
 
 @injectable()
 export class BrowserToolService implements ToolService<BrowserToolContext, BrowserToolOutput> {

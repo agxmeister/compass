@@ -18,10 +18,10 @@ export interface ToolService<Context, Output = unknown> {
     execute(handler: (context: Context) => Promise<Output>): Promise<Output>;
 }
 
-export type BrowserToolOutput = {
-    data: Record<string, unknown>;
-    screenshot?: string;
-};
+export interface ToolOutput {
+    getTexts(): string[];
+    getImages(): string[];
+}
 
 export interface BrowserToolContext {
     browserService: BrowserService<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, unknown>;

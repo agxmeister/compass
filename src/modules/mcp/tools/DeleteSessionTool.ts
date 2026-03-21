@@ -1,7 +1,8 @@
 import { injectable, inject } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
-import type { Tool, ToolInput, BrowserToolOutput, ToolService, BrowserToolContext } from '../types.js';
+import type { Tool, ToolInput, ToolService, BrowserToolContext } from '../types.js';
+import type { BrowserToolOutput } from '../BrowserToolOutput.js';
 import { RegisterTool } from '../decorators.js';
 
 const inputSchema = {

@@ -4,14 +4,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface, LoggerFactory } from '@/modules/log/index.js';
-import type { Tool, BrowserToolOutput } from './types.js';
+import type { Tool, ToolOutput } from './types.js';
 
 @injectable()
 export class McpService {
     private readonly logger: LoggerInterface;
 
     constructor(
-        @multiInject(dependencies.Tools) private readonly tools: Tool<Record<string, never>, BrowserToolOutput>[],
+        @multiInject(dependencies.Tools) private readonly tools: Tool<Record<string, never>, ToolOutput>[],
         @inject(dependencies.LoggerFactory) loggerFactory: LoggerFactory,
     ) {
         this.logger = loggerFactory.createLogger();
@@ -42,14 +42,12 @@ export class McpService {
 
                     try {
                         const output = await tool.execute(args);
-                        this.logger.info('Tool execution completed', { traceId, tool: tool.name, output: output.data });
+                        this.logger.info('Tool execution completed', { traceId, tool: tool.name });
 
                         const content: CallToolResult['content'] = [
-                            { type: "text", text: JSON.stringify(output.data, null, 4) },
+                            ...output.getTexts().map(text => ({ type: "text" as const, text })),
+                            ...output.getImages().map(data => ({ type: "image" as const, data, mimeType: "image/png" })),
                         ];
-                        if (output.screenshot) {
-                            content.push({ type: "image", data: output.screenshot, mimeType: "image/png" });
-                        }
                         return { content };
                     } catch (error) {
                         this.logger.error('Tool execution failed', { traceId, tool: tool.name, error });

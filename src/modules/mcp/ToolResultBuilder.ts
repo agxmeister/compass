@@ -1,4 +1,4 @@
-import type { BrowserToolOutput } from "./types.js";
+import { BrowserToolOutput } from "./BrowserToolOutput.js";
 
 export class ToolResultBuilder {
     private data?: Record<string, unknown>;
@@ -19,9 +19,6 @@ export class ToolResultBuilder {
             throw new Error("Cannot build ToolOutput without data");
         }
 
-        return {
-            data: this.data,
-            ...(this.screenshot && { screenshot: this.screenshot }),
-        };
+        return new BrowserToolOutput(this.data, this.screenshot);
     }
 }
