@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
-import { ToolResultBuilder } from './ToolResultBuilder.js';
+import { BrowserToolResultBuilder } from './BrowserToolResultBuilder.js';
 
 @injectable()
-export class ToolResultBuilderFactory {
-    create(): ToolResultBuilder {
-        return new ToolResultBuilder();
+export class BrowserToolResultBuilderFactory {
+    create(): BrowserToolResultBuilder {
+        return new BrowserToolResultBuilder();
     }
 }

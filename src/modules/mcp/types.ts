@@ -1,6 +1,6 @@
 import { z as zod } from "zod";
 import type { BrowserService } from '@/modules/browser/index.js';
-import type { ToolResultBuilder } from './ToolResultBuilder.js';
+import type { BrowserToolResultBuilder } from './BrowserToolResultBuilder.js';
 
 export type ToolInput<Schema extends Record<string, zod.ZodTypeAny>> = zod.infer<zod.ZodObject<Schema>>;
 
@@ -23,7 +23,11 @@ export interface ToolOutput {
     getImages(): string[];
 }
 
+export interface ToolResultBuilder<Output extends ToolOutput> {
+    build(): Output;
+}
+
 export interface BrowserToolContext {
     browserService: BrowserService<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, unknown>;
-    toolResultBuilder: ToolResultBuilder;
+    toolResultBuilder: BrowserToolResultBuilder;
 }
