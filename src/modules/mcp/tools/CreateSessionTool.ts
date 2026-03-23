@@ -22,9 +22,9 @@ export default class CreateSessionTool implements Tool<typeof inputSchema> {
 
     async execute(args: ToolInput<typeof inputSchema>): Promise<BrowserToolOutput> {
         return this.toolService.execute(
-            async ({ browserService, toolResultBuilder }) => {
+            async ({ browserService, toolOutputBuilder }) => {
                 const result = await browserService.createSession(args.url);
-                return toolResultBuilder
+                return toolOutputBuilder
                     .setData(result)
                     .setScreenshot(await browserService.captureScreenshot(result.sessionId))
                     .build();

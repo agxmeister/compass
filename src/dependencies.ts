@@ -8,7 +8,7 @@ export const dependencies = {
     ToolsDirectory: Symbol.for('ToolsDirectory'),
     ToolDiscoveryService: Symbol.for('ToolDiscoveryService'),
     ToolService: Symbol.for('ToolService'),
-    ToolResultBuilderFactory: Symbol.for('ToolResultBuilderFactory'),
+    ToolOutputBuilderFactory: Symbol.for('ToolOutputBuilderFactory'),
     Tools: Symbol.for('Tools'),
     LoggerFactory: Symbol.for('LoggerFactory'),
     LoggingLevel: Symbol.for('LoggingLevel'),

@@ -22,8 +22,8 @@ export default class DeleteSessionTool implements Tool<typeof inputSchema> {
 
     async execute(args: ToolInput<typeof inputSchema>): Promise<BrowserToolOutput> {
         return this.toolService.execute(
-            async ({ browserService, toolResultBuilder }) =>
-                toolResultBuilder
+            async ({ browserService, toolOutputBuilder }) =>
+                toolOutputBuilder
                     .setData(
                         await browserService.deleteSession(args.sessionId))
                     .build()

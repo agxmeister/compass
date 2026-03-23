@@ -33,7 +33,7 @@ npm run build   # tsc && tsc-alias
 ### Key patterns
 
 - **Factory pattern** for creating services (AxisServiceFactory, HttpDriverFactory, etc.)
-- **Builder pattern** for ProtocolRecordBuilder and ToolResultBuilder
+- **Builder pattern** for ProtocolRecordBuilder and ToolOutputBuilder
 - **Generic interfaces** — BrowserService and Driver are generic to allow alternative implementations
 - **Decorator-based tool registration** — `@RegisterTool()` auto-registers tools in the DI container
 - **Tool discovery** — `ToolDiscoveryService` dynamically imports files matching `*Tool.{ts,js}` from the tools directory
