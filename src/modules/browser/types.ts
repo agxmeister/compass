@@ -2,9 +2,9 @@ import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
 
 export type { ProtocolRecordBuilder };
 
-export type CreateSessionResult<T extends Record<string, unknown>> = { sessionId: string } & T;
-export type DeleteSessionResult<T extends Record<string, unknown>> = T;
-export type PerformActionResult<T extends Record<string, unknown>> = T;
+export type CreateSessionResult<T extends Record<string, unknown>> = { sessionId: string, payload: T };
+export type DeleteSessionResult<T extends Record<string, unknown>> = { payload: T };
+export type PerformActionResult<T extends Record<string, unknown>> = { payload: T };
 
 export interface BrowserService<
     CreateSessionPayload extends Record<string, unknown>,
@@ -24,5 +24,10 @@ export interface BrowserServiceFactory<
     PerformActionPayload extends Record<string, unknown>,
     Action
 > {
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<CreateSessionPayload, DeleteSessionPayload, PerformActionPayload, Action>;
+    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<
+        CreateSessionPayload,
+        DeleteSessionPayload,
+        PerformActionPayload,
+        Action
+    >;
 }

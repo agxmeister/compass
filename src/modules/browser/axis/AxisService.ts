@@ -35,7 +35,7 @@ export class AxisService implements BrowserService<CreateSessionPayload, Deleted
             },
             createSessionResponseSchema,
         );
-        return { sessionId: response.payload.id, ...response.payload };
+        return { sessionId: response.payload.id, payload: response.payload };
     }
 
     async deleteSession(sessionId: string): Promise<DeleteSessionResult<DeletedSessionPayload>> {
@@ -52,7 +52,7 @@ export class AxisService implements BrowserService<CreateSessionPayload, Deleted
             },
             deleteSessionResponseSchema,
         );
-        return response.payload;
+        return { payload: response.payload };
     }
 
     async performAction(sessionId: string, action: Action): Promise<PerformActionResult<PerformActionPayload>> {
@@ -70,7 +70,7 @@ export class AxisService implements BrowserService<CreateSessionPayload, Deleted
             },
             performActionResponseSchema,
         );
-        return response.payload;
+        return { payload: response.payload };
     }
 
     async captureScreenshot(sessionId: string): Promise<string> {
