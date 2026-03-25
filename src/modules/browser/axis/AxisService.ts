@@ -14,12 +14,12 @@ import type {
     Action,
 } from "./types.js";
 import type { BrowserService, CreateSessionResult, DeleteSessionResult, PerformActionResult } from "../types.js";
-import type { Driver, HttpCommand } from "@/modules/driver/index.js";
+import type { Driver, RestCommand } from "@/modules/driver/index.js";
 import type { BinaryServiceInterface } from "@/modules/binary/index.js";
 
 export class AxisService implements BrowserService<CreateSessionPayload, DeletedSessionPayload, PerformActionPayload, Action> {
     constructor(
-        private readonly driver: Driver<HttpCommand>,
+        private readonly driver: Driver<RestCommand>,
         private readonly binaryService: BinaryServiceInterface,
     ) {}
 

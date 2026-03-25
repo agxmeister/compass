@@ -23,7 +23,7 @@ npm run build   # tsc && tsc-alias
 | `mcp/tools/` | Individual tool implementations (CreateSession, Navigate, Click, DeleteSession) |
 | `browser/` | Generic `BrowserService` interface for browser automation |
 | `browser/axis/` | Axis implementation of `BrowserService` |
-| `driver/` | Generic `Driver` interface; `HttpDriver` executes commands + records protocol |
+| `driver/` | Generic `Driver` interface; `RestDriver` executes commands + records protocol |
 | `http/` | Low-level HTTP client with URL template resolution |
 | `journey/` | Protocol recording — audit trail of all browser interactions (protocol.json) |
 | `binary/` | Binary file storage for screenshots |
@@ -32,7 +32,7 @@ npm run build   # tsc && tsc-alias
 
 ### Key patterns
 
-- **Factory pattern** for creating services (AxisServiceFactory, HttpDriverFactory, etc.)
+- **Factory pattern** for creating services (AxisServiceFactory, RestDriverFactory, etc.)
 - **Builder pattern** for ProtocolRecordBuilder and ToolOutputBuilder
 - **Generic interfaces** — BrowserService and Driver are generic to allow alternative implementations
 - **Decorator-based tool registration** — `@RegisterTool()` auto-registers tools in the DI container

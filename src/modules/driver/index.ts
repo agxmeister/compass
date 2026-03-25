@@ -1,5 +1,5 @@
-export { HttpDriver } from './HttpDriver.js';
-export { HttpDriverFactory } from './HttpDriverFactory.js';
+export { RestDriver } from './RestDriver.js';
+export { RestDriverFactory } from './RestDriverFactory.js';
 
-export type { HttpCommand } from './HttpDriver.js';
+export type { RestCommand } from './RestDriver.js';
 export type { Driver, DriverFactory } from './types.js';

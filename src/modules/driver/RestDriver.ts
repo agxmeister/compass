@@ -4,12 +4,12 @@ import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
 import type { BinaryServiceInterface, Binary } from '@/modules/binary/index.js';
 import type { Driver } from './types.js';
 
-export interface HttpCommand {
+export interface RestCommand {
     endpoint: HttpEndpoint;
     requestBody?: Record<string, unknown>;
 }
 
-export class HttpDriver implements Driver<HttpCommand> {
+export class RestDriver implements Driver<RestCommand> {
     constructor(
         private readonly httpClient: HttpClient,
         private readonly protocolRecordBuilder: ProtocolRecordBuilder,
@@ -19,7 +19,7 @@ export class HttpDriver implements Driver<HttpCommand> {
     }
 
     async act<T extends Record<string, unknown>>(
-        command: HttpCommand,
+        command: RestCommand,
         schema: zod.ZodType<T>,
     ): Promise<T> {
         this.protocolRecordBuilder.setHttpRequest(command.endpoint, command.requestBody);
@@ -29,7 +29,7 @@ export class HttpDriver implements Driver<HttpCommand> {
         return validated;
     }
 
-    async observe(command: HttpCommand): Promise<Binary> {
+    async observe(command: RestCommand): Promise<Binary> {
         const response = await this.httpClient.request(command.endpoint);
         const arrayBuffer = await response.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString('base64');
