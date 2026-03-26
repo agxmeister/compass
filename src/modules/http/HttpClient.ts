@@ -8,14 +8,20 @@ export class HttpClient implements HttpClientInterface {
 
     async request(endpoint: HttpEndpoint, body?: Record<string, unknown>): Promise<Response> {
         const url = this.resolveUrl(endpoint);
-        return fetch(`${this.baseUrl}${url}`, {
-            method: endpoint.method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: body ? JSON.stringify(body) : undefined,
-            signal: AbortSignal.timeout(this.timeout),
-        });
+        try {
+            return await fetch(`${this.baseUrl}${url}`, {
+                method: endpoint.method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: body ? JSON.stringify(body) : undefined,
+                signal: AbortSignal.timeout(this.timeout),
+            });
+        } catch (error) {
+            throw new Error(
+                `${endpoint.method} ${url} failed: ${error instanceof Error ? error.message : String(error)}`,
+            );
+        }
     }
 
     private resolveUrl(endpoint: HttpEndpoint): string {

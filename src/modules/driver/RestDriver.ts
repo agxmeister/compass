@@ -24,6 +24,9 @@ export class RestDriver implements Driver<RestCommand> {
     ): Promise<T> {
         this.protocolRecordBuilder.setHttpRequest(command.endpoint, command.requestBody);
         const response = await this.httpClient.request(command.endpoint, command.requestBody);
+        if (!response.ok) {
+            throw new Error(`${command.endpoint.method} ${command.endpoint.path} failed: HTTP ${response.status} ${response.statusText}`);
+        }
         const validated = schema.parse(await response.json());
         this.protocolRecordBuilder.setHttpResponse(response.status, validated);
         return validated;
@@ -31,6 +34,9 @@ export class RestDriver implements Driver<RestCommand> {
 
     async observe(command: RestCommand): Promise<Binary> {
         const response = await this.httpClient.request(command.endpoint);
+        if (!response.ok) {
+            throw new Error(`${command.endpoint.method} ${command.endpoint.path} failed: HTTP ${response.status} ${response.statusText}`);
+        }
         const arrayBuffer = await response.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString('base64');
         const binary = await this.binaryService.saveScreenshot(base64);
