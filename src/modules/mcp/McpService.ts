@@ -55,7 +55,7 @@ export class McpService {
                             content: [
                                 {
                                     type: "text",
-                                    text: `Error: ${error instanceof Error ? error.message : String(error)}`,
+                                    text: JSON.stringify({ error: error instanceof Error ? error.message : String(error) }, null, 4),
                                 },
                             ],
                             isError: true,
