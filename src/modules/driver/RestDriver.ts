@@ -27,9 +27,16 @@ export class RestDriver implements Driver<RestCommand> {
         if (!response.ok) {
             throw new Error(`${command.endpoint.method} ${command.endpoint.path} failed: HTTP ${response.status} ${response.statusText}`);
         }
-        const validated = schema.parse(await response.json());
-        this.protocolRecordBuilder.setHttpResponse(response.status, validated);
-        return validated;
+        const body = await response.json();
+        try {
+            const validated = schema.parse(body);
+            this.protocolRecordBuilder.setHttpResponse(response.status, validated);
+            return validated;
+        } catch (error) {
+            throw new Error(
+                `${command.endpoint.method} ${command.endpoint.path} failed: ${error instanceof Error ? error.message : String(error)}`,
+            );
+        }
     }
 
     async observe(command: RestCommand): Promise<Binary> {
