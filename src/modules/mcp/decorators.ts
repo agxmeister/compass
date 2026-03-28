@@ -1,10 +1,9 @@
 import { container } from '@/container.js';
-import { dependencies } from '@/dependencies.js';
 import type { Tool } from './types.js';
 
-export function RegisterTool() {
+export function RegisterTool(group: symbol) {
     return function <T extends new (...args: any[]) => Tool>(constructor: T) {
-        container.bind<Tool>(dependencies.Tools).to(constructor);
+        container.bind<Tool>(group).to(constructor);
         return constructor;
     };
 }

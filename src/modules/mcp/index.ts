@@ -5,4 +5,4 @@ export { BrowserToolOutputBuilder } from './BrowserToolOutputBuilder.js';
 export { BrowserToolOutputBuilderFactory } from './ToolOutputBuilderFactory.js';
 export { RegisterTool } from './decorators.js';
 export { BrowserToolOutput } from './BrowserToolOutput.js';
-export type { Tool, ToolInput, ToolOutput, ToolService, BrowserToolContext } from './types.js';
+export type { Tool, ToolInput, ToolOutput, ToolService, ToolGroup, BrowserToolContext } from './types.js';

@@ -4,14 +4,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface, LoggerFactory } from '@/modules/log/index.js';
-import type { Tool, ToolOutput } from './types.js';
+import type { ToolGroup, ToolOutput } from './types.js';
 
 @injectable()
 export class McpService {
     private readonly logger: LoggerInterface;
 
     constructor(
-        @multiInject(dependencies.Tools) private readonly tools: Tool<Record<string, never>, ToolOutput>[],
+        @multiInject(dependencies.ToolGroups) private readonly toolGroups: ToolGroup[],
         @inject(dependencies.LoggerFactory) loggerFactory: LoggerFactory,
     ) {
         this.logger = loggerFactory.createLogger();
@@ -29,42 +29,46 @@ export class McpService {
     }
 
     private registerTools(server: McpServer): void {
-        for (const tool of this.tools) {
-            server.registerTool(
-                tool.name,
-                {
-                    description: tool.description,
-                    inputSchema: tool.inputSchema,
-                },
-                async (args) => {
-                    const traceId = randomUUID();
-                    this.logger.info('Tool execution requested', { traceId, tool: tool.name, input: args });
+        for (const group of this.toolGroups) {
+            for (const tool of group.tools) {
+                server.registerTool(
+                    tool.name,
+                    {
+                        description: tool.description,
+                        inputSchema: tool.inputSchema,
+                    },
+                    async (args) => {
+                        const traceId = randomUUID();
+                        this.logger.info('Tool execution requested', { traceId, tool: tool.name, input: args });
 
-                    try {
-                        const output = await tool.execute(args);
-                        this.logger.info('Tool execution completed', { traceId, tool: tool.name });
+                        try {
+                            const output: ToolOutput = await group.toolService.execute(
+                                async (context) => tool.handle(args, context),
+                            );
+                            this.logger.info('Tool execution completed', { traceId, tool: tool.name });
 
-                        const content: CallToolResult['content'] = [
-                            ...output.getTexts().map(text => ({ type: "text" as const, text })),
-                            ...output.getImages().map(data => ({ type: "image" as const, data, mimeType: "image/png" })),
-                        ];
-                        return { content };
-                    } catch (error) {
-                        this.logger.error('Tool execution failed', { traceId, tool: tool.name, error });
-                        return {
-                            content: [
-                                {
-                                    type: "text",
-                                    text: JSON.stringify({ error: error instanceof Error ? error.message : String(error) }, null, 4),
-                                },
-                            ],
-                            isError: true,
-                        };
+                            const content: CallToolResult['content'] = [
+                                ...output.getTexts().map(text => ({ type: "text" as const, text })),
+                                ...output.getImages().map(data => ({ type: "image" as const, data, mimeType: "image/png" })),
+                            ];
+                            return { content };
+                        } catch (error) {
+                            this.logger.error('Tool execution failed', { traceId, tool: tool.name, error });
+                            return {
+                                content: [
+                                    {
+                                        type: "text",
+                                        text: JSON.stringify({ error: error instanceof Error ? error.message : String(error) }, null, 4),
+                                    },
+                                ],
+                                isError: true,
+                            };
+                        }
                     }
-                }
-            );
+                );
 
-            this.logger.info('Tool registered', { tool: tool.name });
+                this.logger.info('Tool registered', { tool: tool.name });
+            }
         }
     }
 }

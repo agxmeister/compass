@@ -6,16 +6,22 @@ export type ToolInput<Schema extends Record<string, zod.ZodTypeAny>> = zod.infer
 
 export interface Tool<
     Schema extends Record<string, zod.ZodTypeAny> = Record<string, zod.ZodTypeAny>,
-    Output = unknown
+    Context = unknown,
+    Output extends ToolOutput = ToolOutput,
 > {
     readonly name: string;
     readonly description: string;
     readonly inputSchema: Schema;
-    execute(args: ToolInput<Schema>): Promise<Output>;
+    handle(args: ToolInput<Schema>, context: Context): Promise<Output>;
 }
 
-export interface ToolService<Context, Output = unknown> {
+export interface ToolService<Context = unknown, Output extends ToolOutput = ToolOutput> {
     execute(handler: (context: Context) => Promise<Output>): Promise<Output>;
+}
+
+export interface ToolGroup<Context = unknown, Output extends ToolOutput = ToolOutput> {
+    readonly tools: Tool<Record<string, zod.ZodTypeAny>, Context, Output>[];
+    readonly toolService: ToolService<Context, Output>;
 }
 
 export interface ToolOutput {

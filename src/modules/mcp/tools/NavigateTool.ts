@@ -1,7 +1,7 @@
-import { injectable, inject } from 'inversify';
+import { injectable } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
-import type { Tool, ToolInput, ToolService, BrowserToolContext } from '../types.js';
+import type { Tool, ToolInput, BrowserToolContext } from '../types.js';
 import type { BrowserToolOutput } from '../BrowserToolOutput.js';
 import { RegisterTool } from '../decorators.js';
 
@@ -10,28 +10,21 @@ const inputSchema = {
     url: zod.string().describe("URL to navigate to."),
 };
 
-@RegisterTool()
+@RegisterTool(dependencies.BrowserTools)
 @injectable()
-export default class NavigateTool implements Tool<typeof inputSchema> {
+export default class NavigateTool implements Tool<typeof inputSchema, BrowserToolContext, BrowserToolOutput> {
     readonly name = "navigate";
     readonly description = "Navigate to a page with the given URL in a browser.";
     readonly inputSchema = inputSchema;
 
-    constructor(
-        @inject(dependencies.ToolService) private readonly toolService: ToolService<BrowserToolContext, BrowserToolOutput>,
-    ) {}
-
-    async execute(args: ToolInput<typeof inputSchema>): Promise<BrowserToolOutput> {
-        return this.toolService.execute(
-            async ({ browserService, toolOutputBuilder }) =>
-                toolOutputBuilder
-                    .setData(
-                        await browserService.performAction(args.sessionId, {
-                            type: "navigate" as const,
-                            url: args.url
-                        }))
-                    .setScreenshot(await browserService.captureScreenshot(args.sessionId))
-                    .build()
-        );
+    async handle(args: ToolInput<typeof inputSchema>, { browserService, toolOutputBuilder }: BrowserToolContext): Promise<BrowserToolOutput> {
+        return toolOutputBuilder
+            .setData(
+                await browserService.performAction(args.sessionId, {
+                    type: "navigate" as const,
+                    url: args.url
+                }))
+            .setScreenshot(await browserService.captureScreenshot(args.sessionId))
+            .build();
     }
 }

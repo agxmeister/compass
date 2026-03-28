@@ -5,7 +5,7 @@ import { dependencies } from './dependencies.js';
 import { AxisServiceFactory, type BrowserServiceFactory } from './modules/browser/index.js';
 import type { CreateSessionPayload, DeletedSessionPayload, PerformActionPayload, Action } from './modules/browser/axis/index.js';
 import { RestDriverFactory, type DriverFactory, type RestCommand } from './modules/driver/index.js';
-import { McpService, ToolDiscoveryService, BrowserToolService, BrowserToolOutputBuilderFactory, type ToolService, type BrowserToolContext, type ToolOutput } from './modules/mcp/index.js';
+import { McpService, ToolDiscoveryService, BrowserToolService, BrowserToolOutputBuilderFactory, type ToolService, type ToolGroup, type BrowserToolContext, type ToolOutput } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/log/index.js';
 import { ProtocolService, ProtocolRepository, ProtocolRecordBuilderFactory, type ProtocolServiceInterface } from './modules/journey/index.js';
 import { BinaryService, BinaryRepository, type BinaryServiceInterface } from './modules/binary/index.js';
@@ -40,5 +40,9 @@ container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(Protoc
 container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
 container.bind<BinaryRepository>(dependencies.BinaryRepository).to(BinaryRepository);
 container.bind<BinaryServiceInterface>(dependencies.BinaryService).to(BinaryService);
-container.bind<ToolService<BrowserToolContext, ToolOutput>>(dependencies.ToolService).to(BrowserToolService);
+container.bind<ToolService<BrowserToolContext, ToolOutput>>(dependencies.BrowserToolService).to(BrowserToolService);
 container.bind<BrowserToolOutputBuilderFactory>(dependencies.ToolOutputBuilderFactory).to(BrowserToolOutputBuilderFactory);
+container.bind<ToolGroup>(dependencies.ToolGroups).toDynamicValue((context) => ({
+    tools: context.getAll(dependencies.BrowserTools),
+    toolService: context.get(dependencies.BrowserToolService),
+}));
