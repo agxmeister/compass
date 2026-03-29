@@ -1,7 +1,6 @@
-import { randomUUID } from 'crypto';
+import { v4 as uuid } from 'uuid';
 import { injectable, inject, multiInject } from 'inversify';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { dependencies } from '@/dependencies.js';
 import { Logger as LoggerInterface, LoggerFactory } from '@/modules/log/index.js';
 import type { ToolGroup, ToolOutput } from './types.js';
@@ -38,7 +37,7 @@ export class McpService {
                         inputSchema: tool.inputSchema,
                     },
                     async (args) => {
-                        const traceId = randomUUID();
+                        const traceId = uuid();
                         this.logger.info('Tool execution requested', { traceId, tool: tool.name, input: args });
 
                         try {
@@ -46,12 +45,12 @@ export class McpService {
                                 async (context) => tool.handle(args, context),
                             );
                             this.logger.info('Tool execution completed', { traceId, tool: tool.name });
-
-                            const content: CallToolResult['content'] = [
-                                ...output.getTexts().map(text => ({ type: "text" as const, text })),
-                                ...output.getImages().map(data => ({ type: "image" as const, data, mimeType: "image/png" })),
-                            ];
-                            return { content };
+                            return {
+                                content: [
+                                    ...output.getTexts().map(text => ({ type: "text" as const, text })),
+                                    ...output.getImages().map(data => ({ type: "image" as const, data, mimeType: "image/png" })),
+                                ]
+                            }
                         } catch (error) {
                             this.logger.error('Tool execution failed', { traceId, tool: tool.name, error });
                             return {
