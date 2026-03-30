@@ -1,24 +1,33 @@
 import { injectable } from 'inversify';
+import { ZodError } from 'zod';
 import { configSchema } from './schemas.js';
 import type { Config } from './types.js';
 
 @injectable()
 export class ConfigFactory {
     create(): Config {
-        return configSchema.parse({
-            axisApiUrl: process.env.AXIS_API_URL,
-            http: {
-                timeout: process.env.HTTP_TIMEOUT ? parseInt(process.env.HTTP_TIMEOUT, 10) : undefined,
-            },
-            log: {
-                level: process.env.LOG_LEVEL,
-                environment: process.env.LOG_ENVIRONMENT,
-                dir: process.env.LOG_DIR,
-            },
-            journey: {
-                name: process.env.JOURNEY_NAME,
-                dir: process.env.JOURNEY_DIR,
-            },
-        });
+        try {
+            return configSchema.parse({
+                axisApiUrl: process.env.AXIS_API_URL,
+                http: {
+                    timeout: process.env.HTTP_TIMEOUT ? parseInt(process.env.HTTP_TIMEOUT, 10) : undefined,
+                },
+                log: {
+                    level: process.env.LOG_LEVEL,
+                    environment: process.env.LOG_ENVIRONMENT,
+                    dir: process.env.LOG_DIR,
+                },
+                journey: {
+                    name: process.env.JOURNEY_NAME,
+                    dir: process.env.JOURNEY_DIR,
+                },
+            });
+        } catch (error) {
+            if (error instanceof ZodError) {
+                const details = error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join(', ');
+                throw new Error(`Configuration validation failed: ${details}`);
+            }
+            throw error;
+        }
     }
 }
