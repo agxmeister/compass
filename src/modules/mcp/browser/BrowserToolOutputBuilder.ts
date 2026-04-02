@@ -1,5 +1,5 @@
 import { BrowserToolOutput } from "./BrowserToolOutput.js";
-import type { ToolOutputBuilder } from "./types.js";
+import type { ToolOutputBuilder } from "../types.js";
 
 export class BrowserToolOutputBuilder implements ToolOutputBuilder<BrowserToolOutput> {
     private data?: Record<string, unknown>;

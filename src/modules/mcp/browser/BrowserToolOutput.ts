@@ -1,4 +1,4 @@
-import type { ToolOutput } from "./types.js";
+import type { ToolOutput } from "../types.js";
 
 export class BrowserToolOutput implements ToolOutput {
     constructor(

@@ -15,7 +15,7 @@ import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/ht
 export const container = new Container();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const toolsDirectory = join(__dirname, 'modules', 'mcp', 'tools');
+const toolsDirectory = join(__dirname, 'modules', 'mcp', 'browser', 'tools');
 
 const configFactory = new ConfigFactory();
 const config = configFactory.create();

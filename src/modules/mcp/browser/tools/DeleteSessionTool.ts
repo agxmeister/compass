@@ -1,9 +1,10 @@
 import { injectable } from 'inversify';
 import { z as zod } from "zod";
 import { dependencies } from '@/dependencies.js';
-import type { Tool, ToolInput, BrowserToolContext } from '../types.js';
+import type { Tool, ToolInput } from '../../types.js';
+import type { BrowserToolContext } from '../types.js';
 import type { BrowserToolOutput } from '../BrowserToolOutput.js';
-import { RegisterTool } from '../decorators.js';
+import { RegisterTool } from '../../decorators.js';
 
 const inputSchema = {
     sessionId: zod.string().describe("Identifier of a browser session."),

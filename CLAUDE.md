@@ -25,7 +25,7 @@ npm run build
 
 ## Adding tools
 
-Create a file matching `*Tool.ts` in `src/modules/mcp/tools/` and use the `@RegisterTool()` decorator.
+Create a file matching `*Tool.ts` in `src/modules/mcp/browser/tools/` and use the `@RegisterTool()` decorator.
 
 ## Dependency injection
 

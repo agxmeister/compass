@@ -3,8 +3,9 @@ import { dependencies } from '@/dependencies.js';
 import type { ProtocolServiceInterface } from '@/modules/journey/index.js';
 import { ProtocolRecordBuilderFactory } from '@/modules/journey/index.js';
 import type { BrowserServiceFactory } from '@/modules/browser/index.js';
-import { BrowserToolOutputBuilderFactory } from './ToolOutputBuilderFactory.js';
-import type { ToolService, BrowserToolContext } from './types.js';
+import { BrowserToolOutputBuilderFactory } from './BrowserToolOutputBuilderFactory.js';
+import type { ToolService } from '../types.js';
+import type { BrowserToolContext } from './types.js';
 import type { BrowserToolOutput } from './BrowserToolOutput.js';
 
 @injectable()
