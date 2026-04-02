@@ -10,6 +10,10 @@ export const actionSchema = zod.discriminatedUnion("type", [
         type: zod.literal("navigate"),
         url: zod.string(),
     }),
+    zod.object({
+        type: zod.literal("type"),
+        text: zod.string(),
+    }),
 ]);
 
 export const createSessionInputSchema = zod.object({
@@ -47,6 +51,10 @@ export const performActionPayloadSchema = zod.discriminatedUnion("type", [
     zod.object({
         type: zod.literal("navigate"),
         url: zod.string(),
+    }),
+    zod.object({
+        type: zod.literal("type"),
+        text: zod.string(),
     }),
 ]);
 
