@@ -1,11 +1,11 @@
 import type {
     HttpEndpoint,
     ProtocolRecord,
-    ProtocolRecordBuilder as ProtocolRecordBuilderInterface,
-} from "./types.js";
+    ProtocolRecordBuilder,
+} from "../types.js";
 import type { Binary, BinaryServiceInterface } from "@/modules/binary/index.js";
 
-export class ProtocolRecordBuilder implements ProtocolRecordBuilderInterface {
+export class HttpProtocolRecordBuilder implements ProtocolRecordBuilder {
     private type?: string;
     private endpoint?: HttpEndpoint;
     private input?: Record<string, unknown>;

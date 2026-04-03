@@ -7,7 +7,7 @@ import type { CreateSessionPayload, DeletedSessionPayload, PerformActionPayload,
 import { RestDriverFactory, type DriverFactory, type RestCommand } from './modules/driver/index.js';
 import { McpService, ToolDiscoveryService, BrowserToolService, BrowserToolOutputBuilderFactory, type ToolService, type ToolGroup, type BrowserToolContext, type ToolOutput } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/log/index.js';
-import { ProtocolService, ProtocolRepository, ProtocolRecordBuilderFactory, type ProtocolServiceInterface } from './modules/journey/index.js';
+import { ProtocolService, ProtocolRepository, HttpProtocolRecordBuilderFactory, type ProtocolServiceInterface } from './modules/journey/index.js';
 import { BinaryService, BinaryRepository, type BinaryServiceInterface } from './modules/binary/index.js';
 import { ConfigFactory } from './modules/config/index.js';
 import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/http/index.js';
@@ -37,7 +37,7 @@ container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolD
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
 container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository).inSingletonScope();
 container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(ProtocolService);
-container.bind<ProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(ProtocolRecordBuilderFactory);
+container.bind<HttpProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(HttpProtocolRecordBuilderFactory);
 container.bind<BinaryRepository>(dependencies.BinaryRepository).to(BinaryRepository);
 container.bind<BinaryServiceInterface>(dependencies.BinaryService).to(BinaryService);
 container.bind<ToolService<BrowserToolContext, ToolOutput>>(dependencies.BrowserToolService).to(BrowserToolService);
