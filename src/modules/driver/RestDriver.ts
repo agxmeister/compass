@@ -1,6 +1,6 @@
 import { z as zod } from 'zod';
 import type { HttpClient, HttpEndpoint } from '@/modules/http/types.js';
-import type { ProtocolRecordBuilder } from '@/modules/journey/types.js';
+import type { HttpProtocolRecordBuilder } from '@/modules/journey/http/types.js';
 import type { BinaryServiceInterface, Binary } from '@/modules/binary/index.js';
 import type { Driver } from './types.js';
 
@@ -12,7 +12,7 @@ export interface RestCommand {
 export class RestDriver implements Driver<RestCommand> {
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly protocolRecordBuilder: ProtocolRecordBuilder,
+        private readonly protocolRecordBuilder: HttpProtocolRecordBuilder,
         private readonly binaryService: BinaryServiceInterface,
     ) {
         this.protocolRecordBuilder.setType('http-api-call');

@@ -1,6 +1,6 @@
-import type { ProtocolRecordBuilder } from "@/modules/journey/types.js";
+import type { HttpProtocolRecordBuilder } from "@/modules/journey/http/types.js";
 
-export type { ProtocolRecordBuilder };
+export type { HttpProtocolRecordBuilder };
 
 export type CreateSessionResult<T extends Record<string, unknown>> = { sessionId: string, payload: T };
 export type DeleteSessionResult<T extends Record<string, unknown>> = { payload: T };
@@ -24,7 +24,7 @@ export interface BrowserServiceFactory<
     PerformActionPayload extends Record<string, unknown>,
     Action
 > {
-    create(protocolRecordBuilder: ProtocolRecordBuilder): BrowserService<
+    create(protocolRecordBuilder: HttpProtocolRecordBuilder): BrowserService<
         CreateSessionPayload,
         DeleteSessionPayload,
         PerformActionPayload,

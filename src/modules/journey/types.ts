@@ -10,8 +10,6 @@ export type { HttpEndpoint };
 
 export interface ProtocolRecordBuilder {
     setType(type: string): this;
-    setHttpRequest(endpoint: HttpEndpoint, input?: Record<string, unknown>): this;
-    setHttpResponse(status: number, output: Record<string, unknown>): this;
     addBinary(binary: Binary): this;
 }
 

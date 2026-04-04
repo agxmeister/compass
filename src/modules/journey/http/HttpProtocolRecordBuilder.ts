@@ -1,11 +1,8 @@
-import type {
-    HttpEndpoint,
-    ProtocolRecord,
-    ProtocolRecordBuilder,
-} from "../types.js";
+import type { HttpEndpoint, ProtocolRecord } from "../types.js";
+import type { HttpProtocolRecordBuilder as HttpProtocolRecordBuilderInterface } from "./types.js";
 import type { Binary, BinaryServiceInterface } from "@/modules/binary/index.js";
 
-export class HttpProtocolRecordBuilder implements ProtocolRecordBuilder {
+export class HttpProtocolRecordBuilder implements HttpProtocolRecordBuilderInterface {
     private type?: string;
     private endpoint?: HttpEndpoint;
     private input?: Record<string, unknown>;
