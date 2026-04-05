@@ -11,6 +11,7 @@ export type { HttpEndpoint };
 export interface ProtocolRecordBuilder {
     setType(type: string): this;
     addBinary(binary: Binary): this;
+    build(): ProtocolRecord;
 }
 
 export interface ProtocolService {
