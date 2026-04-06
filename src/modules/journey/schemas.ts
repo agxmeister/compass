@@ -3,23 +3,11 @@ import { z as zod } from "zod";
 export const protocolRecordSchema = zod.object({
     timestamp: zod.string(),
     type: zod.string(),
-    request: zod.object({
-        endpoint: zod.object({
-            method: zod.string(),
-            path: zod.string(),
-            parameters: zod.record(zod.unknown()).optional(),
-        }),
-        body: zod.record(zod.unknown()).optional(),
-    }),
-    response: zod.object({
-        status: zod.number(),
-        body: zod.record(zod.unknown()),
-    }),
     binaries: zod.array(zod.object({
         path: zod.string(),
         type: zod.string(),
     })).optional(),
-});
+}).passthrough();
 
 export const protocolSchema = zod.object({
     journey: zod.string(),

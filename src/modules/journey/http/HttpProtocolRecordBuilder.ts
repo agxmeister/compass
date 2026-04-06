@@ -1,5 +1,5 @@
-import type { HttpEndpoint, ProtocolRecord } from "../types.js";
-import type { HttpProtocolRecordBuilder as HttpProtocolRecordBuilderInterface } from "./types.js";
+import type { HttpEndpoint } from "../types.js";
+import type { HttpProtocolRecord, HttpProtocolRecordBuilder as HttpProtocolRecordBuilderInterface } from "./types.js";
 import type { Binary, BinaryServiceInterface } from "@/modules/binary/index.js";
 
 export class HttpProtocolRecordBuilder implements HttpProtocolRecordBuilderInterface {
@@ -36,7 +36,7 @@ export class HttpProtocolRecordBuilder implements HttpProtocolRecordBuilderInter
         return this;
     }
 
-    build(): ProtocolRecord {
+    build(): HttpProtocolRecord {
         if (this.type === undefined) {
             throw new Error("Cannot build protocol record without type");
         }
