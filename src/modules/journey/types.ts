@@ -20,6 +20,12 @@ export interface ProtocolRecordBuilder {
     build(): ProtocolRecord;
 }
 
+export interface ProtocolRepository {
+    load(): Promise<Protocol>;
+    save(protocol: Protocol): Promise<void>;
+    addRecord(record: ProtocolRecord): Promise<void>;
+}
+
 export interface ProtocolService {
     addRecord(record: ProtocolRecord): Promise<void>;
 }

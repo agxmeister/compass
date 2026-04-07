@@ -1,8 +1,7 @@
 import { injectable, inject } from "inversify";
 import { format } from "date-fns";
 import { dependencies } from "@/dependencies.js";
-import { BinaryRepository } from "./BinaryRepository.js";
-import type { Binary, BinaryService as BinaryServiceInterface } from "./types.js";
+import type { Binary, BinaryRepository, BinaryService as BinaryServiceInterface } from "./types.js";
 
 @injectable()
 export class BinaryService implements BinaryServiceInterface {

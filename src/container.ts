@@ -7,8 +7,8 @@ import type { CreateSessionPayload, DeletedSessionPayload, PerformActionPayload,
 import { RestDriverFactory, type DriverFactory, type RestCommand } from './modules/driver/index.js';
 import { McpService, ToolDiscoveryService, BrowserToolService, BrowserToolOutputBuilderFactory, type ToolService, type ToolGroup, type BrowserToolContext, type ToolOutput } from './modules/mcp/index.js';
 import { LoggerFactory } from './modules/log/index.js';
-import { ProtocolService, ProtocolRepository, HttpProtocolRecordBuilderFactory, type ProtocolServiceInterface } from './modules/journey/index.js';
-import { BinaryService, BinaryRepository, type BinaryServiceInterface } from './modules/binary/index.js';
+import { ProtocolService, ProtocolRepository, HttpProtocolRecordBuilderFactory, type ProtocolServiceInterface, type ProtocolRepositoryInterface } from './modules/journey/index.js';
+import { BinaryService, BinaryRepository, type BinaryServiceInterface, type BinaryRepositoryInterface } from './modules/binary/index.js';
 import { ConfigFactory } from './modules/config/index.js';
 import { HttpClientFactory, type HttpClientFactoryInterface } from './modules/http/index.js';
 
@@ -35,10 +35,10 @@ container.bind<BrowserServiceFactory<CreateSessionPayload, DeletedSessionPayload
 container.bind<McpService>(dependencies.McpService).to(McpService);
 container.bind<ToolDiscoveryService>(dependencies.ToolDiscoveryService).to(ToolDiscoveryService);
 container.bind<LoggerFactory>(dependencies.LoggerFactory).to(LoggerFactory);
-container.bind<ProtocolRepository>(dependencies.ProtocolRepository).to(ProtocolRepository).inSingletonScope();
+container.bind<ProtocolRepositoryInterface>(dependencies.ProtocolRepository).to(ProtocolRepository).inSingletonScope();
 container.bind<ProtocolServiceInterface>(dependencies.ProtocolService).to(ProtocolService);
 container.bind<HttpProtocolRecordBuilderFactory>(dependencies.ProtocolRecordBuilderFactory).to(HttpProtocolRecordBuilderFactory);
-container.bind<BinaryRepository>(dependencies.BinaryRepository).to(BinaryRepository);
+container.bind<BinaryRepositoryInterface>(dependencies.BinaryRepository).to(BinaryRepository);
 container.bind<BinaryServiceInterface>(dependencies.BinaryService).to(BinaryService);
 container.bind<ToolService<BrowserToolContext, ToolOutput>>(dependencies.BrowserToolService).to(BrowserToolService);
 container.bind<BrowserToolOutputBuilderFactory>(dependencies.ToolOutputBuilderFactory).to(BrowserToolOutputBuilderFactory);

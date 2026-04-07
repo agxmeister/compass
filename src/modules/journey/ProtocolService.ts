@@ -1,6 +1,5 @@
 import { injectable, inject } from "inversify";
-import { ProtocolRepository } from "./ProtocolRepository.js";
-import { ProtocolRecord, ProtocolService as ProtocolServiceInterface } from "./types.js";
+import { ProtocolRecord, ProtocolRepository, ProtocolService as ProtocolServiceInterface } from "./types.js";
 import { dependencies } from "@/dependencies.js";
 
 @injectable()
